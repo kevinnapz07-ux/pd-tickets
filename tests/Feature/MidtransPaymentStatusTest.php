@@ -226,7 +226,7 @@ class MidtransPaymentStatusTest extends TestCase
         $payment->refresh();
 
         $this->assertSame('retried-snap-token', $payment->snap_token);
-        $this->assertNotSame('PDG-FAILED-001', $payment->order_id);
+        $this->assertSame('PDG-FAILED-001', $payment->order_id);
         $this->assertSame('https://app.sandbox.midtrans.com/snap/v4/redirection/retried', $payment->redirect_url);
     }
 
@@ -289,14 +289,15 @@ class MidtransPaymentStatusTest extends TestCase
 
         [$owner, $registration] = $this->createPendingRegistration('PDG-RETRY-UNEXPECTED');
 
-        $this->actingAs($owner)
-            ->from(route('registrations.show', $registration))
-            ->post(route('registrations.payment.initialize', $registration))
-            ->assertRedirect(route('registrations.show', $registration))
-            ->assertSessionHas(
-                'payment_error',
-                'Pembayaran belum dapat disiapkan karena terjadi gangguan pada server. Silakan coba kembali atau hubungi admin.'
-            );
+        $response = $this->actingAs($owner)
+            ->postJson(route('registrations.payment.initialize', $registration))
+            ->assertServiceUnavailable()
+            ->assertJsonStructure(['message']);
+
+        $this->assertStringContainsString(
+            'Pembayaran belum dapat disiapkan karena terjadi gangguan pada server. Kode: PAY-',
+            $response->json('message')
+        );
     }
 
     private function createPendingRegistration(string $registrationCode): array

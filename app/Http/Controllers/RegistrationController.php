@@ -194,6 +194,7 @@ class RegistrationController extends Controller
         );
 
         try {
+            $stage = 'load-registration';
             $registration->load(['event', 'payment']);
             $payment = $registration->payment;
 
@@ -233,13 +234,12 @@ class RegistrationController extends Controller
                 return back()->with('status', 'Pembayaran sudah siap dilanjutkan.');
             }
 
-            // A fresh order ID avoids reusing an uncertain transaction after a connection failure.
-            $payment->update([
-                'order_id' => 'PDG-'.$registration->id.'-'.now()->timestamp.'-'.Str::upper(Str::random(4)),
-            ]);
+            // Keep one stable order ID per payment. This makes retries idempotent and
+            // avoids a database write before the provider request is attempted.
+            $stage = 'create-midtrans-transaction';
+            $snap = $midtrans->createTransaction($payment);
 
-            $snap = $midtrans->createTransaction($payment->fresh());
-
+            $stage = 'store-snap-response';
             $payment->update([
                 'snap_token' => $snap['token'] ?? null,
                 'redirect_url' => $snap['redirect_url'] ?? null,
@@ -282,6 +282,7 @@ class RegistrationController extends Controller
                 'payment_id' => $registration->payment?->id,
                 'order_id' => $registration->payment?->order_id,
                 'midtrans_production' => (bool) config('services.midtrans.is_production'),
+                'stage' => $stage,
             ]);
             report($exception);
 
