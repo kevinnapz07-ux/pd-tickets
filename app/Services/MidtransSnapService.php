@@ -64,10 +64,28 @@ class MidtransSnapService
 
             throw new RuntimeException('Layanan pembayaran sedang tidak dapat dijangkau. Silakan coba kembali beberapa saat lagi.');
         } catch (RequestException $exception) {
-            report($exception);
+    report($exception);
 
-            throw new RuntimeException($this->transactionFailureMessage($exception));
-        }
+    \Illuminate\Support\Facades\Log::error(
+        'Midtrans create transaction rejected',
+        [
+            'status' => $exception->response?->status(),
+            'response_body' => $exception->response?->body(),
+            'endpoint' => $this->snapEndpoint(),
+            'merchant_id' => config('services.midtrans.merchant_id'),
+            'is_production' => config(
+                'services.midtrans.is_production'
+            ),
+            'server_key_prefix' => substr($serverKey, 0, 12),
+            'server_key_length' => strlen($serverKey),
+            'order_id' => $payment->order_id,
+        ]
+    );
+
+    throw new RuntimeException(
+        $this->transactionFailureMessage($exception)
+    );
+}
 
         if ($response->failed()) {
             throw new RuntimeException('Midtrans menolak transaksi: '.$response->body());
