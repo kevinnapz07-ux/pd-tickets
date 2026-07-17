@@ -286,7 +286,8 @@ class RegistrationController extends Controller
             ]);
             report($exception);
 
-            $message = 'Pembayaran belum dapat disiapkan karena terjadi gangguan pada server. Kode: '.$reference.'. Silakan hubungi admin.';
+            $message = 'Pembayaran belum dapat disiapkan karena terjadi gangguan pada server. Kode: '
+                .$reference.' (tahap: '.$stage.'). Silakan hubungi admin.';
 
             return $request->expectsJson()
                 ? response()->json(['message' => $message], 503)

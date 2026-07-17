@@ -8,6 +8,7 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
 class MidtransSnapService
@@ -72,7 +73,37 @@ class MidtransSnapService
             throw new RuntimeException('Midtrans menolak transaksi: '.$response->body());
         }
 
-        return $response->json();
+        $responsePayload = $response->json();
+
+        if (! is_array($responsePayload)) {
+            Log::channel('stderr')->error('Midtrans Snap returned a non-JSON response.', [
+                'status' => $response->status(),
+                'content_type' => $response->header('Content-Type'),
+                'body_preview' => mb_substr(trim(strip_tags($response->body())), 0, 200),
+                'production' => (bool) config('services.midtrans.is_production'),
+                'order_id' => $payment->order_id,
+            ]);
+
+            throw new RuntimeException(
+                'Respons layanan pembayaran tidak valid. Silakan hubungi admin untuk memeriksa koneksi Midtrans.'
+            );
+        }
+
+        if (! filled($responsePayload['token'] ?? null)
+            || ! filled($responsePayload['redirect_url'] ?? null)) {
+            Log::channel('stderr')->error('Midtrans Snap response is missing required fields.', [
+                'status' => $response->status(),
+                'response_fields' => array_keys($responsePayload),
+                'production' => (bool) config('services.midtrans.is_production'),
+                'order_id' => $payment->order_id,
+            ]);
+
+            throw new RuntimeException(
+                'Midtrans tidak mengembalikan token pembayaran. Silakan hubungi admin untuk memeriksa konfigurasi.'
+            );
+        }
+
+        return $responsePayload;
     }
 
     public function signatureIsValid(array $payload): bool

@@ -253,6 +253,31 @@ class MidtransPaymentStatusTest extends TestCase
             );
     }
 
+    public function test_retry_rejects_a_non_json_midtrans_response_without_a_type_error(): void
+    {
+        config([
+            'services.midtrans.server_key' => 'sandbox-server-key',
+            'services.midtrans.is_production' => false,
+        ]);
+
+        Http::fake([
+            'https://app.sandbox.midtrans.com/snap/v1/transactions' => Http::response(
+                '<!DOCTYPE html><html><body>Upstream error</body></html>',
+                200,
+                ['Content-Type' => 'text/html']
+            ),
+        ]);
+
+        [$owner, $registration] = $this->createPendingRegistration('PDG-RETRY-HTML');
+
+        $this->actingAs($owner)
+            ->postJson(route('registrations.payment.initialize', $registration))
+            ->assertUnprocessable()
+            ->assertJsonFragment([
+                'message' => 'Respons layanan pembayaran tidak valid. Silakan hubungi admin untuk memeriksa koneksi Midtrans.',
+            ]);
+    }
+
     public function test_owner_can_initialize_payment_as_json_for_the_snap_popup(): void
     {
         config([
@@ -298,6 +323,7 @@ class MidtransPaymentStatusTest extends TestCase
             'Pembayaran belum dapat disiapkan karena terjadi gangguan pada server. Kode: PAY-',
             $response->json('message')
         );
+        $this->assertStringContainsString('(tahap: create-midtrans-transaction)', $response->json('message'));
     }
 
     private function createPendingRegistration(string $registrationCode): array
