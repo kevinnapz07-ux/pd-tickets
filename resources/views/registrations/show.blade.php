@@ -1,7 +1,7 @@
-@extends('layouts.app', ['title' => $registration->event->price > 0 && $registration->payment_status !== 'paid' ? 'Pembayaran' : 'Tiket Saya'])
+@extends('layouts.app', ['title' => 'Registrasi '.$registration->registration_code])
 
 @push('head')
-    @if ($registration->payment?->snap_token && config('services.midtrans.client_key'))
+    @if ($registration->payment_status === 'pending' && $registration->payment && config('services.midtrans.client_key'))
         <script src="{{ config('services.midtrans.is_production') ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' }}" data-client-key="{{ config('services.midtrans.client_key') }}"></script>
     @endif
 @endpush
@@ -64,7 +64,6 @@
                         <h2>Tunjukkan saat hadir</h2>
                     </div>
                     <img src="{{ $registration->qrCodeDataUri() }}" alt="QR Check-in {{ $registration->registration_code }}">
-                    <a class="link-button" href="{{ $registration->verificationUrl() }}">Lihat Detail Tiket</a>
                 </section>
             @endif
 
@@ -116,11 +115,12 @@
                 </div>
             @elseif ($registration->payment_status === 'pending' && $registration->payment)
                 <div class="payment-actions">
-                    <form method="POST" action="{{ route('registrations.payment.initialize', $registration) }}">
+                    <form method="POST" action="{{ route('registrations.payment.initialize', $registration) }}" id="payment-initialize-form">
                         @csrf
-                        <button class="button" type="submit">Coba Siapkan Pembayaran Lagi</button>
+                        <button class="button" type="submit" id="payment-initialize-button">Siapkan dan Lanjutkan Pembayaran</button>
                     </form>
                 </div>
+                <p class="error-box payment-inline-message" id="payment-initialize-message" role="status" hidden></p>
             @endif
         </div>
     </section>
@@ -252,6 +252,56 @@
                 }
 
                 window.location.assign(redirectUrl);
+            });
+        </script>
+    @elseif ($registration->payment_status === 'pending' && $registration->payment)
+        <script>
+            const initializeForm = document.getElementById('payment-initialize-form');
+            const initializeButton = document.getElementById('payment-initialize-button');
+            const initializeMessage = document.getElementById('payment-initialize-message');
+
+            initializeForm?.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                initializeButton.disabled = true;
+                initializeButton.textContent = 'Menyiapkan pembayaran...';
+                initializeMessage.hidden = true;
+
+                try {
+                    const response = await fetch(initializeForm.action, {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': @json(csrf_token()),
+                        },
+                    });
+                    const result = await response.json();
+
+                    if (! response.ok) {
+                        throw new Error(result.message ?? 'Pembayaran belum dapat disiapkan.');
+                    }
+
+                    if (window.snap && result.snap_token) {
+                        window.snap.pay(result.snap_token, {
+                            onSuccess: () => window.location.reload(),
+                            onPending: () => window.location.reload(),
+                            onError: () => window.location.reload(),
+                            onClose: () => window.location.reload(),
+                        });
+                        return;
+                    }
+
+                    if (result.redirect_url) {
+                        window.location.assign(result.redirect_url);
+                        return;
+                    }
+
+                    window.location.reload();
+                } catch (error) {
+                    initializeMessage.textContent = error.message ?? 'Pembayaran belum dapat disiapkan. Silakan coba kembali.';
+                    initializeMessage.hidden = false;
+                    initializeButton.disabled = false;
+                    initializeButton.textContent = 'Siapkan dan Lanjutkan Pembayaran';
+                }
             });
         </script>
     @endif

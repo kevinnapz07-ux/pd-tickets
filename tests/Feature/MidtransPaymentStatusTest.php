@@ -216,7 +216,7 @@ class MidtransPaymentStatusTest extends TestCase
         $this->actingAs($owner)
             ->get(route('registrations.show', $registration))
             ->assertOk()
-            ->assertSee('Coba Siapkan Pembayaran Lagi');
+            ->assertSee('Siapkan dan Lanjutkan Pembayaran');
 
         $this->actingAs($owner)
             ->post(route('registrations.payment.initialize', $registration))
@@ -251,6 +251,32 @@ class MidtransPaymentStatusTest extends TestCase
                 'payment_error',
                 'Konfigurasi autentikasi Midtrans ditolak. Silakan hubungi admin.'
             );
+    }
+
+    public function test_owner_can_initialize_payment_as_json_for_the_snap_popup(): void
+    {
+        config([
+            'services.midtrans.server_key' => 'sandbox-server-key',
+            'services.midtrans.is_production' => false,
+        ]);
+
+        Http::fake([
+            'https://app.sandbox.midtrans.com/snap/v1/transactions' => Http::response([
+                'token' => 'json-snap-token',
+                'redirect_url' => 'https://app.sandbox.midtrans.com/snap/v4/redirection/json',
+            ]),
+        ]);
+
+        [$owner, $registration] = $this->createPendingRegistration('PDG-RETRY-JSON');
+
+        $this->actingAs($owner)
+            ->postJson(route('registrations.payment.initialize', $registration))
+            ->assertOk()
+            ->assertJson([
+                'message' => 'Pembayaran berhasil disiapkan.',
+                'snap_token' => 'json-snap-token',
+                'redirect_url' => 'https://app.sandbox.midtrans.com/snap/v4/redirection/json',
+            ]);
     }
 
     public function test_retry_handles_an_unexpected_service_exception_without_a_server_error(): void

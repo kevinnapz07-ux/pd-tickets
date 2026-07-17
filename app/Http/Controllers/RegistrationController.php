@@ -181,7 +181,7 @@ class RegistrationController extends Controller
         Request $request,
         Registration $registration,
         MidtransSnapService $midtrans
-    ): RedirectResponse {
+    ): JsonResponse|RedirectResponse {
         $user = $request->user();
 
         abort_unless(
@@ -195,18 +195,38 @@ class RegistrationController extends Controller
         $payment = $registration->payment;
 
         if (! $user->canUseParticipantFeatures()) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Akun belum dapat menggunakan fitur pembayaran.'], 403);
+            }
+
             return back()->withErrors(['payment' => 'Akun belum dapat menggunakan fitur pembayaran.']);
         }
 
         if (! $payment || $registration->event->price <= 0) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Data pembayaran tidak ditemukan.'], 404);
+            }
+
             return back()->withErrors(['payment' => 'Data pembayaran tidak ditemukan.']);
         }
 
         if ($registration->payment_status !== 'pending') {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Pembayaran ini tidak lagi menunggu pembayaran.'], 409);
+            }
+
             return back()->with('status', 'Pembayaran ini tidak lagi menunggu pembayaran.');
         }
 
         if ($payment->snap_token) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Pembayaran sudah siap dilanjutkan.',
+                    'snap_token' => $payment->snap_token,
+                    'redirect_url' => $payment->redirect_url,
+                ]);
+            }
+
             return back()->with('status', 'Pembayaran sudah siap dilanjutkan.');
         }
 
@@ -224,14 +244,27 @@ class RegistrationController extends Controller
                 'payload' => $snap,
             ]);
         } catch (RuntimeException $exception) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => $exception->getMessage()], 422);
+            }
+
             return back()->with('payment_error', $exception->getMessage());
         } catch (Throwable $exception) {
             report($exception);
 
-            return back()->with(
-                'payment_error',
-                'Pembayaran belum dapat disiapkan karena terjadi gangguan pada server. Silakan coba kembali atau hubungi admin.'
-            );
+            $message = 'Pembayaran belum dapat disiapkan karena terjadi gangguan pada server. Silakan coba kembali atau hubungi admin.';
+
+            return $request->expectsJson()
+                ? response()->json(['message' => $message], 503)
+                : back()->with('payment_error', $message);
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Pembayaran berhasil disiapkan.',
+                'snap_token' => $payment->snap_token,
+                'redirect_url' => $payment->redirect_url,
+            ]);
         }
 
         return back()->with('status', 'Pembayaran berhasil disiapkan. Silakan lanjutkan pembayaran.');
