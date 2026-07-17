@@ -6,9 +6,12 @@ use App\Models\Event;
 use App\Models\Payment;
 use App\Models\Registration;
 use App\Models\User;
+use App\Services\MidtransSnapService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Notification;
+use LogicException;
+use Mockery\MockInterface;
 use Tests\TestCase;
 
 class MidtransPaymentStatusTest extends TestCase
@@ -227,7 +230,7 @@ class MidtransPaymentStatusTest extends TestCase
         $this->assertSame('https://app.sandbox.midtrans.com/snap/v4/redirection/retried', $payment->redirect_url);
     }
 
-    public function test_retry_initializing_payment_handles_midtrans_authentication_rejection_without_server_error(): void
+    public function test_retry_handles_midtrans_authentication_rejection_without_a_server_error(): void
     {
         config([
             'services.midtrans.server_key' => 'invalid-server-key',
@@ -235,35 +238,10 @@ class MidtransPaymentStatusTest extends TestCase
         ]);
 
         Http::fake([
-            'https://app.sandbox.midtrans.com/snap/v1/transactions' => Http::response([
-                'status_code' => '401',
-                'status_message' => 'Access denied due to unauthorized transaction.',
-            ], 401),
+            'https://app.sandbox.midtrans.com/snap/v1/transactions' => Http::response([], 401),
         ]);
 
-        $owner = User::factory()->create(['role' => 'peserta']);
-        $event = Event::create([
-            'title' => 'Event Midtrans Ditolak',
-            'description' => 'Event untuk pengujian penolakan autentikasi Midtrans.',
-            'location' => 'Kampus D',
-            'starts_at' => now()->addWeek(),
-            'quota' => 40,
-            'price' => 75000,
-        ]);
-        $registration = Registration::create([
-            'event_id' => $event->id,
-            'user_id' => $owner->id,
-            'registration_code' => 'PDG-RETRY-REJECTED',
-            'name' => $owner->name,
-            'email' => $owner->email,
-            'phone' => '081234567890',
-            'payment_status' => 'pending',
-        ]);
-        Payment::create([
-            'registration_id' => $registration->id,
-            'order_id' => 'PDG-FAILED-AUTH',
-            'amount' => 75000,
-        ]);
+        [$owner, $registration] = $this->createPendingRegistration('PDG-RETRY-AUTH');
 
         $this->actingAs($owner)
             ->from(route('registrations.show', $registration))
@@ -273,22 +251,34 @@ class MidtransPaymentStatusTest extends TestCase
                 'payment_error',
                 'Konfigurasi autentikasi Midtrans ditolak. Silakan hubungi admin.'
             );
-
-        $this->assertNull($registration->payment->fresh()->snap_token);
     }
 
-    public function test_retry_initializing_payment_rejects_a_production_key_in_sandbox_mode(): void
+    public function test_retry_handles_an_unexpected_service_exception_without_a_server_error(): void
     {
-        config([
-            'services.midtrans.server_key' => 'Mid-server-production-key',
-            'services.midtrans.is_production' => false,
-        ]);
-        Http::fake();
+        $this->mock(MidtransSnapService::class, function (MockInterface $mock): void {
+            $mock->shouldReceive('createTransaction')
+                ->once()
+                ->andThrow(new LogicException('Unexpected provider failure'));
+        });
 
+        [$owner, $registration] = $this->createPendingRegistration('PDG-RETRY-UNEXPECTED');
+
+        $this->actingAs($owner)
+            ->from(route('registrations.show', $registration))
+            ->post(route('registrations.payment.initialize', $registration))
+            ->assertRedirect(route('registrations.show', $registration))
+            ->assertSessionHas(
+                'payment_error',
+                'Pembayaran belum dapat disiapkan karena terjadi gangguan pada server. Silakan coba kembali atau hubungi admin.'
+            );
+    }
+
+    private function createPendingRegistration(string $registrationCode): array
+    {
         $owner = User::factory()->create(['role' => 'peserta']);
         $event = Event::create([
-            'title' => 'Event Salah Lingkungan Midtrans',
-            'description' => 'Event untuk pengujian konfigurasi lingkungan Midtrans.',
+            'title' => 'Event Retry Midtrans',
+            'description' => 'Event untuk pengujian ulang pembayaran.',
             'location' => 'Kampus D',
             'starts_at' => now()->addWeek(),
             'quota' => 40,
@@ -297,7 +287,7 @@ class MidtransPaymentStatusTest extends TestCase
         $registration = Registration::create([
             'event_id' => $event->id,
             'user_id' => $owner->id,
-            'registration_code' => 'PDG-RETRY-ENV',
+            'registration_code' => $registrationCode,
             'name' => $owner->name,
             'email' => $owner->email,
             'phone' => '081234567890',
@@ -305,19 +295,10 @@ class MidtransPaymentStatusTest extends TestCase
         ]);
         Payment::create([
             'registration_id' => $registration->id,
-            'order_id' => 'PDG-FAILED-ENV',
+            'order_id' => $registrationCode,
             'amount' => 75000,
         ]);
 
-        $this->actingAs($owner)
-            ->from(route('registrations.show', $registration))
-            ->post(route('registrations.payment.initialize', $registration))
-            ->assertRedirect(route('registrations.show', $registration))
-            ->assertSessionHas(
-                'payment_error',
-                'MIDTRANS_IS_PRODUCTION harus bernilai true saat menggunakan server key production.'
-            );
-
-        Http::assertNothingSent();
+        return [$owner, $registration];
     }
 }

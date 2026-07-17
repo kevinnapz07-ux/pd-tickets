@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use RuntimeException;
+use Throwable;
 
 class RegistrationController extends Controller
 {
@@ -89,7 +90,7 @@ class RegistrationController extends Controller
             ...$data,
             'event_id' => $event->id,
             'user_id' => $request->user()->id,
-            'registration_code' => 'PDUG-'.now()->year.'-'.Str::upper(Str::random(6)),
+            'registration_code' => 'PDG-'.now()->format('ymd').'-'.Str::upper(Str::random(6)),
             'payment_status' => $event->price > 0 ? 'pending' : 'paid',
             'registration_status' => $event->price > 0 ? null : 'registered',
         ]);
@@ -193,6 +194,10 @@ class RegistrationController extends Controller
         $registration->load(['event', 'payment']);
         $payment = $registration->payment;
 
+        if (! $user->canUseParticipantFeatures()) {
+            return back()->withErrors(['payment' => 'Akun belum dapat menggunakan fitur pembayaran.']);
+        }
+
         if (! $payment || $registration->event->price <= 0) {
             return back()->withErrors(['payment' => 'Data pembayaran tidak ditemukan.']);
         }
@@ -205,22 +210,29 @@ class RegistrationController extends Controller
             return back()->with('status', 'Pembayaran sudah siap dilanjutkan.');
         }
 
-        // A fresh order ID avoids reusing an uncertain transaction after a connection failure.
-        $payment->update([
-            'order_id' => 'PDG-'.$registration->id.'-'.now()->timestamp.'-'.Str::upper(Str::random(4)),
-        ]);
-
         try {
+            // A fresh order ID avoids reusing an uncertain transaction after a connection failure.
+            $payment->update([
+                'order_id' => 'PDG-'.$registration->id.'-'.now()->timestamp.'-'.Str::upper(Str::random(4)),
+            ]);
+
             $snap = $midtrans->createTransaction($payment->fresh());
+
+            $payment->update([
+                'snap_token' => $snap['token'] ?? null,
+                'redirect_url' => $snap['redirect_url'] ?? null,
+                'payload' => $snap,
+            ]);
         } catch (RuntimeException $exception) {
             return back()->with('payment_error', $exception->getMessage());
-        }
+        } catch (Throwable $exception) {
+            report($exception);
 
-        $payment->update([
-            'snap_token' => $snap['token'] ?? null,
-            'redirect_url' => $snap['redirect_url'] ?? null,
-            'payload' => $snap,
-        ]);
+            return back()->with(
+                'payment_error',
+                'Pembayaran belum dapat disiapkan karena terjadi gangguan pada server. Silakan coba kembali atau hubungi admin.'
+            );
+        }
 
         return back()->with('status', 'Pembayaran berhasil disiapkan. Silakan lanjutkan pembayaran.');
     }
