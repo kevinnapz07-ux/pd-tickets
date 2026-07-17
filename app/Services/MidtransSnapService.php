@@ -61,6 +61,8 @@ if ($eventName === '') {
         ];
 
         try {
+            Log::info('MIDTRANS PAYLOAD', $payload);
+            
             $response = Http::withBasicAuth($serverKey, '')
                 ->acceptJson()
                 ->connectTimeout(10)
