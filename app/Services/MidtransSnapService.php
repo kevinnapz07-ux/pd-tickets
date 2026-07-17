@@ -28,10 +28,18 @@ class MidtransSnapService
             throw new RuntimeException('Akun belum dapat menggunakan fitur pembayaran.');
         }
 
+        $amount = (int) $payment->amount;
+
+$eventName = trim((string) ($registration->event?->title ?? ''));
+
+if ($eventName === '') {
+    $eventName = 'Pendaftaran Event PDUG';
+}
+
         $payload = [
             'transaction_details' => [
                 'order_id' => $payment->order_id,
-                'gross_amount' => $payment->amount,
+                'gross_amount' => $amount,
             ],
             'customer_details' => [
                 'first_name' => $registration->user->name,
@@ -40,9 +48,9 @@ class MidtransSnapService
             ],
             'item_details' => [[
                 'id' => 'EVENT-'.$registration->event_id,
-                'price' => $payment->amount,
+                'price' => $amount,
                 'quantity' => 1,
-                'name' => $registration->event->title,
+                'name' => $eventName,
             ]],
             'credit_card' => [
                 'secure' => (bool) config('services.midtrans.is_3ds', true),
