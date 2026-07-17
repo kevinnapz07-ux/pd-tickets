@@ -49,7 +49,7 @@ class MidtransSnapService
                 'id' => 'EVENT-'.$registration->event_id,
                 'price' => $amount,
                 'quantity' => 1,
-                'name' => $eventName,
+                'name' => 'PDUG Event',
             ]],
             'credit_card' => [
                 'secure' => (bool) config('services.midtrans.is_3ds', true),
