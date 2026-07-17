@@ -12,57 +12,92 @@ use RuntimeException;
 class MidtransSnapService
 {
     public function createTransaction(Payment $payment): array
-    {
-        $registration = $payment->registration()->with(['event', 'user'])->firstOrFail();
-        $serverKey = (string) config('services.midtrans.server_key');
+{
+    $registration = $payment->registration()
+        ->with(['event', 'user'])
+        ->firstOrFail();
 
-        if ($serverKey === '') {
-            throw new RuntimeException('MIDTRANS_SERVER_KEY belum diatur di file .env.');
-        }
+    $serverKey = trim((string) config('services.midtrans.server_key'));
 
-        $payload = [
-            'transaction_details' => [
-                'order_id' => $payment->order_id,
-                'gross_amount' => $payment->amount,
-            ],
-            'customer_details' => [
-                'first_name' => $registration->user->name,
-                'email' => $registration->user->email,
-                'phone' => $registration->phone,
-            ],
-            'item_details' => [[
-                'id' => 'EVENT-'.$registration->event_id,
-                'price' => $payment->amount,
-                'quantity' => 1,
-                'name' => $registration->event->title,
-            ]],
-            'credit_card' => [
-                'secure' => (bool) config('services.midtrans.is_3ds', true),
-            ],
-            'callbacks' => [
-                'finish' => route('registrations.show', $registration),
-            ],
-        ];
-
-        try {
-            $response = Http::withBasicAuth($serverKey, '')
-                ->acceptJson()
-                ->connectTimeout(10)
-                ->timeout(30)
-                ->retry(3, 750)
-                ->post($this->snapEndpoint(), $payload);
-        } catch (ConnectionException $exception) {
-            report($exception);
-
-            throw new RuntimeException('Layanan pembayaran sedang tidak dapat dijangkau. Silakan coba kembali beberapa saat lagi.');
-        }
-
-        if ($response->failed()) {
-            throw new RuntimeException('Midtrans menolak transaksi: '.$response->body());
-        }
-
-        return $response->json();
+    if ($serverKey === '') {
+        throw new RuntimeException(
+            'MIDTRANS_SERVER_KEY belum diatur pada environment aplikasi.'
+        );
     }
+
+    $amount = (int) round((float) $payment->amount);
+
+    if ($amount <= 0) {
+        throw new RuntimeException(
+            'Nominal pembayaran tidak valid. Silakan periksa harga event.'
+        );
+    }
+
+    $eventName = trim((string) ($registration->event?->title ?? ''));
+
+    if ($eventName === '') {
+        $eventName = 'Pendaftaran Event PD Gunadarma';
+    }
+
+    $eventName = mb_substr($eventName, 0, 50);
+
+    $customerName = trim((string) ($registration->user?->name ?? ''));
+
+    if ($customerName === '') {
+        $customerName = 'Peserta';
+    }
+
+    $payload = [
+        'transaction_details' => [
+            'order_id' => (string) $payment->order_id,
+            'gross_amount' => $amount,
+        ],
+        'customer_details' => [
+            'first_name' => $customerName,
+            'email' => (string) ($registration->user?->email ?? ''),
+            'phone' => (string) ($registration->phone ?? ''),
+        ],
+        'item_details' => [
+            [
+                'id' => 'EVENT-'.$registration->event_id,
+                'price' => $amount,
+                'quantity' => 1,
+                'name' => $eventName,
+            ],
+        ],
+        'credit_card' => [
+            'secure' => (bool) config('services.midtrans.is_3ds', true),
+        ],
+        'callbacks' => [
+            'finish' => route('registrations.show', $registration),
+        ],
+    ];
+
+    try {
+        $response = Http::withBasicAuth($serverKey, '')
+            ->acceptJson()
+            ->asJson()
+            ->connectTimeout(10)
+            ->timeout(30)
+            ->retry(3, 750)
+            ->post($this->snapEndpoint(), $payload);
+    } catch (ConnectionException $exception) {
+        report($exception);
+
+        throw new RuntimeException(
+            'Layanan pembayaran sedang tidak dapat dijangkau. '
+            .'Silakan coba kembali beberapa saat lagi.'
+        );
+    }
+
+    if ($response->failed()) {
+        throw new RuntimeException(
+            'Midtrans menolak transaksi: '.$response->body()
+        );
+    }
+
+    return $response->json();
+}
 
     public function signatureIsValid(array $payload): bool
     {
