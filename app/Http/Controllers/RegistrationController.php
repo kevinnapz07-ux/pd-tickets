@@ -198,13 +198,17 @@ class RegistrationController extends Controller
             $registration->load(['event', 'payment']);
             $payment = $registration->payment;
 
-            if (! $user->canUseParticipantFeatures()) {
+            $stage = 'authorize-payment-account';
+
+            if (! in_array($user->role, ['peserta', 'admin'], true)) {
                 if ($request->expectsJson()) {
                     return response()->json(['message' => 'Akun belum dapat menggunakan fitur pembayaran.'], 403);
                 }
 
                 return back()->withErrors(['payment' => 'Akun belum dapat menggunakan fitur pembayaran.']);
             }
+
+            $stage = 'validate-payment-record';
 
             if (! $payment || ! $registration->event || $registration->event->price <= 0) {
                 if ($request->expectsJson()) {
@@ -214,6 +218,8 @@ class RegistrationController extends Controller
                 return back()->withErrors(['payment' => 'Data pembayaran tidak ditemukan.']);
             }
 
+            $stage = 'validate-payment-status';
+
             if ($registration->payment_status !== 'pending') {
                 if ($request->expectsJson()) {
                     return response()->json(['message' => 'Pembayaran ini tidak lagi menunggu pembayaran.'], 409);
@@ -221,6 +227,8 @@ class RegistrationController extends Controller
 
                 return back()->with('status', 'Pembayaran ini tidak lagi menunggu pembayaran.');
             }
+
+            $stage = 'check-existing-snap-token';
 
             if ($payment->snap_token) {
                 if ($request->expectsJson()) {

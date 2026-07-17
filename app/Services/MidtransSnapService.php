@@ -24,7 +24,7 @@ class MidtransSnapService
 
         $this->ensureEnvironmentMatchesKey($serverKey);
 
-        if (! $registration->user?->canUseParticipantFeatures()) {
+        if ($registration->user?->role !== 'peserta') {
             throw new RuntimeException('Akun belum dapat menggunakan fitur pembayaran.');
         }
 
@@ -213,7 +213,7 @@ class MidtransSnapService
 
             if ($paymentStatus === 'paid'
                 && $lockedPayment->ticket_email_sent_at === null
-                && $account?->canUseParticipantFeatures()) {
+                && $account?->role === 'peserta') {
                 $account->notify(new EventTicketNotification($lockedPayment->registration));
                 $lockedPayment->update(['ticket_email_sent_at' => now()]);
             }
