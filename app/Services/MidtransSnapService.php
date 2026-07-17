@@ -29,12 +29,11 @@ class MidtransSnapService
         }
 
         $amount = (int) $payment->amount;
+        $eventName = trim((string) ($registration->event?->title ?? ''));
 
-$eventName = trim((string) ($registration->event?->title ?? ''));
-
-if ($eventName === '') {
-    $eventName = 'Pendaftaran Event PDUG';
-}
+        if ($eventName === '') {
+            $eventName = 'Pendaftaran Event PDUG';
+        }
 
         $payload = [
             'transaction_details' => [
@@ -61,8 +60,10 @@ if ($eventName === '') {
         ];
 
         try {
-            Log::info('MIDTRANS PAYLOAD', $payload);
-            
+            Log::channel('stderr')->error('MIDTRANS PAYLOAD', [
+                'payload' => $payload,
+            ]);
+
             $response = Http::withBasicAuth($serverKey, '')
                 ->acceptJson()
                 ->connectTimeout(10)
@@ -74,28 +75,23 @@ if ($eventName === '') {
 
             throw new RuntimeException('Layanan pembayaran sedang tidak dapat dijangkau. Silakan coba kembali beberapa saat lagi.');
         } catch (RequestException $exception) {
-    report($exception);
+            report($exception);
 
-    \Illuminate\Support\Facades\Log::error(
-        'Midtrans create transaction rejected',
-        [
-            'status' => $exception->response?->status(),
-            'response_body' => $exception->response?->body(),
-            'endpoint' => $this->snapEndpoint(),
-            'merchant_id' => config('services.midtrans.merchant_id'),
-            'is_production' => config(
-                'services.midtrans.is_production'
-            ),
-            'server_key_prefix' => substr($serverKey, 0, 12),
-            'server_key_length' => strlen($serverKey),
-            'order_id' => $payment->order_id,
-        ]
-    );
+            Log::error('Midtrans create transaction rejected', [
+                'status' => $exception->response?->status(),
+                'response_body' => $exception->response?->body(),
+                'endpoint' => $this->snapEndpoint(),
+                'merchant_id' => config('services.midtrans.merchant_id'),
+                'is_production' => config('services.midtrans.is_production'),
+                'server_key_prefix' => substr($serverKey, 0, 12),
+                'server_key_length' => strlen($serverKey),
+                'order_id' => $payment->order_id,
+            ]);
 
-    throw new RuntimeException(
-        $this->transactionFailureMessage($exception)
-    );
-}
+            throw new RuntimeException(
+                $this->transactionFailureMessage($exception)
+            );
+        }
 
         if ($response->failed()) {
             throw new RuntimeException('Midtrans menolak transaksi: '.$response->body());
@@ -135,7 +131,7 @@ if ($eventName === '') {
     }
 
     public function hasValidSignature(array $payload): bool
-{
+    {
     if (! isset(
         $payload['order_id'],
         $payload['status_code'],
@@ -159,11 +155,11 @@ if ($eventName === '') {
         . $serverKey
     );
 
-    return hash_equals(
-        $signature,
-        (string) $payload['signature_key']
-    );
-}
+        return hash_equals(
+            $signature,
+            (string) $payload['signature_key']
+        );
+    }
 
     public function syncPaymentStatus(Payment $payment): string
     {
@@ -314,9 +310,9 @@ if ($eventName === '') {
     private function ensureEnvironmentMatchesKey(string $serverKey): void
     {
         if (trim($serverKey) === '') {
-        throw new RuntimeException(
-            'MIDTRANS_SERVER_KEY belum diatur.'
-        );
+            throw new RuntimeException(
+                'MIDTRANS_SERVER_KEY belum diatur.'
+            );
         }
     }
 }
