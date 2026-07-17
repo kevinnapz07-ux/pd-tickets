@@ -23,7 +23,7 @@ class PaymentWebhookController extends Controller
             return response()->json(['message' => 'Notification ignored']);
         }
 
-        if (! $midtrans->signatureIsValid($payload)) {
+        if (! $midtrans->hasValidSignature($payload)) {
             return response()->json(['message' => 'Invalid signature'], 403);
         }
 

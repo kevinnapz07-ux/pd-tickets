@@ -106,18 +106,36 @@ class MidtransSnapService
         return $responsePayload;
     }
 
-    public function signatureIsValid(array $payload): bool
-    {
-        $serverKey = (string) config('services.midtrans.server_key');
-
-        if (! isset($payload['order_id'], $payload['status_code'], $payload['gross_amount'], $payload['signature_key'])) {
-            return false;
-        }
-
-        $signature = hash('sha512', $payload['order_id'].$payload['status_code'].$payload['gross_amount'].$serverKey);
-
-        return hash_equals($signature, $payload['signature_key']);
+    public function hasValidSignature(array $payload): bool
+{
+    if (! isset(
+        $payload['order_id'],
+        $payload['status_code'],
+        $payload['gross_amount'],
+        $payload['signature_key']
+    )) {
+        return false;
     }
+
+    $serverKey = trim((string) config('services.midtrans.server_key'));
+
+    if ($serverKey === '') {
+        return false;
+    }
+
+    $signature = hash(
+        'sha512',
+        (string) $payload['order_id']
+        . (string) $payload['status_code']
+        . (string) $payload['gross_amount']
+        . $serverKey
+    );
+
+    return hash_equals(
+        $signature,
+        (string) $payload['signature_key']
+    );
+}
 
     public function syncPaymentStatus(Payment $payment): string
     {
@@ -156,7 +174,7 @@ class MidtransSnapService
         $payload = $response->json();
 
         if (($payload['order_id'] ?? null) !== $payment->order_id
-            || ! $this->signatureIsValid($payload)
+            || ! $this->hasValidSignature($payload)
             || ! $this->amountMatches($payment, $payload['gross_amount'] ?? null)) {
             throw new RuntimeException('Respons status Midtrans tidak lolos validasi keamanan. Status pembayaran tidak diubah.');
         }
@@ -267,14 +285,10 @@ class MidtransSnapService
 
     private function ensureEnvironmentMatchesKey(string $serverKey): void
     {
-        $isProduction = (bool) config('services.midtrans.is_production');
-
-        if ($isProduction && str_starts_with($serverKey, 'SB-Mid-server-')) {
-            throw new RuntimeException('MIDTRANS_IS_PRODUCTION harus bernilai false saat menggunakan server key sandbox.');
-        }
-
-        if (! $isProduction && str_starts_with($serverKey, 'Mid-server-')) {
-            throw new RuntimeException('MIDTRANS_IS_PRODUCTION harus bernilai true saat menggunakan server key production.');
+        if (trim($serverKey) === '') {
+        throw new RuntimeException(
+            'MIDTRANS_SERVER_KEY belum diatur.'
+        );
         }
     }
 }

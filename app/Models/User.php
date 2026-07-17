@@ -38,6 +38,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->role === 'admin';
     }
 
+    public function canUseParticipantFeatures(): bool
+{
+    return $this->role === 'peserta';
+}
+
     protected function email(): Attribute
     {
         return Attribute::make(

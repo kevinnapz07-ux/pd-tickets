@@ -32,5 +32,10 @@
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>
+
+        <env name="MIDTRANS_SERVER_KEY" value="test-midtrans-server-key"/>
+        <env name="MIDTRANS_CLIENT_KEY" value="test-midtrans-client-key"/>
+        <env name="MIDTRANS_MERCHANT_ID" value="test-merchant-id"/>
+        <env name="MIDTRANS_IS_PRODUCTION" value="false"/>
     </php>
 </phpunit>
