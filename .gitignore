@@ -1,0 +1,89 @@
+# Laravel environment secrets
+.env
+.env.*
+!.env.example
+
+# Installed dependencies and generated frontend assets
+/vendor/
+/node_modules/
+/.npm-cache/
+/public/build/
+/public/hot
+
+# Local databases and runtime state
+/database/*.sqlite
+/database/*.sqlite-*
+/storage/*.key
+/storage/logs/*.log
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/bootstrap/cache/*.php
+!/bootstrap/cache/.gitignore
+
+# Test, IDE, and local project metadata
+/.phpunit.result.cache
+/.phpunit.cache/
+/.project/
+/.vscode/
+/metadata.json
+/.fleet/
+/.idea/
+/.zed/
+*.swp
+*.swo
+
+# Sync .project/sourceTexts/ folder (source text files)
+
+# Don't sync user-specific SQLite databases
+.project/*.sqlite
+
+# Don't sync SQLite auxiliary files
+.project/*.sqlite-wal
+.project/*.sqlite-shm
+
+# Don't sync temporary files
+.project/.temp/**
+
+# Don't sync user-specific files
+.project/complete_drafts.txt
+.project/localProjectSettings.json
+.project/localProjectSwap.json
+copilot-messages.log
+
+# Archive formats
+*.zip
+*.rar
+*.7z
+*.tar
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.gz
+*.bz2
+*.xz
+
+# Windows executables and installers
+*.exe
+*.msi
+*.bat
+*.cmd
+*.com
+*.scr
+*.dll
+
+# macOS executables and disk images
+*.dmg
+*.pkg
+
+# Disk images and virtual machine files
+*.iso
+*.img
+*.vhd
+*.vmdk
+
+# System files
+.DS_Store
+Thumbs.db
+Desktop.ini
+.project/attachments/files/**
