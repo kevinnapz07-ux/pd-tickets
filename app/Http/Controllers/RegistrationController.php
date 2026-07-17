@@ -191,46 +191,46 @@ class RegistrationController extends Controller
             403
         );
 
-        $registration->load(['event', 'payment']);
-        $payment = $registration->payment;
-
-        if (! $user->canUseParticipantFeatures()) {
-            if ($request->expectsJson()) {
-                return response()->json(['message' => 'Akun belum dapat menggunakan fitur pembayaran.'], 403);
-            }
-
-            return back()->withErrors(['payment' => 'Akun belum dapat menggunakan fitur pembayaran.']);
-        }
-
-        if (! $payment || $registration->event->price <= 0) {
-            if ($request->expectsJson()) {
-                return response()->json(['message' => 'Data pembayaran tidak ditemukan.'], 404);
-            }
-
-            return back()->withErrors(['payment' => 'Data pembayaran tidak ditemukan.']);
-        }
-
-        if ($registration->payment_status !== 'pending') {
-            if ($request->expectsJson()) {
-                return response()->json(['message' => 'Pembayaran ini tidak lagi menunggu pembayaran.'], 409);
-            }
-
-            return back()->with('status', 'Pembayaran ini tidak lagi menunggu pembayaran.');
-        }
-
-        if ($payment->snap_token) {
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'message' => 'Pembayaran sudah siap dilanjutkan.',
-                    'snap_token' => $payment->snap_token,
-                    'redirect_url' => $payment->redirect_url,
-                ]);
-            }
-
-            return back()->with('status', 'Pembayaran sudah siap dilanjutkan.');
-        }
-
         try {
+            $registration->load(['event', 'payment']);
+            $payment = $registration->payment;
+
+            if (! $user->canUseParticipantFeatures()) {
+                if ($request->expectsJson()) {
+                    return response()->json(['message' => 'Akun belum dapat menggunakan fitur pembayaran.'], 403);
+                }
+
+                return back()->withErrors(['payment' => 'Akun belum dapat menggunakan fitur pembayaran.']);
+            }
+
+            if (! $payment || ! $registration->event || $registration->event->price <= 0) {
+                if ($request->expectsJson()) {
+                    return response()->json(['message' => 'Data pembayaran tidak ditemukan.'], 404);
+                }
+
+                return back()->withErrors(['payment' => 'Data pembayaran tidak ditemukan.']);
+            }
+
+            if ($registration->payment_status !== 'pending') {
+                if ($request->expectsJson()) {
+                    return response()->json(['message' => 'Pembayaran ini tidak lagi menunggu pembayaran.'], 409);
+                }
+
+                return back()->with('status', 'Pembayaran ini tidak lagi menunggu pembayaran.');
+            }
+
+            if ($payment->snap_token) {
+                if ($request->expectsJson()) {
+                    return response()->json([
+                        'message' => 'Pembayaran sudah siap dilanjutkan.',
+                        'snap_token' => $payment->snap_token,
+                        'redirect_url' => $payment->redirect_url,
+                    ]);
+                }
+
+                return back()->with('status', 'Pembayaran sudah siap dilanjutkan.');
+            }
+
             // A fresh order ID avoids reusing an uncertain transaction after a connection failure.
             $payment->update([
                 'order_id' => 'PDG-'.$registration->id.'-'.now()->timestamp.'-'.Str::upper(Str::random(4)),
@@ -243,12 +243,20 @@ class RegistrationController extends Controller
                 'redirect_url' => $snap['redirect_url'] ?? null,
                 'payload' => $snap,
             ]);
-        } catch (RuntimeException $exception) {
+
             if ($request->expectsJson()) {
-                return response()->json(['message' => $exception->getMessage()], 422);
+                return response()->json([
+                    'message' => 'Pembayaran berhasil disiapkan.',
+                    'snap_token' => $payment->snap_token,
+                    'redirect_url' => $payment->redirect_url,
+                ]);
             }
 
-            return back()->with('payment_error', $exception->getMessage());
+            return back()->with('status', 'Pembayaran berhasil disiapkan. Silakan lanjutkan pembayaran.');
+        } catch (RuntimeException $exception) {
+            return $request->expectsJson()
+                ? response()->json(['message' => $exception->getMessage()], 422)
+                : back()->with('payment_error', $exception->getMessage());
         } catch (Throwable $exception) {
             report($exception);
 
@@ -258,15 +266,5 @@ class RegistrationController extends Controller
                 ? response()->json(['message' => $message], 503)
                 : back()->with('payment_error', $message);
         }
-
-        if ($request->expectsJson()) {
-            return response()->json([
-                'message' => 'Pembayaran berhasil disiapkan.',
-                'snap_token' => $payment->snap_token,
-                'redirect_url' => $payment->redirect_url,
-            ]);
-        }
-
-        return back()->with('status', 'Pembayaran berhasil disiapkan. Silakan lanjutkan pembayaran.');
     }
 }

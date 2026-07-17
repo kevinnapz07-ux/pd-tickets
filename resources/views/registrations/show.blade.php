@@ -269,15 +269,31 @@
                 try {
                     const response = await fetch(initializeForm.action, {
                         method: 'POST',
+                        credentials: 'same-origin',
                         headers: {
                             'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
                             'X-CSRF-TOKEN': @json(csrf_token()),
                         },
+                        body: new FormData(initializeForm),
                     });
-                    const result = await response.json();
+                    const contentType = response.headers.get('content-type') ?? '';
+                    const result = contentType.includes('application/json')
+                        ? await response.json()
+                        : null;
 
                     if (! response.ok) {
-                        throw new Error(result.message ?? 'Pembayaran belum dapat disiapkan.');
+                        const fallbackMessage = response.status === 419
+                            ? 'Sesi Anda sudah berakhir. Muat ulang halaman, login kembali, lalu coba lagi.'
+                            : response.status >= 500
+                                ? 'Server pembayaran sedang mengalami gangguan. Silakan coba kembali setelah konfigurasi diperiksa admin.'
+                                : 'Pembayaran belum dapat disiapkan.';
+
+                        throw new Error(result?.message ?? fallbackMessage);
+                    }
+
+                    if (! result) {
+                        throw new Error('Respons server pembayaran tidak sesuai. Muat ulang halaman lalu coba kembali.');
                     }
 
                     if (window.snap && result.snap_token) {
