@@ -293,7 +293,14 @@
                     }
 
                     if (! result) {
-                        throw new Error('Respons server pembayaran tidak sesuai. Muat ulang halaman lalu coba kembali.');
+                        if (response.redirected && new URL(response.url).pathname === '/login') {
+                            throw new Error('Sesi Anda sudah berakhir. Silakan login kembali untuk melanjutkan pembayaran.');
+                        }
+
+                        // A successful HTML redirect means the non-JavaScript fallback
+                        // completed. Reload to read the Snap token saved by the server.
+                        window.location.reload();
+                        return;
                     }
 
                     if (window.snap && result.snap_token) {

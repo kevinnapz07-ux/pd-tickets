@@ -304,6 +304,32 @@ class MidtransPaymentStatusTest extends TestCase
             ]);
     }
 
+    public function test_xhr_payment_initialization_returns_json_without_an_accept_header(): void
+    {
+        config([
+            'services.midtrans.server_key' => 'sandbox-server-key',
+            'services.midtrans.is_production' => false,
+        ]);
+
+        Http::fake([
+            'https://app.sandbox.midtrans.com/snap/v1/transactions' => Http::response([
+                'token' => 'xhr-snap-token',
+                'redirect_url' => 'https://app.sandbox.midtrans.com/snap/v4/redirection/xhr',
+            ]),
+        ]);
+
+        [$owner, $registration] = $this->createPendingRegistration('PDG-RETRY-XHR');
+
+        $this->actingAs($owner)
+            ->withHeader('X-Requested-With', 'XMLHttpRequest')
+            ->post(route('registrations.payment.initialize', $registration))
+            ->assertOk()
+            ->assertJson([
+                'message' => 'Pembayaran berhasil disiapkan.',
+                'snap_token' => 'xhr-snap-token',
+            ]);
+    }
+
     public function test_retry_handles_an_unexpected_service_exception_without_a_server_error(): void
     {
         $this->mock(MidtransSnapService::class, function (MockInterface $mock): void {

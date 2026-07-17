@@ -185,6 +185,7 @@ class RegistrationController extends Controller
         MidtransSnapService $midtrans
     ): JsonResponse|RedirectResponse {
         $user = $request->user();
+        $respondsWithJson = $request->expectsJson() || $request->ajax();
 
         abort_unless(
             $user->role === 'admin'
@@ -201,7 +202,7 @@ class RegistrationController extends Controller
             $stage = 'authorize-payment-account';
 
             if (! in_array($user->role, ['peserta', 'admin'], true)) {
-                if ($request->expectsJson()) {
+                if ($respondsWithJson) {
                     return response()->json(['message' => 'Akun belum dapat menggunakan fitur pembayaran.'], 403);
                 }
 
@@ -211,7 +212,7 @@ class RegistrationController extends Controller
             $stage = 'validate-payment-record';
 
             if (! $payment || ! $registration->event || $registration->event->price <= 0) {
-                if ($request->expectsJson()) {
+                if ($respondsWithJson) {
                     return response()->json(['message' => 'Data pembayaran tidak ditemukan.'], 404);
                 }
 
@@ -221,7 +222,7 @@ class RegistrationController extends Controller
             $stage = 'validate-payment-status';
 
             if ($registration->payment_status !== 'pending') {
-                if ($request->expectsJson()) {
+                if ($respondsWithJson) {
                     return response()->json(['message' => 'Pembayaran ini tidak lagi menunggu pembayaran.'], 409);
                 }
 
@@ -231,7 +232,7 @@ class RegistrationController extends Controller
             $stage = 'check-existing-snap-token';
 
             if ($payment->snap_token) {
-                if ($request->expectsJson()) {
+                if ($respondsWithJson) {
                     return response()->json([
                         'message' => 'Pembayaran sudah siap dilanjutkan.',
                         'snap_token' => $payment->snap_token,
@@ -254,7 +255,7 @@ class RegistrationController extends Controller
                 'payload' => $snap,
             ]);
 
-            if ($request->expectsJson()) {
+            if ($respondsWithJson) {
                 return response()->json([
                     'message' => 'Pembayaran berhasil disiapkan.',
                     'snap_token' => $payment->snap_token,
@@ -272,11 +273,11 @@ class RegistrationController extends Controller
                 default => 'Layanan pembayaran sedang mengalami gangguan. Silakan coba kembali beberapa saat lagi.',
             };
 
-            return $request->expectsJson()
+            return $respondsWithJson
                 ? response()->json(['message' => $message], 422)
                 : back()->with('payment_error', $message);
         } catch (RuntimeException $exception) {
-            return $request->expectsJson()
+            return $respondsWithJson
                 ? response()->json(['message' => $exception->getMessage()], 422)
                 : back()->with('payment_error', $exception->getMessage());
         } catch (Throwable $exception) {
@@ -297,7 +298,7 @@ class RegistrationController extends Controller
             $message = 'Pembayaran belum dapat disiapkan karena terjadi gangguan pada server. Kode: '
                 .$reference.' (tahap: '.$stage.'). Silakan hubungi admin.';
 
-            return $request->expectsJson()
+            return $respondsWithJson
                 ? response()->json(['message' => $message], 503)
                 : back()->with('payment_error', $message);
         }
