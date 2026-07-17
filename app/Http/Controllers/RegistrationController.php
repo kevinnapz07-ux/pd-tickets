@@ -6,9 +6,11 @@ use App\Models\Event;
 use App\Models\Payment;
 use App\Models\Registration;
 use App\Services\MidtransSnapService;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -253,14 +255,37 @@ class RegistrationController extends Controller
             }
 
             return back()->with('status', 'Pembayaran berhasil disiapkan. Silakan lanjutkan pembayaran.');
+        } catch (RequestException $exception) {
+            report($exception);
+
+            $message = match ($exception->response->status()) {
+                401, 403 => 'Konfigurasi autentikasi Midtrans ditolak. Silakan hubungi admin.',
+                400, 422 => 'Data pembayaran ditolak oleh Midtrans. Silakan hubungi admin untuk memeriksa konfigurasi transaksi.',
+                default => 'Layanan pembayaran sedang mengalami gangguan. Silakan coba kembali beberapa saat lagi.',
+            };
+
+            return $request->expectsJson()
+                ? response()->json(['message' => $message], 422)
+                : back()->with('payment_error', $message);
         } catch (RuntimeException $exception) {
             return $request->expectsJson()
                 ? response()->json(['message' => $exception->getMessage()], 422)
                 : back()->with('payment_error', $exception->getMessage());
         } catch (Throwable $exception) {
+            $reference = 'PAY-'.Str::upper(Str::random(8));
+
+            Log::error('Payment initialization failed', [
+                'reference' => $reference,
+                'exception' => $exception::class,
+                'message' => $exception->getMessage(),
+                'registration_id' => $registration->id,
+                'payment_id' => $registration->payment?->id,
+                'order_id' => $registration->payment?->order_id,
+                'midtrans_production' => (bool) config('services.midtrans.is_production'),
+            ]);
             report($exception);
 
-            $message = 'Pembayaran belum dapat disiapkan karena terjadi gangguan pada server. Silakan coba kembali atau hubungi admin.';
+            $message = 'Pembayaran belum dapat disiapkan karena terjadi gangguan pada server. Kode: '.$reference.'. Silakan hubungi admin.';
 
             return $request->expectsJson()
                 ? response()->json(['message' => $message], 503)
