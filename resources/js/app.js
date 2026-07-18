@@ -764,6 +764,66 @@ import { Html5Qrcode } from 'html5-qrcode';
         });
     };
 
+    const setupTicketModals = () => {
+        document.querySelectorAll('[data-ticket-modal]').forEach((modal) => {
+            if (modal.dataset.modalBound) return;
+
+            const openButton = document.querySelector(`[data-ticket-modal-open="${modal.id}"]`);
+            const closeButtons = modal.querySelectorAll('[data-ticket-modal-close]');
+            let previousFocus = null;
+
+            if (! openButton) return;
+
+            const focusableElements = () => [...modal.querySelectorAll(
+                'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])',
+            )].filter((element) => element.offsetParent !== null);
+
+            const openModal = () => {
+                previousFocus = document.activeElement;
+                modal.setAttribute('aria-hidden', 'false');
+                document.body.classList.add('modal-open');
+                modal.querySelector('[data-ticket-modal-close]')?.focus();
+            };
+
+            const closeModal = () => {
+                modal.setAttribute('aria-hidden', 'true');
+                document.body.classList.remove('modal-open');
+                previousFocus?.focus();
+                previousFocus = null;
+            };
+
+            modal.dataset.modalBound = 'true';
+            openButton.addEventListener('click', openModal);
+            closeButtons.forEach((button) => button.addEventListener('click', closeModal));
+            modal.addEventListener('click', (event) => {
+                if (event.target === modal) closeModal();
+            });
+            modal.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    closeModal();
+                    return;
+                }
+
+                if (event.key !== 'Tab') return;
+
+                const focusable = focusableElements();
+                const first = focusable[0];
+                const last = focusable[focusable.length - 1];
+
+                if (! first) {
+                    event.preventDefault();
+                    modal.querySelector('.ticket-modal')?.focus();
+                } else if (event.shiftKey && document.activeElement === first) {
+                    event.preventDefault();
+                    last.focus();
+                } else if (! event.shiftKey && document.activeElement === last) {
+                    event.preventDefault();
+                    first.focus();
+                }
+            });
+        });
+    };
+
     const initialize = () => {
         setupCustomRegistrationFields();
     if (syncFilamentTheme()) {
@@ -784,6 +844,7 @@ import { Html5Qrcode } from 'html5-qrcode';
         setupTicketScanner();
         setupPasswordResetRequest();
         setupTicketDetails();
+        setupTicketModals();
         document.querySelectorAll('form[data-disable-submit]').forEach((form) => {
             if (form.dataset.submitBound) return;
             form.dataset.submitBound = 'true';

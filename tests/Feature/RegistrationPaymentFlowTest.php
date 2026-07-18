@@ -107,17 +107,37 @@ class RegistrationPaymentFlowTest extends TestCase
         $owner = User::factory()->create(['role' => 'peserta']);
         $waiting = $this->paidTicket($owner, 'Waiting Ticket', null);
         $checkedIn = $this->paidTicket($owner, 'Checked Ticket', now());
+        $otherOwner = User::factory()->create(['role' => 'peserta']);
+        $otherTicket = $this->paidTicket($otherOwner, 'Other Ticket', null);
 
-        $this->actingAs($owner)
+        $ticketList = $this->actingAs($owner)
             ->get(route('tickets.index'))
             ->assertOk()
             ->assertSee('Tiket Saya')
             ->assertSee('Tiket aktif yang siap digunakan.')
             ->assertSee('Siap Check-in')
             ->assertSee('Sudah Check-in')
-            ->assertSee('Lihat Tiket')
+            ->assertSee('Tampilkan QR')
+            ->assertSee('Lihat Status')
+            ->assertSee('QR Check-in')
+            ->assertSee('Tunjukkan QR ini kepada panitia saat hadir.')
+            ->assertSee('Check-in Berhasil')
+            ->assertSee('Tiket ini sudah digunakan.')
+            ->assertSee($checkedIn->checked_in_at->translatedFormat('d M Y, H:i').' WIB')
+            ->assertSee('data-ticket-modal', false)
+            ->assertSee('data-ticket-modal-open', false)
+            ->assertSee('QR Check-in '.$waiting->registration_code)
+            ->assertDontSee('QR Check-in '.$checkedIn->registration_code)
+            ->assertDontSee(route('registrations.show', $waiting), false)
+            ->assertDontSee($otherTicket->registration_code)
+            ->assertDontSee($owner->email)
+            ->assertDontSee($waiting->phone)
+            ->assertDontSee('Order ID')
+            ->assertDontSee('Lihat Tiket')
             ->assertDontSee('Akun Peserta')
             ->assertDontSee('>Berhasil<', false);
+
+        $this->assertSame(1, substr_count($ticketList->getContent(), 'data:image/svg+xml;base64,'));
 
         $this->actingAs($owner)
             ->get(route('registrations.show', $waiting))
@@ -136,6 +156,13 @@ class RegistrationPaymentFlowTest extends TestCase
             ->assertDontSee('Order ID')
             ->assertSee('Kembali ke Beranda')
             ->assertDontSee('Lihat Tiket');
+
+        $admin = User::factory()->create(['role' => 'admin']);
+        $this->actingAs($admin)
+            ->get(route('registrations.show', $waiting))
+            ->assertOk()
+            ->assertSee($waiting->email)
+            ->assertSee($waiting->phone);
 
         $this->assertNotNull($checkedIn->checked_in_at);
     }

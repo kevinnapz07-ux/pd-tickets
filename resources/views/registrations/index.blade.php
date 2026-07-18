@@ -20,11 +20,11 @@
         @else
             <div class="registration-card-grid">
                 @foreach ($registrations as $registration)
+                    @php($hasCheckedIn = $registration->checked_in_at !== null || $registration->registration_status === 'checked_in')
                     <article class="registration-card">
                         <div class="registration-card-heading">
                             <div><p class="eyebrow">{{ $registration->registration_code }}</p><h2>{{ $registration->event->title }}</h2></div>
                             @if (isset($ticketsOnly))
-                                @php($hasCheckedIn = $registration->checked_in_at !== null || $registration->registration_status === 'checked_in')
                                 <span class="ticket-checkin-status {{ $hasCheckedIn ? 'is-checked-in' : 'is-waiting' }}">
                                     <span aria-hidden="true">{{ $hasCheckedIn ? '✅' : '🎟️' }}</span>
                                     {{ $hasCheckedIn ? 'Sudah Check-in' : 'Siap Check-in' }}
@@ -34,14 +34,23 @@
                             @endif
                         </div>
                         <dl class="registration-card-meta">
-                            <div><dt>Tanggal</dt><dd>{{ $registration->event->starts_at->translatedFormat('d M Y, H:i') }} WIB</dd></div>
+                            <div><dt>Tanggal dan Waktu</dt><dd>{{ $registration->event->starts_at->translatedFormat('d M Y, H:i') }} WIB</dd></div>
                             <div><dt>Lokasi</dt><dd>{{ $registration->event->location }}</dd></div>
-                            <div><dt>Pendaftaran</dt><dd>{{ $registration->registrationStatusLabel() }}</dd></div>
                             <div><dt>Nominal</dt><dd>{{ $registration->event->price > 0 ? 'Rp '.number_format($registration->event->price, 0, ',', '.') : 'Gratis' }}</dd></div>
-                            <div><dt>Terdaftar</dt><dd>{{ $registration->created_at->translatedFormat('d M Y, H:i') }}</dd></div>
+                            @unless (isset($ticketsOnly))
+                                <div><dt>Pendaftaran</dt><dd>{{ $registration->registrationStatusLabel() }}</dd></div>
+                                <div><dt>Terdaftar</dt><dd>{{ $registration->created_at->translatedFormat('d M Y, H:i') }}</dd></div>
+                            @endunless
+                            @if (isset($ticketsOnly) && $hasCheckedIn && $registration->checked_in_at)
+                                <div><dt>Waktu Check-in</dt><dd>{{ $registration->checked_in_at->translatedFormat('d M Y, H:i') }} WIB</dd></div>
+                            @endif
                         </dl>
                         <div class="registration-card-actions">
-                            @if ($registration->isCheckInReady())
+                            @if (isset($ticketsOnly) && ! $hasCheckedIn)
+                                <button class="button" type="button" data-ticket-modal-open="ticket-qr-modal-{{ $registration->id }}" aria-controls="ticket-qr-modal-{{ $registration->id }}">Tampilkan QR</button>
+                            @elseif (isset($ticketsOnly) && $hasCheckedIn)
+                                <button class="link-button ticket-status-button" type="button" data-ticket-modal-open="ticket-status-modal-{{ $registration->id }}" aria-controls="ticket-status-modal-{{ $registration->id }}">Lihat Status</button>
+                            @elseif ($registration->isCheckInReady())
                                 <a class="button" href="{{ route('registrations.show', $registration) }}">Lihat Tiket</a>
                             @elseif ($registration->payment_status === 'pending')
                                 <a class="button" href="{{ route('registrations.show', $registration) }}">Lanjutkan Pembayaran</a>
@@ -56,6 +65,38 @@
                             @endif
                         </div>
                     </article>
+
+                    @if (isset($ticketsOnly) && ! $hasCheckedIn)
+                        <div class="ticket-modal-backdrop" id="ticket-qr-modal-{{ $registration->id }}" data-ticket-modal aria-hidden="true">
+                            <section class="ticket-modal" role="dialog" aria-modal="true" aria-labelledby="ticket-qr-title-{{ $registration->id }}" tabindex="-1">
+                                <button class="ticket-modal-close" type="button" data-ticket-modal-close aria-label="Tutup modal">×</button>
+                                <p class="eyebrow">Tiket {{ $registration->registration_code }}</p>
+                                <h2 id="ticket-qr-title-{{ $registration->id }}">QR Check-in</h2>
+                                <p class="ticket-modal-event">{{ $registration->event->title }}</p>
+                                <code class="ticket-modal-code">{{ $registration->registration_code }}</code>
+                                <img class="ticket-modal-qr" src="{{ $registration->qrCodeDataUri() }}" alt="QR Check-in {{ $registration->registration_code }}">
+                                <p class="ticket-modal-note">Tunjukkan QR ini kepada panitia saat hadir.</p>
+                                <button class="button ticket-modal-dismiss" type="button" data-ticket-modal-close>Tutup</button>
+                            </section>
+                        </div>
+                    @elseif (isset($ticketsOnly) && $hasCheckedIn)
+                        <div class="ticket-modal-backdrop" id="ticket-status-modal-{{ $registration->id }}" data-ticket-modal aria-hidden="true">
+                            <section class="ticket-modal ticket-status-modal" role="dialog" aria-modal="true" aria-labelledby="ticket-status-title-{{ $registration->id }}" tabindex="-1">
+                                <button class="ticket-modal-close" type="button" data-ticket-modal-close aria-label="Tutup modal">×</button>
+                                <div class="ticket-modal-success-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"></path></svg>
+                                </div>
+                                <h2 id="ticket-status-title-{{ $registration->id }}">Check-in Berhasil</h2>
+                                <p class="ticket-modal-note">Tiket ini sudah digunakan.</p>
+                                <dl class="ticket-modal-details">
+                                    <div><dt>Event</dt><dd>{{ $registration->event->title }}</dd></div>
+                                    <div><dt>Kode Tiket</dt><dd>{{ $registration->registration_code }}</dd></div>
+                                    <div><dt>Waktu Check-in</dt><dd>{{ $registration->checked_in_at?->translatedFormat('d M Y, H:i') ?? '-' }}{{ $registration->checked_in_at ? ' WIB' : '' }}</dd></div>
+                                </dl>
+                                <button class="button ticket-modal-dismiss" type="button" data-ticket-modal-close>Tutup</button>
+                            </section>
+                        </div>
+                    @endif
                 @endforeach
             </div>
         @endif

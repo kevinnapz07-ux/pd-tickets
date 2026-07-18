@@ -8566,3 +8566,228 @@ body:not(.fi-body) .participant-detail-grid dd {
     }
 }
 
+/* Ticket list modal flow */
+.ticket-list-page .registration-card-meta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.ticket-list-page .registration-card-actions {
+    align-items: center;
+}
+
+.ticket-status-button {
+    min-height: 38px !important;
+    padding: 8px 12px;
+    font-size: 13px;
+}
+
+.ticket-modal-backdrop {
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    overflow-y: auto;
+    background: rgb(15 23 42 / 72%);
+    backdrop-filter: blur(4px);
+}
+
+.ticket-modal-backdrop[aria-hidden="true"] {
+    display: none;
+}
+
+.ticket-modal {
+    position: relative;
+    width: min(100%, 430px);
+    max-height: calc(100dvh - 40px);
+    overflow-y: auto;
+    border: 1px solid #dbe3ef;
+    border-radius: 20px;
+    padding: 24px;
+    background: #fff;
+    box-shadow: 0 24px 60px rgb(15 23 42 / 28%);
+    color: #0f172a;
+    text-align: center;
+}
+
+.ticket-modal:focus-visible {
+    outline: 3px solid #60a5fa;
+    outline-offset: 3px;
+}
+
+.ticket-modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: grid;
+    width: 40px;
+    height: 40px;
+    place-items: center;
+    border: 1px solid #cbd5e1;
+    border-radius: 999px;
+    background: #f8fafc;
+    color: #334155;
+    font-size: 25px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.ticket-modal-close:hover {
+    background: #eef2f7;
+}
+
+.ticket-modal :is(button, a):focus-visible {
+    outline: 3px solid #2563eb;
+    outline-offset: 3px;
+}
+
+.ticket-modal .eyebrow {
+    padding-inline: 44px;
+}
+
+.ticket-modal h2 {
+    margin: 4px 0 8px;
+    color: #0f172a;
+}
+
+.ticket-modal-event {
+    margin: 0;
+    color: #334155;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.ticket-modal-code {
+    display: block;
+    margin: 10px auto 12px;
+    color: #475569;
+    font-size: 14px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.ticket-modal-qr {
+    display: block;
+    width: min(100%, 230px);
+    aspect-ratio: 1;
+    margin: 0 auto 14px;
+    border: 1px solid #dbe3ef;
+    border-radius: 14px;
+    padding: 10px;
+    background: #fff;
+}
+
+.ticket-modal-note {
+    margin: 0 auto 18px;
+    color: #475569;
+    line-height: 1.55;
+}
+
+.ticket-modal-dismiss {
+    width: 100%;
+}
+
+.ticket-modal-success-icon {
+    display: grid;
+    width: 62px;
+    height: 62px;
+    margin: 4px auto 12px;
+    place-items: center;
+    border-radius: 999px;
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.ticket-modal-success-icon svg {
+    width: 34px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.5;
+}
+
+.ticket-modal-details {
+    display: grid;
+    gap: 10px;
+    margin: 0 0 18px;
+    text-align: left;
+}
+
+.ticket-modal-details > div {
+    min-width: 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px 12px;
+    background: #f8fafc;
+}
+
+.ticket-modal-details dt {
+    color: #64748b;
+    font-size: 12px;
+}
+
+.ticket-modal-details dd {
+    margin: 3px 0 0;
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+[data-theme="dark"] .ticket-modal {
+    border-color: #3b4b63;
+    background: #172337;
+    color: #f8fafc;
+}
+
+[data-theme="dark"] .ticket-modal h2,
+[data-theme="dark"] .ticket-modal-event,
+[data-theme="dark"] .ticket-modal-details dd {
+    color: #f8fafc;
+}
+
+[data-theme="dark"] .ticket-modal :where(.ticket-modal-code, .ticket-modal-note) {
+    color: #c0ccda;
+}
+
+[data-theme="dark"] .ticket-modal-close {
+    border-color: #4b5d76;
+    background: #223149;
+    color: #f8fafc;
+}
+
+[data-theme="dark"] .ticket-modal-close:hover {
+    background: #2c3e58;
+}
+
+[data-theme="dark"] .ticket-modal-details > div {
+    border-color: #3b4b63;
+    background: #111c2f;
+}
+
+[data-theme="dark"] .ticket-modal-details dt {
+    color: #aebdd0;
+}
+
+@media (max-width: 640px) {
+    .ticket-list-page .registration-card-meta {
+        grid-template-columns: 1fr;
+    }
+
+    .ticket-modal-backdrop {
+        align-items: end;
+        padding: 12px;
+    }
+
+    .ticket-modal {
+        width: 100%;
+        max-height: calc(100dvh - 24px);
+        border-radius: 18px;
+        padding: 22px 18px 18px;
+    }
+
+    .ticket-modal-qr {
+        width: min(100%, 220px);
+    }
+}
+
