@@ -33,6 +33,8 @@ Route::get('/ticket/verify/{token}', TicketVerificationController::class)
     ->where('token', '[A-Za-z0-9]{40,64}')
     ->name('tickets.verify');
 Route::middleware('auth')->group(function (): void {
+    Route::get('/registrations', [RegistrationController::class, 'index'])->name('registrations.index');
+    Route::get('/tickets', [RegistrationController::class, 'tickets'])->name('tickets.index');
     Route::get('/profil-peserta', [ParticipantProfileController::class, 'show'])->name('participant.profile');
     Route::patch('/profil-peserta/password', [ParticipantProfileController::class, 'updatePassword'])
         ->middleware('throttle:6,1')
@@ -43,6 +45,8 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/registrations/{registration}', [RegistrationController::class, 'show'])->name('registrations.show');
     Route::post('/registrations/{registration}/payment/initialize', [RegistrationController::class, 'initializePayment'])->name('registrations.payment.initialize');
     Route::post('/registrations/{registration}/payment/status', [RegistrationController::class, 'refreshPaymentStatus'])->name('registrations.payment.status');
+    Route::get('/registrations/{registration}/payment/state', [RegistrationController::class, 'paymentState'])->name('registrations.payment.state');
+    Route::post('/registrations/{registration}/payment/retry', [RegistrationController::class, 'retryPayment'])->name('registrations.payment.retry');
 });
 Route::post('/payments/midtrans/notification', PaymentWebhookController::class)
     ->middleware('throttle:60,1')

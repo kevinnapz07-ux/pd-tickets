@@ -10,6 +10,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -19,6 +20,38 @@ use Throwable;
 
 class RegistrationController extends Controller
 {
+    public function index(Request $request): View
+    {
+        $registrations = Registration::query()
+            ->with(['event', 'payment'])
+            ->where(fn ($query) => $query
+                ->where('user_id', $request->user()->id)
+                ->orWhere(fn ($legacy) => $legacy
+                    ->whereNull('user_id')
+                    ->where('email', $request->user()->email)))
+            ->latest()
+            ->get();
+
+        return view('registrations.index', compact('registrations'));
+    }
+
+    public function tickets(Request $request): View
+    {
+        $registrations = Registration::query()
+            ->with(['event', 'payment'])
+            ->where('payment_status', 'paid')
+            ->whereIn('registration_status', ['registered', 'checked_in', 'completed'])
+            ->where(fn ($query) => $query
+                ->where('user_id', $request->user()->id)
+                ->orWhere(fn ($legacy) => $legacy
+                    ->whereNull('user_id')
+                    ->where('email', $request->user()->email)))
+            ->latest()
+            ->get();
+
+        return view('registrations.index', ['registrations' => $registrations, 'ticketsOnly' => true]);
+    }
+
     public function store(Request $request, Event $event, MidtransSnapService $midtrans): RedirectResponse
     {
         abort_unless($event->is_published, 404);
@@ -92,7 +125,6 @@ class RegistrationController extends Controller
             ...$data,
             'event_id' => $event->id,
             'user_id' => $request->user()->id,
-            'registration_code' => 'PDG-'.now()->format('ymd').'-'.Str::upper(Str::random(6)),
             'payment_status' => $event->price > 0 ? 'pending' : 'paid',
             'registration_status' => $event->price > 0 ? null : 'registered',
         ]);
@@ -177,6 +209,70 @@ class RegistrationController extends Controller
         return $request->expectsJson()
             ? response()->json(['message' => $message, 'status' => $status])
             : back()->with('status', $message);
+    }
+
+    public function paymentState(Request $request, Registration $registration): JsonResponse
+    {
+        $this->authorizeOwner($request, $registration);
+        $registration->load(['event', 'payment']);
+
+        return response()->json([
+            'status' => $registration->payment_status,
+            'registration_status' => $registration->registration_status,
+            'ticket_url' => $registration->isCheckInReady()
+                ? route('registrations.show', $registration)
+                : null,
+            'message' => $registration->transactionStatusLabel(),
+        ]);
+    }
+
+    public function retryPayment(
+        Request $request,
+        Registration $registration,
+        MidtransSnapService $midtrans
+    ): RedirectResponse {
+        $this->authorizeOwner($request, $registration);
+
+        try {
+            $payment = DB::transaction(function () use ($registration): Payment {
+                $locked = Registration::query()->with('event')->lockForUpdate()->findOrFail($registration->id);
+                $latest = $locked->payments()->latest('id')->lockForUpdate()->first();
+
+                abort_unless($locked->event->price > 0 && $latest, 404);
+
+                if (! in_array($locked->payment_status, ['expired', 'cancelled', 'failed'], true)) {
+                    abort(409, 'Pembayaran aktif masih dapat digunakan.');
+                }
+
+                $payment = $locked->payments()->create([
+                    'order_id' => 'PDG-'.$locked->id.'-'.Str::upper((string) Str::ulid()),
+                    'amount' => $locked->event->price,
+                ]);
+                $locked->update(['payment_status' => 'pending']);
+
+                Log::info('Payment retry created.', [
+                    'registration_id' => $locked->id,
+                    'payment_id' => $payment->id,
+                    'order_id' => $payment->order_id,
+                ]);
+
+                return $payment;
+            }, 3);
+
+            $snap = $midtrans->createTransaction($payment);
+            $payment->update([
+                'snap_token' => $snap['token'],
+                'redirect_url' => $snap['redirect_url'],
+                'payload' => $snap,
+            ]);
+
+            return redirect()->route('registrations.show', $registration)
+                ->with('status', 'Pembayaran baru berhasil dibuat.');
+        } catch (Throwable $exception) {
+            report($exception);
+
+            return back()->with('payment_error', 'Pembayaran baru belum dapat dibuat. Silakan coba kembali.');
+        }
     }
 
     public function initializePayment(
@@ -302,5 +398,17 @@ class RegistrationController extends Controller
                 ? response()->json(['message' => $message], 503)
                 : back()->with('payment_error', $message);
         }
+    }
+
+    private function authorizeOwner(Request $request, Registration $registration): void
+    {
+        $user = $request->user();
+
+        abort_unless(
+            $user->role === 'admin'
+            || $registration->user_id === $user->id
+            || ($registration->user_id === null && $registration->email === $user->email),
+            403
+        );
     }
 }

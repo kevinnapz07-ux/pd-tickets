@@ -283,6 +283,156 @@ body.fi-body .filament-custom-page :where(p, label, input, select, textarea, but
     }
 }
 
+/* Participant payment and ticket flow */
+html,
+body {
+    max-width: 100%;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+img,
+svg,
+video,
+canvas,
+iframe {
+    max-width: 100%;
+}
+
+.my-registrations {
+    width: min(100%, 1120px);
+    margin-inline: auto;
+    padding-block: 32px 56px;
+}
+
+.registration-card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.registration-card,
+.registration-empty {
+    min-width: 0;
+    padding: 20px;
+    border: 1px solid var(--border, #dbe3ee);
+    border-radius: 18px;
+    background: var(--surface, #fff);
+}
+
+.registration-empty {
+    text-align: center;
+}
+
+.registration-card-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.registration-card-heading > div,
+.registration-card-heading h2 {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.registration-card-meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-block: 18px;
+}
+
+.registration-card-meta dt {
+    font-size: 12px;
+    color: var(--muted, #64748b);
+}
+
+.registration-card-meta dd {
+    margin: 4px 0 0;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.registration-card-actions,
+.payment-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.registration-card-actions :is(a, button),
+.payment-actions :is(a, button) {
+    min-height: 44px;
+}
+
+.payment-success-icon {
+    display: grid;
+    width: 52px;
+    height: 52px;
+    margin-bottom: 12px;
+    place-items: center;
+    border-radius: 999px;
+    background: #dcfce7;
+    color: #15803d;
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.receipt-card > h1,
+.info-list dd,
+.payment-confirm-details dd {
+    overflow-wrap: anywhere;
+}
+
+.qr-checkin img {
+    width: min(100%, 230px);
+    aspect-ratio: 1;
+}
+
+.account-popover {
+    max-width: min(24rem, calc(100vw - 2rem));
+}
+
+@media (max-width: 640px) {
+    .my-registrations {
+        padding-block: 24px 40px;
+    }
+
+    .registration-card-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .registration-card,
+    .registration-empty,
+    .receipt-card {
+        padding: 16px;
+    }
+
+    .registration-card-actions,
+    .registration-card-actions form,
+    .registration-card-actions :is(a, button),
+    .payment-actions,
+    .payment-actions form,
+    .payment-actions :is(a, button) {
+        width: 100%;
+    }
+
+    .payment-confirm-dialog {
+        width: calc(100% - 2rem);
+        max-width: 28rem;
+        max-height: calc(100dvh - 2rem);
+        padding: 18px;
+        overflow-y: auto;
+    }
+}
+
 @media (min-width: 641px) and (max-width: 900px) {
     .how-modal .step-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));

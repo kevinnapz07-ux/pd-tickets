@@ -659,6 +659,17 @@ import { Html5Qrcode } from 'html5-qrcode';
         setupPricingFields();
         setupTicketScanner();
         setupPasswordResetRequest();
+        document.querySelectorAll('form[data-disable-submit]').forEach((form) => {
+            if (form.dataset.submitBound) return;
+            form.dataset.submitBound = 'true';
+            form.addEventListener('submit', () => {
+                const button = form.querySelector('button[type="submit"]');
+                if (!button || !form.checkValidity()) return;
+                button.disabled = true;
+                button.setAttribute('aria-busy', 'true');
+                button.textContent = 'Memproses...';
+            });
+        });
 
         document.querySelectorAll('[data-theme-choice]').forEach((button) => {
             button.addEventListener('click', () => setTheme(button.dataset.themeChoice));

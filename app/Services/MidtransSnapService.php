@@ -60,8 +60,11 @@ class MidtransSnapService
         ];
 
         try {
-            Log::channel('stderr')->error('MIDTRANS PAYLOAD', [
-                'payload' => $payload,
+            Log::info('Creating Midtrans Snap transaction.', [
+                'payment_id' => $payment->id,
+                'registration_id' => $registration->id,
+                'order_id' => $payment->order_id,
+                'amount' => $amount,
             ]);
 
             $response = Http::withBasicAuth($serverKey, '')
@@ -79,12 +82,9 @@ class MidtransSnapService
 
             Log::error('Midtrans create transaction rejected', [
                 'status' => $exception->response?->status(),
-                'response_body' => $exception->response?->body(),
                 'endpoint' => $this->snapEndpoint(),
                 'merchant_id' => config('services.midtrans.merchant_id'),
                 'is_production' => config('services.midtrans.is_production'),
-                'server_key_prefix' => substr($serverKey, 0, 12),
-                'server_key_length' => strlen($serverKey),
                 'order_id' => $payment->order_id,
             ]);
 
@@ -132,28 +132,28 @@ class MidtransSnapService
 
     public function hasValidSignature(array $payload): bool
     {
-    if (! isset(
-        $payload['order_id'],
-        $payload['status_code'],
-        $payload['gross_amount'],
-        $payload['signature_key']
-    )) {
-        return false;
-    }
+        if (! isset(
+            $payload['order_id'],
+            $payload['status_code'],
+            $payload['gross_amount'],
+            $payload['signature_key']
+        )) {
+            return false;
+        }
 
-    $serverKey = trim((string) config('services.midtrans.server_key'));
+        $serverKey = trim((string) config('services.midtrans.server_key'));
 
-    if ($serverKey === '') {
-        return false;
-    }
+        if ($serverKey === '') {
+            return false;
+        }
 
-    $signature = hash(
-        'sha512',
-        (string) $payload['order_id']
-        . (string) $payload['status_code']
-        . (string) $payload['gross_amount']
-        . $serverKey
-    );
+        $signature = hash(
+            'sha512',
+            (string) $payload['order_id']
+            .(string) $payload['status_code']
+            .(string) $payload['gross_amount']
+            .$serverKey
+        );
 
         return hash_equals(
             $signature,
@@ -224,6 +224,7 @@ class MidtransSnapService
                 ->findOrFail($payment->id);
             $paymentStatus = $this->paymentStatusFromPayload($payload);
             $transactionStatus = (string) ($payload['transaction_status'] ?? 'pending');
+            $previousStatus = $lockedPayment->registration->payment_status;
 
             if ($lockedPayment->registration->payment_status === 'paid'
                 && ! in_array($paymentStatus, ['paid', 'refunded'], true)) {
@@ -256,8 +257,22 @@ class MidtransSnapService
             if ($paymentStatus === 'paid'
                 && $lockedPayment->ticket_email_sent_at === null
                 && $account?->role === 'peserta') {
-                $account->notify(new EventTicketNotification($lockedPayment->registration));
-                $lockedPayment->update(['ticket_email_sent_at' => now()]);
+                try {
+                    $account->notify(new EventTicketNotification($lockedPayment->registration));
+                    $lockedPayment->update(['ticket_email_sent_at' => now()]);
+                    Log::info('Ticket email sent.', ['payment_id' => $lockedPayment->id]);
+                } catch (\Throwable $exception) {
+                    Log::error('Ticket email failed.', [
+                        'payment_id' => $lockedPayment->id,
+                        'exception' => $exception::class,
+                    ]);
+                    report($exception);
+                }
+            } elseif ($previousStatus === $paymentStatus) {
+                Log::info('Duplicate Midtrans status ignored safely.', [
+                    'payment_id' => $lockedPayment->id,
+                    'status' => $paymentStatus,
+                ]);
             }
 
             return $paymentStatus;

@@ -72,6 +72,8 @@
                             <svg class="account-trigger-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
                         </button>
                         <div class="account-popover" data-account-popover>
+                            <a href="{{ route('registrations.index') }}">Registrasi Saya</a>
+                            <a href="{{ route('tickets.index') }}">Tiket Saya</a>
                             <a href="{{ route('participant.profile') }}">Profil</a>
                             <a href="{{ route('participant.activity') }}">Activity</a>
                             <form method="POST" action="{{ route('logout') }}">

@@ -58,7 +58,7 @@
             </dl>
 
             @if ($registration->isCheckInReady())
-                <section class="qr-checkin">
+                <section class="qr-checkin" id="ticket-qr">
                     <div>
                         <p class="eyebrow">QR Check-in</p>
                         <h2>Tunjukkan saat hadir</h2>
@@ -121,6 +121,19 @@
                     </form>
                 </div>
                 <p class="error-box payment-inline-message" id="payment-initialize-message" role="status" hidden></p>
+            @elseif (in_array($registration->payment_status, ['expired', 'failed', 'cancelled'], true))
+                <div class="payment-actions">
+                    <form method="POST" action="{{ route('registrations.payment.retry', $registration) }}" data-disable-submit>
+                        @csrf
+                        <button class="button" type="submit">{{ $registration->payment_status === 'expired' ? 'Buat Pembayaran Baru' : 'Bayar Lagi' }}</button>
+                    </form>
+                    <a class="link-button" href="{{ route('registrations.index') }}">Kembali ke Registrasi Saya</a>
+                </div>
+            @elseif ($registration->isCheckInReady())
+                <div class="payment-actions">
+                    <a class="button" href="#ticket-qr">Lihat Tiket</a>
+                    <a class="link-button" href="{{ route('events.index') }}">Kembali ke Beranda</a>
+                </div>
             @endif
         </div>
     </section>
@@ -326,6 +339,51 @@
                     initializeButton.textContent = 'Siapkan dan Lanjutkan Pembayaran';
                 }
             });
+        </script>
+    @endif
+
+    @if ($registration->payment_status === 'pending')
+        <div class="payment-confirm-backdrop" id="payment-success-backdrop" hidden>
+            <section class="payment-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="payment-success-title">
+                <div class="payment-success-icon" aria-hidden="true">✓</div>
+                <p class="eyebrow">Tiket Aktif</p>
+                <h2 id="payment-success-title">Pembayaran Berhasil</h2>
+                <p>Pembayaran kamu telah diterima. Tiket sudah diterbitkan dan dapat digunakan.</p>
+                <p><strong>{{ $registration->event->title }}</strong><br>{{ $registration->registration_code }}</p>
+                <div class="payment-confirm-actions">
+                    <a class="button" id="payment-success-ticket" href="{{ route('registrations.show', $registration) }}#ticket-qr">Lihat Tiket</a>
+                    <a class="link-button" href="{{ route('events.index') }}">Kembali ke Beranda</a>
+                </div>
+            </section>
+        </div>
+        <script>
+            (() => {
+                let stopped = false;
+                const poll = async () => {
+                    if (stopped || document.hidden) return;
+                    try {
+                        const response = await fetch(@json(route('registrations.payment.state', $registration)), {
+                            headers: {'Accept': 'application/json'}
+                        });
+                        if (!response.ok) return;
+                        const result = await response.json();
+                        if (result.status === 'paid') {
+                            stopped = true;
+                            const modal = document.getElementById('payment-success-backdrop');
+                            const ticket = document.getElementById('payment-success-ticket');
+                            if (ticket && result.ticket_url) ticket.href = result.ticket_url + '#ticket-qr';
+                            if (modal) {
+                                modal.hidden = false;
+                                document.body.classList.add('modal-open');
+                            }
+                        } else if (['expired', 'failed', 'cancelled'].includes(result.status)) {
+                            stopped = true;
+                            window.location.reload();
+                        }
+                    } catch (_) {}
+                };
+                window.setInterval(poll, 7000);
+            })();
         </script>
     @endif
 @endsection
