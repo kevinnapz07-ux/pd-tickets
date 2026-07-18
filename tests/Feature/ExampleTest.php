@@ -73,6 +73,9 @@ class ExampleTest extends TestCase
         $response->assertSee('Visi Generasi');
         $response->assertSee('Gunadarma dibakar habis oleh api kemuliaan-Nya.');
         $response->assertSee('The Army of God');
+        $response->assertSee('Kegiatan Kami');
+        $response->assertDontSee('Misi');
+        $response->assertDontSee('Bertumbuh, Bersekutu, dan Melayani');
         $response->assertSee('Ada yang bisa kami bantu?');
         $response->assertSee('Hubungi Kami');
         $response->assertSee('Email PDUG');

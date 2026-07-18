@@ -31,18 +31,13 @@
                 <h2>The Army of God</h2>
                 <small>Yoel 2:1–11</small>
             </article>
-            <article>
-                <p class="eyebrow">Misi</p>
-                <h2>Membawa mahasiswa bertumbuh, berakar dalam firman, dan berdampak bagi kampus.</h2>
-            </article>
         </div>
     </section>
 
     <section class="about-programs">
         <div class="section-heading">
             <div>
-                <p class="eyebrow">Program</p>
-                <h2>Bertumbuh, Bersekutu, dan Melayani</h2>
+                <p class="eyebrow">Kegiatan Kami</p>
             </div>
         </div>
         <div class="about-program-grid">

@@ -9909,3 +9909,106 @@ body:not(.fi-body) .footer-links a:hover { color: var(--public-accent); }
         animation: none;
     }
 }
+
+/*
+ * Reliable public dark mode.
+ * This final compatibility layer stays outside @scope and excludes Filament.
+ */
+html[data-theme="dark"] body.public-site:not(.fi-body) {
+    background: var(--public-bg, #111827);
+    color: var(--public-text, #f8fafc);
+    color-scheme: dark;
+}
+
+html[data-theme="dark"] body.public-site:not(.fi-body) :where(
+    .event-card,
+    .upcoming-card,
+    .article-card,
+    .about-program-grid article,
+    .profile-grid article,
+    .profile-info,
+    .participant-card,
+    .form-panel,
+    .auth-panel,
+    .receipt-card,
+    .registration-card,
+    .registration-event-summary,
+    .managed-event-card,
+    .actor-grid article,
+    .actor-flow,
+    .about-story,
+    .about-identity,
+    .search-form,
+    .participant-profile-menu,
+    .table-section,
+    .stat-grid > div,
+    .how-modal,
+    .how-section,
+    .step-grid article,
+    .account-popover,
+    .theme-switcher,
+    .registration-confirm-dialog,
+    .payment-confirm-dialog,
+    .ticket-modal,
+    .demo-account
+) {
+    border-color: var(--public-border, #344157);
+    background: var(--public-surface, #182235);
+    box-shadow: var(--public-shadow, 0 14px 34px rgb(0 0 0 / 24%));
+    color: var(--public-text, #f8fafc);
+}
+
+html[data-theme="dark"] body.public-site:not(.fi-body) :where(
+    h1, h2, h3, h4, h5, h6, dt, dd, strong,
+    .event-card h3,
+    .upcoming-card h3,
+    .article-card h3 a,
+    .about-program-grid h3,
+    .profile-grid h2,
+    .info-list dd,
+    .participant-stats strong
+) {
+    color: var(--public-text, #f8fafc);
+}
+
+html[data-theme="dark"] body.public-site:not(.fi-body) :where(
+    p, li, small, time, label,
+    .event-meta,
+    .field-help,
+    .article-content,
+    .article-card-body p,
+    .about-program-grid p,
+    .profile-grid p,
+    .info-list dt,
+    .modal-description
+) {
+    color: var(--public-muted, #b4bdcc);
+}
+
+html[data-theme="dark"] body.public-site:not(.fi-body) :where(input, select, textarea) {
+    border-color: var(--public-border, #344157);
+    background: var(--public-surface-raised, #1d2940);
+    color: var(--public-text, #f8fafc);
+}
+
+html[data-theme="dark"] body.public-site:not(.fi-body) :where(
+    th, td,
+    .info-list > div,
+    .event-summary-grid > div,
+    .participant-detail-grid > div,
+    .seat-list article
+) {
+    border-color: var(--public-border, #344157);
+}
+
+html[data-theme="dark"] body.public-site:not(.fi-body) :where(
+    .article-empty,
+    .empty,
+    .notice,
+    .announcement,
+    .login-prompt
+) {
+    border-color: var(--public-border, #344157);
+    background: var(--public-accent-soft, #3c3423);
+    color: var(--public-text, #f8fafc);
+}
