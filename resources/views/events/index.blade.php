@@ -55,19 +55,19 @@
                     <div class="event-card-content">
                         <h3>{{ $eventTitle }}</h3>
                         <dl class="event-card-meta-list">
-                            <div>
+                            <div class="event-card-meta-item is-location">
                                 <dt>Lokasi</dt>
                                 <dd>{{ $event->location }}</dd>
                             </div>
-                            <div>
+                            <div class="event-card-meta-item is-date">
                                 <dt>Tanggal</dt>
                                 <dd>{{ $event->starts_at->translatedFormat('d M Y') }}, {{ $event->starts_at->format('H:i') }} WIB</dd>
                             </div>
-                            <div>
+                            <div class="event-card-meta-item is-quota">
                                 <dt>Kuota</dt>
                                 <dd>{{ $event->paid_registrations_count }}/{{ $event->quota }} peserta</dd>
                             </div>
-                            <div>
+                            <div class="event-card-meta-item is-price">
                                 <dt>Harga</dt>
                                 <dd>{{ $event->price > 0 ? 'Rp '.number_format($event->price, 0, ',', '.') : 'Gratis' }}</dd>
                             </div>
