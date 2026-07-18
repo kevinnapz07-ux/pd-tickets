@@ -11371,3 +11371,89 @@ body.public-site:not(.fi-body) .profile-grid.about-grid article {
         width: min(380px, 100%);
     }
 }
+
+/* Event date badges must remain legible over every poster and in every theme. */
+body.public-site:not(.fi-body) .event-date,
+body.public-site:not(.fi-body) .upcoming-date,
+body.public-site:not(.fi-body) .managed-event-date {
+    overflow: hidden;
+    border: 1px solid rgb(15 23 42 / 12%);
+    border-radius: 12px;
+    background: #ffffff;
+    padding: 9px 10px;
+    color: #0f172a;
+    box-shadow: 0 8px 22px rgb(15 23 42 / 22%);
+}
+
+body.public-site:not(.fi-body) .event-card-visual .event-date {
+    width: 68px;
+    height: 68px;
+    min-width: 68px;
+    min-height: 68px;
+}
+
+html[data-theme="dark"] body.public-site:not(.fi-body) .event-date,
+html[data-theme="dark"] body.public-site:not(.fi-body) .upcoming-date,
+html[data-theme="dark"] body.public-site:not(.fi-body) .managed-event-date {
+    border-color: rgb(255 255 255 / 22%);
+    background: #ffffff;
+    color: #0f172a;
+    box-shadow: 0 8px 24px rgb(0 0 0 / 40%);
+}
+
+body.public-site:not(.fi-body) .event-date strong,
+body.public-site:not(.fi-body) .upcoming-date strong,
+body.public-site:not(.fi-body) .managed-event-date strong,
+html[data-theme="dark"] body.public-site:not(.fi-body) .event-date strong,
+html[data-theme="dark"] body.public-site:not(.fi-body) .upcoming-date strong,
+html[data-theme="dark"] body.public-site:not(.fi-body) .managed-event-date strong {
+    display: block;
+    margin: 0;
+    color: #0f172a;
+    font-size: clamp(26px, 2.4vw, 32px);
+    font-weight: 850;
+    line-height: .95;
+}
+
+body.public-site:not(.fi-body) .upcoming-date strong,
+html[data-theme="dark"] body.public-site:not(.fi-body) .upcoming-date strong {
+    font-size: clamp(34px, 3.2vw, 42px);
+}
+
+body.public-site:not(.fi-body) .managed-event-date strong,
+html[data-theme="dark"] body.public-site:not(.fi-body) .managed-event-date strong {
+    font-size: 30px;
+}
+
+body.public-site:not(.fi-body) .event-date span,
+body.public-site:not(.fi-body) .upcoming-date span,
+body.public-site:not(.fi-body) .managed-event-date span,
+html[data-theme="dark"] body.public-site:not(.fi-body) .event-date span,
+html[data-theme="dark"] body.public-site:not(.fi-body) .upcoming-date span,
+html[data-theme="dark"] body.public-site:not(.fi-body) .managed-event-date span {
+    display: block;
+    margin-top: 6px;
+    color: #b45309;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+@media (max-width: 390px) {
+    body.public-site:not(.fi-body) .event-card-visual .event-date {
+        width: 62px;
+        height: 62px;
+        min-width: 62px;
+        min-height: 62px;
+        padding: 8px;
+    }
+
+    body.public-site:not(.fi-body) .event-date strong {
+        font-size: 25px;
+    }
+
+    body.public-site:not(.fi-body) .event-date span {
+        margin-top: 5px;
+        font-size: 11px;
+    }
+}
