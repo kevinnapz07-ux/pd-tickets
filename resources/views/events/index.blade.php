@@ -31,8 +31,11 @@
             @forelse ($events as $event)
                 <article class="event-card public-event-card" data-reveal>
                     <div class="event-card-visual" aria-hidden="true">
-                        <span class="event-card-orb"></span>
-                        <svg viewBox="0 0 24 24"><path d="M5 3v3M19 3v3M3 9h18M5 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"></path></svg>
+                        @if ($event->image_url)
+                            <img src="{{ $event->image_url }}" alt="" loading="lazy">
+                        @else
+                            <img src="{{ asset('images/event-placeholder.svg') }}" alt="" loading="lazy">
+                        @endif
                         <div class="event-date">
                             <strong>{{ $event->starts_at->format('d') }}</strong>
                             <span>{{ $event->starts_at->translatedFormat('M') }}</span>
@@ -66,6 +69,13 @@
             <div class="upcoming-list">
                 @foreach ($upcomingEvents as $upcomingEvent)
                     <article class="upcoming-card" data-reveal>
+                        <div class="upcoming-poster">
+                            @if ($upcomingEvent->image_url)
+                                <img src="{{ $upcomingEvent->image_url }}" alt="Poster {{ $upcomingEvent->title }}" loading="lazy">
+                            @else
+                                <img src="{{ asset('images/event-placeholder.svg') }}" alt="" loading="lazy">
+                            @endif
+                        </div>
                         <div class="upcoming-date">
                             <strong>{{ $upcomingEvent->starts_at->format('d') }}</strong>
                             <span>{{ $upcomingEvent->starts_at->translatedFormat('M Y') }}</span>

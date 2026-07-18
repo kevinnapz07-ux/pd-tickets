@@ -34,7 +34,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('head')
 </head>
-<body>
+<body class="{{ request()->routeIs('admin.*') ? 'legacy-admin' : 'public-site' }}">
     <header class="topbar">
         <div class="topbar-shell">
         <a class="brand" href="{{ route('events.index') }}">
@@ -55,7 +55,7 @@
                 <a class="mobile-home-link{{ request()->routeIs('events.index') ? ' is-active' : '' }}" href="{{ route('events.index') }}" @if (request()->routeIs('events.index')) aria-current="page" @endif>Home</a>
                 <a class="desktop-event-link{{ request()->routeIs('events.index', 'events.show') ? ' is-active' : '' }}" href="{{ route('events.index') }}" @if (request()->routeIs('events.index', 'events.show')) aria-current="page" @endif>Event</a>
                 <button class="nav-button" type="button" data-how-open>How to Order</button>
-                <a class="{{ request()->routeIs('profile.pdug') ? 'is-active' : '' }}" href="{{ route('profile.pdug') }}" @if (request()->routeIs('profile.pdug')) aria-current="page" @endif>About Us</a>
+                <a class="{{ request()->routeIs('profile.pdug', 'articles.*') ? 'is-active' : '' }}" href="{{ route('profile.pdug') }}" @if (request()->routeIs('profile.pdug', 'articles.*')) aria-current="page" @endif>Tentang PDUG</a>
             </nav>
 
             <div class="header-actions">
@@ -204,6 +204,7 @@
                     <a href="https://www.gunadarma.ac.id">Gunadarma</a>
                     <a href="{{ route('events.index') }}">Event</a>
                     <a href="{{ route('profile.pdug') }}">About Us</a>
+                    <a href="{{ route('articles.index') }}">Artikel</a>
                 </section>
                 <section>
                     <h2>Follow Us</h2>

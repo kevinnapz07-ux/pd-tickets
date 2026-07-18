@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Event extends Model
@@ -15,6 +16,7 @@ class Event extends Model
         'title',
         'slug',
         'description',
+        'image_path',
         'speaker',
         'location',
         'starts_at',
@@ -46,6 +48,23 @@ class Event extends Model
                 $event->slug = static::slugBase($event->title);
             }
         });
+
+        static::updated(function (Event $event): void {
+            if ($event->wasChanged('image_path') && filled($event->getOriginal('image_path'))) {
+                Storage::disk('public')->delete($event->getOriginal('image_path'));
+            }
+        });
+
+        static::deleted(function (Event $event): void {
+            if (filled($event->image_path)) {
+                Storage::disk('public')->delete($event->image_path);
+            }
+        });
+    }
+
+    public function getImageUrlAttribute(): ?string
+    {
+        return filled($this->image_path) ? Storage::disk('public')->url($this->image_path) : null;
     }
 
     public function getRouteKeyName(): string

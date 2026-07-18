@@ -31,6 +31,41 @@
                 <h2>The Army of God</h2>
                 <small>Yoel 2:1–11</small>
             </article>
+            <article>
+                <p class="eyebrow">Misi</p>
+                <h2>Membawa mahasiswa bertumbuh, berakar dalam firman, dan berdampak bagi kampus.</h2>
+            </article>
+        </div>
+    </section>
+
+    <section class="about-programs">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">Program</p>
+                <h2>Bertumbuh, Bersekutu, dan Melayani</h2>
+            </div>
+        </div>
+        <div class="about-program-grid">
+            <article><span>01</span><h3>Persekutuan & Ibadah</h3><p>Ruang untuk beribadah, berdoa, dan mengalami pertumbuhan rohani bersama.</p></article>
+            <article><span>02</span><h3>Pemuridan</h3><p>Pendampingan yang menolong mahasiswa mengenal firman dan hidup sebagai murid Kristus.</p></article>
+            <article><span>03</span><h3>Pelayanan Kampus</h3><p>Kesempatan untuk melayani, membangun komunitas, dan menjadi berkat di lingkungan kampus.</p></article>
+        </div>
+    </section>
+
+    <section class="latest-articles">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">Kabar & Renungan</p>
+                <h2>Artikel Terbaru</h2>
+            </div>
+            <a class="link-button" href="{{ route('articles.index') }}">Lihat Semua Artikel</a>
+        </div>
+        <div class="article-grid">
+            @forelse ($latestArticles as $article)
+                @include('articles.partials.card', ['article' => $article])
+            @empty
+                <div class="article-empty">Artikel terbaru akan segera hadir.</div>
+            @endforelse
         </div>
     </section>
 

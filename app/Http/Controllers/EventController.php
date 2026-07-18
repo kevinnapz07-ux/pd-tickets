@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Article;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -50,7 +51,12 @@ class EventController extends Controller
 
     public function profile(): View
     {
-        return view('profile.pdug');
+        $latestArticles = Article::published()
+            ->latest('published_at')
+            ->limit(3)
+            ->get();
+
+        return view('profile.pdug', compact('latestArticles'));
     }
 
     public function actors(): View

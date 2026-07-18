@@ -3,6 +3,13 @@
 @section('content')
     <section class="detail">
         <article class="detail-main">
+            <div class="event-detail-poster">
+                @if ($event->image_url)
+                    <img src="{{ $event->image_url }}" alt="Poster {{ $event->title }}" loading="lazy">
+                @else
+                    <img src="{{ asset('images/event-placeholder.svg') }}" alt="Poster event belum tersedia" loading="lazy">
+                @endif
+            </div>
             <h1>{{ $event->title }}</h1>
             <p class="event-description detail-description">{{ $event->description }}</p>
 
