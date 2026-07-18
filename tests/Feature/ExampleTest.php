@@ -760,6 +760,9 @@ class ExampleTest extends TestCase
         $response->assertSee('Kelola informasi akun, tiket, dan riwayat pendaftaran event Anda.');
         $response->assertSee('Member sejak '.$participant->created_at->translatedFormat('F Y'));
         $response->assertSee('Informasi Akun');
+        $response->assertSee('Ubah Password');
+        $response->assertSee('name="current_password"', false);
+        $response->assertDontSee('Ganti Password');
         $response->assertSee('Nama Lengkap');
         $response->assertSee('Tanggal Bergabung');
         $response->assertSee('Peserta Profil');

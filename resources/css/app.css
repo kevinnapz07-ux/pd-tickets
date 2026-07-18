@@ -10598,3 +10598,263 @@ body.public-site:not(.fi-body) .footer-bottom {
         width: 100%;
     }
 }
+
+/* Precision alignment corrections based on the complete public-page review. */
+body.public-site:not(.fi-body) {
+    --public-content-width: 1280px;
+    --public-section-gap: clamp(44px, 5vw, 64px);
+}
+
+body.public-site:not(.fi-body) .footer-top {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(150px, .55fr) minmax(150px, .55fr);
+    align-items: start;
+    gap: clamp(36px, 5vw, 72px);
+}
+
+body.public-site:not(.fi-body) .footer-identity {
+    min-width: 0;
+    align-items: flex-start;
+}
+
+body.public-site:not(.fi-body) .footer-links {
+    display: contents;
+}
+
+body.public-site:not(.fi-body) .footer-links section {
+    display: flex;
+    min-width: 0;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+
+body.public-site:not(.fi-body) .footer-links h2 {
+    margin: 0 0 10px;
+    font-size: 17px;
+    line-height: 1.3;
+}
+
+body.public-site:not(.fi-body) .footer-links a {
+    margin: 0;
+    line-height: 1.5;
+}
+
+body.public-site:not(.fi-body) .footer-contact {
+    align-items: start;
+}
+
+body.public-site:not(.fi-body) .footer-contact-item {
+    grid-template-columns: 22px 76px minmax(0, 1fr);
+    align-items: start;
+    gap: 10px;
+}
+
+body.public-site:not(.fi-body) .footer-contact-item > div {
+    display: contents;
+}
+
+body.public-site:not(.fi-body) .footer-contact-label,
+body.public-site:not(.fi-body) .footer-contact-value {
+    min-width: 0;
+    margin: 0;
+    text-align: left;
+}
+
+body.public-site:not(.fi-body) .footer-contact-value {
+    overflow-wrap: anywhere;
+}
+
+body.public-site:not(.fi-body) .participant-profile-layout {
+    grid-template-columns: 250px minmax(0, 1fr);
+    align-items: start;
+    gap: 28px;
+}
+
+body.public-site:not(.fi-body) .participant-profile-menu {
+    position: relative;
+    z-index: 5;
+    padding: 10px;
+}
+
+body.public-site:not(.fi-body) .participant-profile-menu :where(a, button, summary) {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+    width: 100%;
+    gap: 11px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--public-text);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 750;
+    line-height: 1.3;
+    list-style: none;
+    padding: 10px 12px;
+    text-align: left;
+}
+
+body.public-site:not(.fi-body) .participant-profile-menu summary::-webkit-details-marker {
+    display: none;
+}
+
+body.public-site:not(.fi-body) .participant-profile-menu :where(a, button, summary):hover,
+body.public-site:not(.fi-body) .participant-password-menu[open] > summary {
+    background: var(--public-primary-soft);
+    color: var(--public-primary);
+}
+
+body.public-site:not(.fi-body) .participant-password-menu {
+    margin: 0;
+}
+
+body.public-site:not(.fi-body) .participant-password-menu[open] {
+    position: relative;
+}
+
+body.public-site:not(.fi-body) .participant-password-dropdown {
+    position: absolute;
+    z-index: 30;
+    top: 0;
+    left: calc(100% + 22px);
+    width: min(520px, calc(100vw - 330px));
+    padding: 26px;
+    border: 1px solid var(--public-border);
+    border-radius: var(--public-radius);
+    background: var(--public-surface-raised);
+    box-shadow: var(--public-shadow-hover);
+}
+
+body.public-site:not(.fi-body) .participant-password-dropdown-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+body.public-site:not(.fi-body) .participant-password-dropdown-heading h2 {
+    margin: 0;
+    font-size: 25px;
+}
+
+body.public-site:not(.fi-body) .participant-password-dropdown-heading small {
+    padding-top: 4px;
+    text-align: right;
+}
+
+body.public-site:not(.fi-body) .participant-password-dropdown .profile-password-form {
+    display: grid;
+    gap: 17px;
+}
+
+body.public-site:not(.fi-body) .participant-password-dropdown .profile-password-submit {
+    width: 100%;
+}
+
+body.public-site:not(.fi-body) .participant-profile-content {
+    gap: 0;
+}
+
+body.public-site:not(.fi-body) .participant-profile-content .participant-card {
+    padding: clamp(24px, 3vw, 32px);
+}
+
+body.public-site:not(.fi-body) .participant-card > div:first-child {
+    margin: 0 0 18px;
+}
+
+body.public-site:not(.fi-body) .participant-card .eyebrow {
+    margin: 0;
+}
+
+body.public-site:not(.fi-body) .participant-card .eyebrow::before {
+    display: none;
+}
+
+body.public-site:not(.fi-body) .account-info-list {
+    width: 100%;
+    margin: 0;
+}
+
+body.public-site:not(.fi-body) .account-info-list > div {
+    grid-template-columns: 140px minmax(0, 1fr);
+    align-items: baseline;
+    gap: 20px;
+    padding: 15px 0;
+}
+
+body.public-site:not(.fi-body) .account-info-list :where(dt, dd) {
+    margin: 0;
+    text-align: left;
+}
+
+@media (max-width: 900px) {
+    body.public-site:not(.fi-body) .participant-profile-layout {
+        grid-template-columns: 1fr;
+    }
+
+    body.public-site:not(.fi-body) .participant-profile-menu {
+        overflow: visible;
+    }
+
+    body.public-site:not(.fi-body) .participant-password-dropdown {
+        position: fixed;
+        inset: 50% auto auto 50%;
+        width: min(520px, calc(100vw - 36px));
+        max-height: calc(100dvh - 36px);
+        overflow-y: auto;
+        transform: translate(-50%, -50%);
+    }
+}
+
+@media (max-width: 700px) {
+    body.public-site:not(.fi-body) .footer-top {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    body.public-site:not(.fi-body) .footer-identity {
+        grid-column: 1 / -1;
+    }
+
+    body.public-site:not(.fi-body) .footer-contact-item {
+        grid-template-columns: 22px minmax(0, 1fr);
+    }
+
+    body.public-site:not(.fi-body) .footer-contact-item > div {
+        display: block;
+    }
+
+    body.public-site:not(.fi-body) .footer-contact-label,
+    body.public-site:not(.fi-body) .footer-contact-value {
+        display: block;
+    }
+
+    body.public-site:not(.fi-body) .account-info-list > div {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+
+    body.public-site:not(.fi-body) .participant-password-dropdown-heading {
+        flex-direction: column;
+    }
+
+    body.public-site:not(.fi-body) .participant-password-dropdown-heading small {
+        text-align: left;
+    }
+}
+
+@media (max-width: 440px) {
+    body.public-site:not(.fi-body) .footer-top {
+        grid-template-columns: 1fr;
+    }
+
+    body.public-site:not(.fi-body) .footer-identity {
+        grid-column: auto;
+    }
+}
