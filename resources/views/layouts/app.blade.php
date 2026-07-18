@@ -4,6 +4,7 @@
     @php
         $brandTitle = filled($siteSetting?->site_name) ? $siteSetting->site_name : config('branding.title');
         $brandSubtitle = filled($siteSetting?->site_tagline) ? $siteSetting->site_tagline : config('branding.subtitle');
+        $brandSubtitle = str_replace('Universitas gunadarma', 'Universitas Gunadarma', $brandSubtitle);
         $pageTitle = $title ?? $brandTitle;
         $browserTitle = $pageTitle === $brandTitle ? $brandTitle : $pageTitle.' • '.$brandTitle;
         $routeDescription = collect(config('branding.pages', []))
@@ -80,7 +81,7 @@
             <nav class="main-nav" aria-label="Navigasi utama">
                 <a class="mobile-home-link{{ request()->routeIs('events.index') ? ' is-active' : '' }}" href="{{ route('events.index') }}" @if (request()->routeIs('events.index')) aria-current="page" @endif>Home</a>
                 <a class="desktop-event-link{{ request()->routeIs('events.index', 'events.show') ? ' is-active' : '' }}" href="{{ route('events.index') }}" @if (request()->routeIs('events.index', 'events.show')) aria-current="page" @endif>Event</a>
-                <button class="nav-button" type="button" data-how-open>How to Order</button>
+                <button class="nav-button" type="button" data-how-open>Cara Daftar</button>
                 <a class="{{ request()->routeIs('profile.pdug', 'articles.*') ? 'is-active' : '' }}" href="{{ route('profile.pdug') }}" @if (request()->routeIs('profile.pdug', 'articles.*')) aria-current="page" @endif>Tentang PDUG</a>
             </nav>
 

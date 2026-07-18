@@ -48,6 +48,11 @@ class ExampleTest extends TestCase
         $response->assertSee('Universitas Gunadarma, Depok');
         $response->assertSee('Jam Layanan');
         $response->assertSee('Cara Registrasi Event');
+        $response->assertSee('Cara Daftar');
+        $response->assertSee('Lihat Event');
+        $response->assertSee('>Cari</button>', false);
+        $response->assertSee('Tanggal');
+        $response->assertSee('Kuota');
         $response->assertSee('Masuk atau Daftar');
         $response->assertSee('Isi Data Registrasi');
         $response->assertSee('Selesaikan Registrasi');
@@ -60,6 +65,26 @@ class ExampleTest extends TestCase
         $response->assertDontSee('Daftar Peserta');
         $response->assertDontSee('Buat Akun Peserta');
         $response->assertDontSee('Pengumuman');
+    }
+
+    public function test_homepage_event_card_keeps_title_and_cleans_description_prefix(): void
+    {
+        Event::create([
+            'title' => 'Ibadah Raya Jumat',
+            'description' => " '', Deskripsi event yang bersih.",
+            'speaker' => 'PD Gunadarma',
+            'location' => 'Kampus D',
+            'starts_at' => now()->addWeek(),
+            'quota' => 80,
+            'price' => 15000,
+        ]);
+
+        $this->get(route('events.index'))
+            ->assertOk()
+            ->assertSee('<h3>Ibadah Raya Jumat</h3>', false)
+            ->assertSee('Deskripsi event yang bersih.')
+            ->assertDontSee(" '', Deskripsi event yang bersih.")
+            ->assertSee('public-event-rail is-single', false);
     }
 
     public function test_about_us_page_is_concise_and_hides_dummy_contact_data(): void
@@ -91,6 +116,7 @@ class ExampleTest extends TestCase
     public function test_configured_public_contact_is_rendered_on_about_page_and_footer(): void
     {
         SiteSetting::current()->update([
+            'site_tagline' => 'UKM Kerohanian Universitas gunadarma',
             'contact_email' => 'halo@pdug.org',
             'contact_phone' => '+62 811-2222-3333',
             'contact_address' => 'Kampus D Universitas Gunadarma',
@@ -107,6 +133,8 @@ class ExampleTest extends TestCase
         $homeResponse->assertSee('halo@pdug.org');
         $homeResponse->assertSee('+62 811-2222-3333');
         $homeResponse->assertSee('Kampus D Universitas Gunadarma');
+        $homeResponse->assertSee('UKM Kerohanian Universitas Gunadarma');
+        $homeResponse->assertDontSee('UKM Kerohanian Universitas gunadarma');
     }
 
     public function test_upcoming_events_are_separate_information_only_items(): void
@@ -677,7 +705,7 @@ class ExampleTest extends TestCase
         $this->actingAs($participant)
             ->get(route('events.index'))
             ->assertOk()
-            ->assertSeeInOrder(['Selamat datang, Peserta Hero', 'PDUG']);
+            ->assertSeeInOrder(['Selamat datang kembali,', 'Peserta Hero', 'PDUG']);
     }
 
     public function test_login_rejects_external_redirect(): void

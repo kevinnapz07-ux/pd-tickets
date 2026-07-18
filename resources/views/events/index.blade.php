@@ -2,17 +2,18 @@
 
 @section('content')
     @auth
-        <div class="homepage-welcome">Selamat datang, {{ auth()->user()->name }}</div>
+        <p class="homepage-welcome">Selamat datang kembali, <strong>{{ auth()->user()->name }}</strong></p>
     @endauth
 
     <section class="hero">
         <div class="hero-copy">
             <h1>{{ $siteSetting?->hero_title ?? 'PDUG' }}</h1>
             <p>{{ $siteSetting?->hero_subtitle ?? 'Temukan seminar, workshop, dan kegiatan akademik PD Gunadarma. Registrasi dan pembayaran diproses dalam satu alur yang mudah dilacak.' }}</p>
+            <a class="button hero-cta" href="#event-tersedia">Lihat Event</a>
         </div>
     </section>
 
-    <section class="section">
+    <section class="section event-catalog-section" id="event-tersedia">
         <div class="section-heading">
             <div>
                 <p class="eyebrow">Pendaftaran Dibuka</p>
@@ -20,15 +21,19 @@
             </div>
             <form class="search-form" method="GET" action="{{ route('events.index') }}">
                 <input name="search" value="{{ $search }}" placeholder="Cari event, lokasi, pembicara">
-                <button class="button" type="submit">Search</button>
+                <button class="button" type="submit">Cari</button>
                 @if ($search !== '')
                     <a class="link-button" href="{{ route('events.index') }}">Reset</a>
                 @endif
             </form>
         </div>
 
-        <div class="event-grid public-event-rail" aria-label="Daftar event tersedia">
+        <div class="event-grid public-event-rail{{ $events->count() === 1 ? ' is-single' : '' }}" aria-label="Daftar event tersedia">
             @forelse ($events as $event)
+                @php
+                    $eventTitle = trim(strip_tags((string) $event->title));
+                    $eventDescription = preg_replace('/^[\s\'",]+/u', '', trim(strip_tags((string) $event->description)));
+                @endphp
                 <article class="event-card public-event-card" data-reveal>
                     <div class="event-card-visual" aria-hidden="true">
                         @if ($event->image_url)
@@ -43,11 +48,21 @@
                     </div>
                     <div class="event-card-content">
                         <p class="event-meta">{{ $event->location }}</p>
-                        <h3>{{ $event->title }}</h3>
-                        <p class="event-description event-description-preview">{{ Str::limit($event->description, 180) }}</p>
+                        <h3>{{ $eventTitle }}</h3>
+                        <p class="event-description event-description-preview">{{ Str::limit($eventDescription, 170) }}</p>
+                        <dl class="event-card-meta-list">
+                            <div>
+                                <dt>Tanggal</dt>
+                                <dd>{{ $event->starts_at->translatedFormat('d M Y') }}, {{ $event->starts_at->format('H:i') }} WIB</dd>
+                            </div>
+                            <div>
+                                <dt>Kuota</dt>
+                                <dd>{{ $event->paid_registrations_count }}/{{ $event->quota }} peserta</dd>
+                            </div>
+                        </dl>
                         <div class="event-footer">
-                            <span>{{ $event->paid_registrations_count }}/{{ $event->quota }} orang</span>
-                            <span>{{ $event->price > 0 ? 'Rp '.number_format($event->price, 0, ',', '.') : 'Gratis' }}</span>
+                            <span>Harga</span>
+                            <strong>{{ $event->price > 0 ? 'Rp '.number_format($event->price, 0, ',', '.') : 'Gratis' }}</strong>
                         </div>
                         <a class="button" href="{{ route('events.show', ['event' => $event->slug ?: $event->id]) }}">Lihat Detail</a>
                     </div>
