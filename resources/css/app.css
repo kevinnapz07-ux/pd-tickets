@@ -11509,3 +11509,76 @@ body.public-site:not(.fi-body) .participant-profile-content .participant-card {
         padding: 22px 18px;
     }
 }
+
+/* Match the About story and vision panels to the Kegiatan Kami card system. */
+body.public-site:not(.fi-body) .about-story,
+body.public-site:not(.fi-body) .profile-grid.about-grid article {
+    min-width: 0;
+    border: 1px solid var(--public-border);
+    border-radius: var(--public-radius);
+    background: var(--public-surface);
+    padding: clamp(24px, 3vw, 28px);
+    box-shadow: var(--public-shadow);
+    transition: border-color .25s ease, box-shadow .25s ease;
+}
+
+body.public-site:not(.fi-body) .about-story {
+    border-bottom: 1px solid var(--public-border);
+}
+
+body.public-site:not(.fi-body) .about-identity {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
+}
+
+body.public-site:not(.fi-body) .profile-grid.about-grid {
+    align-items: stretch;
+}
+
+body.public-site:not(.fi-body) .profile-grid.about-grid article {
+    display: flex;
+    height: 100%;
+    min-height: 0;
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+body.public-site:not(.fi-body) .profile-grid.about-grid article small {
+    margin-top: auto;
+    padding-top: 10px;
+}
+
+body.public-site:not(.fi-body) .about-story:hover,
+body.public-site:not(.fi-body) .profile-grid.about-grid article:hover {
+    border-color: rgb(109 93 246 / 45%);
+    box-shadow: var(--public-shadow-hover);
+}
+
+html[data-theme="dark"] body.public-site:not(.fi-body) .about-story,
+html[data-theme="dark"] body.public-site:not(.fi-body) .profile-grid.about-grid article {
+    border-color: var(--public-border);
+    background: var(--public-surface);
+    box-shadow: var(--public-shadow);
+}
+
+html[data-theme="dark"] body.public-site:not(.fi-body) .about-identity {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+html[data-theme="dark"] body.public-site:not(.fi-body) .about-story:hover,
+html[data-theme="dark"] body.public-site:not(.fi-body) .profile-grid.about-grid article:hover {
+    border-color: rgb(109 93 246 / 45%);
+    box-shadow: var(--public-shadow-hover);
+}
+
+@media (max-width: 760px) {
+    body.public-site:not(.fi-body) .about-story,
+    body.public-site:not(.fi-body) .profile-grid.about-grid article {
+        padding: 22px;
+    }
+}
