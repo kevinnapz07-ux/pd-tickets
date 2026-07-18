@@ -15,40 +15,24 @@ class AdminSecurityTest extends TestCase
     {
         $this->get('/admin')->assertRedirect(route('events.index'));
         $this->get('/admin/events')->assertRedirect(route('events.index'));
-        $this->get('/admin/login')
-            ->assertOk()
-            ->assertSee('Login Admin');
+        $this->get('/admin/login')->assertRedirect(route('events.index'));
         $this->get('/filament-admin')->assertRedirect(route('events.index'));
         $this->get('/filament-admin/events')->assertRedirect(route('events.index'));
     }
 
-    public function test_admin_login_only_accepts_admin_accounts(): void
+    public function test_legacy_admin_login_endpoint_redirects_home_without_authenticating(): void
     {
-        $participant = User::factory()->create([
-            'email' => 'public-account@example.com',
-            'password' => 'password-benar',
-            'role' => 'peserta',
-        ]);
         $admin = User::factory()->create([
             'email' => 'admin-account@example.com',
             'password' => 'password-benar',
             'role' => 'admin',
         ]);
 
-        $this->from(route('admin.login'))->post(route('admin.login.store'), [
-            'email' => $participant->email,
-            'password' => 'password-benar',
-        ])->assertRedirect(route('admin.login'))
-            ->assertSessionHasErrors([
-                'email' => 'Email atau password yang Anda masukkan tidak valid.',
-            ]);
-        $this->assertGuest();
-
         $this->post(route('admin.login.store'), [
             'email' => $admin->email,
             'password' => 'password-benar',
-        ])->assertRedirect(route('filament.admin.pages.dashboard'));
-        $this->assertAuthenticatedAs($admin);
+        ])->assertRedirect(route('events.index'));
+        $this->assertGuest();
     }
 
     public function test_participant_cannot_access_filament_resources_or_reports(): void
@@ -73,7 +57,7 @@ class AdminSecurityTest extends TestCase
         $this->assertStringContainsString('no-store', (string) $response->headers->get('Cache-Control'));
     }
 
-    public function test_public_login_rejects_admin_and_participant_cannot_reach_admin_panel(): void
+    public function test_shared_login_routes_admin_to_dashboard_and_participant_cannot_reach_it(): void
     {
         $participant = User::factory()->create([
             'email' => 'peserta-admin-login@example.com',
@@ -90,12 +74,10 @@ class AdminSecurityTest extends TestCase
             'email' => $admin->email,
             'password' => 'password-benar',
             'redirect' => route('events.index'),
-        ])->assertRedirect(route('login'))
-            ->assertSessionHasErrors([
-                'email' => 'Email atau password yang Anda masukkan tidak valid.',
-            ]);
-        $this->assertGuest();
+        ])->assertRedirect(route('filament.admin.pages.dashboard'));
+        $this->assertAuthenticatedAs($admin);
 
+        $this->post(route('logout'));
         $this->actingAs($participant)
             ->get(route('filament.admin.pages.dashboard'))
             ->assertRedirect(route('events.index'));

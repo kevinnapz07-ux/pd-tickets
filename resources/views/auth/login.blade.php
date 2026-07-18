@@ -4,6 +4,7 @@
     <section class="auth-panel">
         <div>
             <h1 class="auth-title">Login</h1>
+            <p class="muted">Gunakan halaman ini untuk login akun peserta maupun admin.</p>
         </div>
 
         @if ($errors->any())

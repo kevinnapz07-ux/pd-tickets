@@ -29,8 +29,8 @@ Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->middl
 Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])->middleware('guest')->name('password.reset');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('guest')->name('password.update');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
-Route::get('/admin/login', [AuthController::class, 'showAdminLogin'])->middleware('guest')->name('admin.login');
-Route::post('/admin/login', [AuthController::class, 'adminLogin'])->middleware(['guest', 'auth.throttle:admin-login'])->name('admin.login.store');
+Route::get('/admin/login', fn () => redirect()->route('events.index'))->name('admin.login');
+Route::post('/admin/login', fn () => redirect()->route('events.index'))->name('admin.login.store');
 Route::get('/events/{event:slug}', [EventController::class, 'show'])->name('events.show');
 Route::get('/ticket/verify/{token}', TicketVerificationController::class)
     ->middleware('throttle:30,1')

@@ -39,12 +39,15 @@
             @else
             @guest
                 <div class="login-prompt">
-                    <p>Silakan login untuk melakukan registrasi.</p>
+                    <p>Silakan login untuk melanjutkan. Registrasi event tersedia untuk akun peserta.</p>
                     <a class="button button-full" href="{{ route('login', ['redirect' => request()->fullUrl()]) }}">Login</a>
                 </div>
             @else
                 @if (auth()->user()->role !== 'peserta')
-                    <div class="error-box">Akun admin hanya dapat melihat dashboard. Gunakan akun pengguna untuk registrasi event.</div>
+                    <div class="error-box">
+                        <p>Akun admin tidak dapat digunakan untuk registrasi event.</p>
+                        <a href="{{ route('filament.admin.pages.dashboard') }}">Kembali ke Dashboard Admin</a>
+                    </div>
                 @endif
 
                 @if ($errors->any())

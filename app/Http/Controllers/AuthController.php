@@ -21,11 +21,6 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    public function showAdminLogin(): View
-    {
-        return view('auth.admin-login');
-    }
-
     public function login(Request $request): RedirectResponse
     {
         $request->merge(['email' => Str::lower(trim((string) $request->input('email')))]);
@@ -39,7 +34,6 @@ class AuthController extends Controller
         $remember = $request->boolean('remember');
         $redirect = $credentials['redirect'] ?? null;
         unset($credentials['redirect']);
-        $credentials['role'] = 'peserta';
 
         if (! Auth::attempt($credentials, $remember)) {
             return back()->withInput($request->only('email'))
@@ -51,6 +45,10 @@ class AuthController extends Controller
         $user = $request->user();
         $message = 'Login berhasil. Selamat datang, '.$user->name.'.';
 
+        if ($user->role === 'admin') {
+            return redirect()->route('filament.admin.pages.dashboard')->with('status', $message);
+        }
+
         $destination = $this->safeInternalRedirect($request, $redirect)
             ?? $this->safeInternalRedirect($request, $request->session()->pull('url.intended'));
 
@@ -59,27 +57,6 @@ class AuthController extends Controller
         }
 
         return redirect()->route('events.index')->with('status', $message);
-    }
-
-    public function adminLogin(Request $request): RedirectResponse
-    {
-        $request->merge(['email' => Str::lower(trim((string) $request->input('email')))]);
-
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required', 'string'],
-        ]);
-        $credentials['role'] = 'admin';
-
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
-            return back()->withInput($request->only('email'))
-                ->withErrors(['email' => 'Email atau password yang Anda masukkan tidak valid.']);
-        }
-
-        $request->session()->regenerate();
-        RateLimiter::clear('auth:admin-login|'.$request->ip());
-
-        return redirect()->route('filament.admin.pages.dashboard');
     }
 
     public function showRegister(): View

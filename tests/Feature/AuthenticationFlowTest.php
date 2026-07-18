@@ -31,9 +31,9 @@ class AuthenticationFlowTest extends TestCase
         $this->assertGuest();
     }
 
-    public function test_public_login_returns_the_same_error_for_admin_credentials(): void
+    public function test_admin_can_login_through_the_shared_login_page(): void
     {
-        User::factory()->create([
+        $admin = User::factory()->create([
             'email' => 'admin@example.com',
             'password' => 'password-benar',
             'role' => 'admin',
@@ -44,12 +44,9 @@ class AuthenticationFlowTest extends TestCase
             'password' => 'password-benar',
         ]);
 
-        $response->assertRedirect(route('login'));
-        $response->assertSessionHasErrors([
-            'email' => 'Email atau password yang Anda masukkan tidak valid.',
-        ]);
-        $response->assertSessionMissing('status');
-        $this->assertGuest();
+        $response->assertRedirect(route('filament.admin.pages.dashboard'));
+        $response->assertSessionHas('status');
+        $this->assertAuthenticatedAs($admin);
     }
 
     public function test_logout_ends_the_session_and_protects_participant_profile(): void

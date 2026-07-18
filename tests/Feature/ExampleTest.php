@@ -417,7 +417,7 @@ class ExampleTest extends TestCase
 
         $this->get(route('events.show', $event))
             ->assertOk()
-            ->assertSee('Silakan login untuk melakukan registrasi.')
+            ->assertSee('Silakan login untuk melanjutkan. Registrasi event tersedia untuk akun peserta.')
             ->assertDontSee('Silakan login sebagai peserta untuk melakukan registrasi event.');
 
         $response = $this->actingAs($participant)->get(route('events.show', $event));
@@ -600,9 +600,9 @@ class ExampleTest extends TestCase
         $response->assertRedirect(route('events.index'));
     }
 
-    public function test_admin_login_through_public_login_is_rejected_without_revealing_role(): void
+    public function test_admin_login_through_shared_login_opens_admin_dashboard(): void
     {
-        User::forceCreate([
+        $admin = User::forceCreate([
             'name' => 'Admin Test',
             'email' => 'admin-test@example.com',
             'password' => 'password',
@@ -614,12 +614,9 @@ class ExampleTest extends TestCase
             'password' => 'password',
         ]);
 
-        $response->assertRedirect(route('login'));
-        $response->assertSessionHasErrors([
-            'email' => 'Email atau password yang Anda masukkan tidak valid.',
-        ]);
-        $response->assertSessionMissing('status');
-        $this->assertGuest();
+        $response->assertRedirect(route('filament.admin.pages.dashboard'));
+        $response->assertSessionHas('status');
+        $this->assertAuthenticatedAs($admin);
     }
 
     public function test_participant_login_can_return_to_event_detail(): void
