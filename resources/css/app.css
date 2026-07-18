@@ -1355,6 +1355,7 @@ html.fi.dark body.fi-body {
 }
 
 .filament-custom-page .admin-hub-status {
+    margin-top: 14px;
     gap: 0.5rem;
     border: 0;
     border-radius: 0.5rem;
