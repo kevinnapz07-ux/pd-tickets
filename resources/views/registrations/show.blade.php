@@ -47,24 +47,15 @@
                 <div class="error-box">{{ session('payment_error') }}</div>
             @endif
 
-            <div class="compact-ticket-statuses" aria-label="Status tiket">
-                @if ($registration->event->price <= 0 || $registration->payment_status === 'paid')
-                    <span class="compact-status is-paid"><span aria-hidden="true">●</span> Lunas</span>
-                @elseif ($registration->payment_status === 'pending')
+            @if ($registration->payment_status === 'pending' || in_array($registration->payment_status, ['expired', 'failed', 'cancelled', 'refunded'], true))
+                <div class="compact-ticket-statuses" aria-label="Status pembayaran">
+                @if ($registration->payment_status === 'pending')
                     <span class="compact-status is-pending"><span aria-hidden="true">●</span> Menunggu Pembayaran</span>
                 @else
                     <span class="compact-status is-error"><span aria-hidden="true">●</span> {{ $registration->transactionStatusLabel() }}</span>
                 @endif
-                @if (in_array($registration->registration_status, ['registered', 'checked_in', 'completed'], true))
-                    <span class="compact-status is-registered"><span aria-hidden="true">●</span> Terdaftar</span>
-                @endif
-                @if ($registration->isCheckInReady() || $hasCheckedIn)
-                    <span class="compact-status {{ $hasCheckedIn ? 'is-paid' : 'is-ready' }}">
-                        <span aria-hidden="true">{{ $hasCheckedIn ? '✓' : '◷' }}</span>
-                        {{ $hasCheckedIn ? 'Sudah Check-in' : 'Siap Check-in' }}
-                    </span>
-                @endif
-            </div>
+                </div>
+            @endif
 
             @if ($registration->isCheckInReady())
                 <section class="qr-checkin compact-qr-checkin" id="ticket-qr">

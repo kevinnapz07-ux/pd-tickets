@@ -824,6 +824,76 @@ import { Html5Qrcode } from 'html5-qrcode';
         });
     };
 
+    const setupRegistrationConfirmation = () => {
+        document.querySelectorAll('[data-registration-confirm]').forEach((form) => {
+            if (form.dataset.confirmBound) return;
+
+            const modal = document.querySelector('[data-registration-confirm-modal]');
+            const summary = modal?.querySelector('[data-registration-confirm-summary]');
+            const confirmButton = modal?.querySelector('[data-registration-confirm-submit]');
+            const closeButtons = modal?.querySelectorAll('[data-registration-confirm-close]');
+            const submitButton = form.querySelector('button[type="submit"]');
+            let confirmed = false;
+
+            if (! modal || ! summary || ! confirmButton) return;
+
+            const closeModal = () => {
+                modal.setAttribute('aria-hidden', 'true');
+                document.body.classList.remove('modal-open');
+                submitButton?.focus();
+            };
+
+            const openModal = () => {
+                summary.replaceChildren();
+
+                form.querySelectorAll('[data-confirm-label]:not([disabled])').forEach((field) => {
+                    const wrapper = document.createElement('div');
+                    const label = document.createElement('dt');
+                    const value = document.createElement('dd');
+
+                    label.textContent = field.dataset.confirmLabel;
+                    value.textContent = field instanceof HTMLSelectElement
+                        ? field.selectedOptions[0]?.textContent?.trim() || '-'
+                        : field.value.trim() || '-';
+                    wrapper.append(label, value);
+                    summary.append(wrapper);
+                });
+
+                modal.setAttribute('aria-hidden', 'false');
+                document.body.classList.add('modal-open');
+                confirmButton.focus();
+            };
+
+            form.dataset.confirmBound = 'true';
+            form.addEventListener('submit', (event) => {
+                if (confirmed) return;
+
+                event.preventDefault();
+                if (! form.reportValidity()) return;
+                openModal();
+            });
+
+            confirmButton.addEventListener('click', () => {
+                if (confirmButton.disabled) return;
+
+                confirmed = true;
+                confirmButton.disabled = true;
+                confirmButton.textContent = 'Mendaftarkan...';
+                modal.setAttribute('aria-hidden', 'true');
+                document.body.classList.remove('modal-open');
+                form.requestSubmit(submitButton);
+            });
+
+            closeButtons.forEach((button) => button.addEventListener('click', closeModal));
+            modal.addEventListener('click', (event) => {
+                if (event.target === modal) closeModal();
+            });
+            modal.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') closeModal();
+            });
+        });
+    };
+
     const initialize = () => {
         setupCustomRegistrationFields();
     if (syncFilamentTheme()) {
@@ -845,6 +915,7 @@ import { Html5Qrcode } from 'html5-qrcode';
         setupPasswordResetRequest();
         setupTicketDetails();
         setupTicketModals();
+        setupRegistrationConfirmation();
         document.querySelectorAll('form[data-disable-submit]').forEach((form) => {
             if (form.dataset.submitBound) return;
             form.dataset.submitBound = 'true';

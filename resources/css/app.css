@@ -249,6 +249,163 @@ body.fi-body .filament-custom-page :where(p, label, input, select, textarea, but
     }
 }
 
+/* Registration review modal */
+.registration-confirm-backdrop {
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    overflow-y: auto;
+    background: rgb(15 23 42 / 72%);
+    backdrop-filter: blur(5px);
+}
+
+.registration-confirm-backdrop[aria-hidden="true"] {
+    display: none;
+}
+
+.registration-confirm-dialog {
+    width: min(100%, 520px);
+    max-height: calc(100dvh - 40px);
+    overflow-y: auto;
+    border: 1px solid #dbe3ef;
+    border-radius: 18px;
+    padding: 22px;
+    background: #fff;
+    box-shadow: 0 24px 60px rgb(15 23 42 / 28%);
+    color: #0f172a;
+}
+
+.registration-confirm-dialog:focus-visible {
+    outline: 3px solid #60a5fa;
+    outline-offset: 3px;
+}
+
+.registration-confirm-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.registration-confirm-heading h2 {
+    margin: 3px 0 0;
+    color: #0f172a;
+}
+
+.registration-confirm-close {
+    display: grid;
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    place-items: center;
+    border: 1px solid #cbd5e1;
+    border-radius: 999px;
+    background: #f8fafc;
+    color: #334155;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.registration-confirm-note {
+    margin: 12px 0 16px;
+    color: #475569;
+}
+
+.registration-confirm-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin: 0;
+}
+
+.registration-confirm-summary > div {
+    min-width: 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 11px;
+    padding: 9px 11px;
+    background: #f8fafc;
+}
+
+.registration-confirm-summary dt {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.registration-confirm-summary dd {
+    margin: 3px 0 0;
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.registration-confirm-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+[data-theme="dark"] .registration-confirm-dialog {
+    border-color: #3b4b63;
+    background: #172337;
+    color: #f8fafc;
+}
+
+[data-theme="dark"] .registration-confirm-heading h2,
+[data-theme="dark"] .registration-confirm-summary dd {
+    color: #f8fafc;
+}
+
+[data-theme="dark"] .registration-confirm-note {
+    color: #c0ccda;
+}
+
+[data-theme="dark"] .registration-confirm-close {
+    border-color: #4b5d76;
+    background: #223149;
+    color: #f8fafc;
+}
+
+[data-theme="dark"] .registration-confirm-summary > div {
+    border-color: #3b4b63;
+    background: #111c2f;
+}
+
+[data-theme="dark"] .registration-confirm-summary dt {
+    color: #aebdd0;
+}
+
+@media (max-width: 640px) {
+    .registration-confirm-backdrop {
+        align-items: end;
+        padding: 12px;
+    }
+
+    .registration-confirm-dialog {
+        width: 100%;
+        max-height: calc(100dvh - 24px);
+        padding: 18px;
+    }
+
+    .registration-confirm-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .registration-confirm-actions,
+    .registration-confirm-actions > * {
+        width: 100%;
+    }
+
+    .registration-confirm-actions {
+        flex-direction: column-reverse;
+    }
+}
+
 @media (max-width: 640px) {
     body:not(.fi-body) :where(.hero h1, .profile-hero h1, .detail-main h1, .receipt-card > h1) {
         font-size: 30px;

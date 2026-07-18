@@ -32,7 +32,7 @@
             @else
             @guest
                 <div class="login-prompt">
-                    <p>Silakan login sebagai peserta untuk melakukan registrasi event.</p>
+                    <p>Silakan login untuk melakukan registrasi.</p>
                     <a class="button button-full" href="{{ route('login', ['redirect' => request()->fullUrl()]) }}">Login Peserta</a>
                 </div>
             @else
@@ -54,16 +54,13 @@
                         $selectedCategory = old('participant_type', $categories[0]['key'] ?? 'umum');
                         $fieldDefinitions = \App\Models\Event::registrationFieldDefinitions();
                     @endphp
-                    <form method="POST" action="{{ route('registrations.store', $event) }}">
+                    <form method="POST" action="{{ route('registrations.store', $event) }}" data-registration-confirm>
                         @csrf
                         <div class="registration-section-heading">
-                            <p class="eyebrow">{{ $siteSetting?->registration_section_title ?? 'Data Registrasi' }}</p>
-                            @if ($siteSetting?->registration_section_description)
-                                <p>{{ $siteSetting->registration_section_description }}</p>
-                            @endif
+                            <p class="eyebrow">Registrasi</p>
                         </div>
                         <label>Kategori Peserta
-                            <select name="participant_type" required data-participant-type>
+                            <select name="participant_type" required data-participant-type data-confirm-label="Kategori Peserta">
                                 @foreach ($categories as $category)
                                     <option value="{{ $category['key'] }}" @selected($selectedCategory === $category['key'])>{{ $category['label'] }}</option>
                                 @endforeach
@@ -85,16 +82,16 @@
 
                                     <label>{{ $definition['label'] }}
                                         @if (($definition['type'] ?? 'text') === 'select')
-                                            <select name="{{ $fieldName }}" data-category-field data-required="{{ ($definition['required'] ?? true) ? 'true' : 'false' }}" @disabled(! $isActive)>
+                                            <select name="{{ $fieldName }}" data-category-field data-confirm-label="{{ $definition['label'] }}" data-required="{{ ($definition['required'] ?? true) ? 'true' : 'false' }}" @disabled(! $isActive)>
                                                 <option value="">Pilih {{ strtolower($definition['label']) }}</option>
                                                 @foreach (($definition['options'] ?? []) as $value => $label)
                                                     <option value="{{ $value }}" @selected($oldValue === $value)>{{ $label }}</option>
                                                 @endforeach
                                             </select>
                                         @elseif (($definition['type'] ?? 'text') === 'textarea')
-                                            <textarea name="{{ $fieldName }}" rows="3" data-category-field data-required="{{ ($definition['required'] ?? true) ? 'true' : 'false' }}" @disabled(! $isActive)>{{ $oldValue }}</textarea>
+                                            <textarea name="{{ $fieldName }}" rows="3" data-category-field data-confirm-label="{{ $definition['label'] }}" data-required="{{ ($definition['required'] ?? true) ? 'true' : 'false' }}" @disabled(! $isActive)>{{ $oldValue }}</textarea>
                                         @else
-                                            <input type="{{ $definition['type'] ?? 'text' }}" name="{{ $fieldName }}" value="{{ $oldValue }}" placeholder="{{ $definition['placeholder'] ?? '' }}" data-category-field data-required="{{ ($definition['required'] ?? true) ? 'true' : 'false' }}" @disabled(! $isActive)>
+                                            <input type="{{ $definition['type'] ?? 'text' }}" name="{{ $fieldName }}" value="{{ $oldValue }}" placeholder="{{ $definition['placeholder'] ?? '' }}" data-category-field data-confirm-label="{{ $definition['label'] }}" data-required="{{ ($definition['required'] ?? true) ? 'true' : 'false' }}" @disabled(! $isActive)>
                                         @endif
                                     </label>
                                 @endforeach
@@ -102,6 +99,24 @@
                         @endforeach
                         <button class="button button-full" type="submit">Daftar Sekarang</button>
                     </form>
+
+                    <div class="registration-confirm-backdrop" data-registration-confirm-modal aria-hidden="true">
+                        <section class="registration-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="registration-confirm-title" tabindex="-1">
+                            <div class="registration-confirm-heading">
+                                <div>
+                                    <p class="eyebrow">Konfirmasi Registrasi</p>
+                                    <h2 id="registration-confirm-title">Apakah data sudah sesuai?</h2>
+                                </div>
+                                <button class="registration-confirm-close" type="button" data-registration-confirm-close aria-label="Tutup konfirmasi">×</button>
+                            </div>
+                            <p class="registration-confirm-note">Periksa kembali data registrasi sebelum dikirim.</p>
+                            <dl class="registration-confirm-summary" data-registration-confirm-summary></dl>
+                            <div class="registration-confirm-actions">
+                                <button class="link-button" type="button" data-registration-confirm-close>Periksa Kembali</button>
+                                <button class="button" type="button" data-registration-confirm-submit>Ya, Daftar Sekarang</button>
+                            </div>
+                        </section>
+                    </div>
                 @endif
             @endguest
             @endif

@@ -251,7 +251,9 @@ class ExampleTest extends TestCase
             ->assertSee('<dt>Tanggal</dt>', false)
             ->assertSee('Gratis')
             ->assertSee('QR Check-in')
-            ->assertSee('Terdaftar')
+            ->assertDontSee('Lunas')
+            ->assertDontSee('Terdaftar')
+            ->assertDontSee('Siap Check-in')
             ->assertDontSee('Status Transaksi')
             ->assertDontSee('Order ID');
     }
@@ -411,6 +413,11 @@ class ExampleTest extends TestCase
             'price' => 0,
         ]);
 
+        $this->get(route('events.show', $event))
+            ->assertOk()
+            ->assertSee('Silakan login untuk melakukan registrasi.')
+            ->assertDontSee('Silakan login sebagai peserta untuk melakukan registrasi event.');
+
         $response = $this->actingAs($participant)->get(route('events.show', $event));
 
         $response->assertOk();
@@ -423,6 +430,12 @@ class ExampleTest extends TestCase
         $response->assertSee('Area Kampus');
         $response->assertSee('Angkatan');
         $response->assertSee('Program Studi');
+        $response->assertSee('Registrasi');
+        $response->assertSee('data-registration-confirm', false);
+        $response->assertSee('Apakah data sudah sesuai?');
+        $response->assertSee('Periksa Kembali');
+        $response->assertSee('Ya, Daftar Sekarang');
+        $response->assertDontSee('Pilih kategori peserta agar form menampilkan data yang sesuai.');
         $response->assertSee('<dt>Tanggal</dt>', false);
         $response->assertSee($event->starts_at->translatedFormat('d F Y'));
         $response->assertDontSee('<dt>Kuota</dt>', false);
@@ -503,7 +516,9 @@ class ExampleTest extends TestCase
         $formResponse = $this->actingAs($participant)->get(route('events.show', $event->fresh()));
 
         $formResponse->assertOk();
-        $formResponse->assertSee('Data Peserta Custom');
+        $formResponse->assertSee('Registrasi');
+        $formResponse->assertDontSee('Data Peserta Custom');
+        $formResponse->assertDontSee('Isi sesuai kategori.');
         $formResponse->assertSee('Jemaat');
         $formResponse->assertSee('Asal Gereja');
 
