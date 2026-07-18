@@ -399,6 +399,109 @@ iframe {
     max-width: min(24rem, calc(100vw - 2rem));
 }
 
+.ticket-list-page {
+    max-width: 672px;
+}
+
+.ticket-list-page .section-heading {
+    justify-content: center;
+    text-align: center;
+}
+
+.ticket-list-page .registration-card-grid {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.ticket-list-page .registration-card {
+    width: 100%;
+}
+
+.ticket-checkin-status {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+    border: 1px solid;
+    border-radius: 999px;
+    padding: 5px 9px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.35;
+    white-space: normal;
+}
+
+.ticket-checkin-status.is-checked-in {
+    border-color: #86efac;
+    background: #dcfce7;
+    color: #166534;
+}
+
+.ticket-checkin-status.is-waiting {
+    border-color: #fde68a;
+    background: #fef3c7;
+    color: #92400e;
+}
+
+[data-theme="dark"] .ticket-list-page .registration-card,
+[data-theme="dark"] .ticket-list-page .registration-empty {
+    border-color: #3b4b63;
+    background: #172337;
+    color: #f8fafc;
+}
+
+[data-theme="dark"] .ticket-list-page :where(h1, h2, .registration-card-meta dd) {
+    color: #f8fafc;
+}
+
+[data-theme="dark"] .ticket-list-page :where(.section-heading p, .eyebrow, .registration-card-meta dt) {
+    color: #aebdd0;
+}
+
+[data-theme="dark"] .ticket-checkin-status.is-checked-in {
+    border-color: #27834d;
+    background: #123d27;
+    color: #bbf7d0;
+}
+
+[data-theme="dark"] .ticket-checkin-status.is-waiting {
+    border-color: #9a6d1f;
+    background: #473211;
+    color: #fde68a;
+}
+
+[data-theme="dark"] .receipt-card {
+    border-color: #3b4b63;
+    background: #172337;
+}
+
+[data-theme="dark"] .receipt-card :where(h1, h2, h3, strong, .info-list dd, .event-summary-grid dd) {
+    color: #f8fafc;
+}
+
+[data-theme="dark"] .receipt-card :where(p, .eyebrow, .info-list dt, .event-summary-grid dt) {
+    color: #aebdd0;
+}
+
+[data-theme="dark"] .receipt-card :where(.info-list > div, .event-summary-grid > div) {
+    border-color: #3b4b63;
+}
+
+[data-theme="dark"] .receipt-card .qr-checkin {
+    border-color: #3b4b63;
+    background: #111c2f;
+}
+
+[data-theme="dark"] .receipt-card .link-button {
+    border-color: #64748b;
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .receipt-card .link-button:hover {
+    border-color: #93c5fd;
+    color: #fff;
+}
+
 @media (max-width: 640px) {
     .my-registrations {
         padding-block: 24px 40px;
@@ -413,6 +516,15 @@ iframe {
     .registration-empty,
     .receipt-card {
         padding: 16px;
+    }
+
+    .registration-card-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .ticket-checkin-status {
+        align-self: flex-start;
     }
 
     .registration-card-actions,

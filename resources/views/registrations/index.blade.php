@@ -1,10 +1,12 @@
 @extends('layouts.app', ['title' => isset($ticketsOnly) ? 'Tiket Saya' : 'Registrasi Saya'])
 
 @section('content')
-    <section class="my-registrations">
+    <section class="my-registrations {{ isset($ticketsOnly) ? 'ticket-list-page' : '' }}">
         <div class="section-heading">
             <div>
-                <p class="eyebrow">Akun Peserta</p>
+                @unless (isset($ticketsOnly))
+                    <p class="eyebrow">Akun Peserta</p>
+                @endunless
                 <h1>{{ isset($ticketsOnly) ? 'Tiket Saya' : 'Registrasi Saya' }}</h1>
                 <p>{{ isset($ticketsOnly) ? 'Tiket aktif yang siap digunakan.' : 'Pantau pendaftaran dan lanjutkan pembayaran dari satu tempat.' }}</p>
             </div>
@@ -21,7 +23,15 @@
                     <article class="registration-card">
                         <div class="registration-card-heading">
                             <div><p class="eyebrow">{{ $registration->registration_code }}</p><h2>{{ $registration->event->title }}</h2></div>
-                            <span class="status status-{{ $registration->payment_status }}">{{ $registration->transactionStatusLabel() }}</span>
+                            @if (isset($ticketsOnly))
+                                @php($hasCheckedIn = $registration->checked_in_at !== null || $registration->registration_status === 'checked_in')
+                                <span class="ticket-checkin-status {{ $hasCheckedIn ? 'is-checked-in' : 'is-waiting' }}">
+                                    <span aria-hidden="true">{{ $hasCheckedIn ? '✓' : '◷' }}</span>
+                                    {{ $hasCheckedIn ? 'Sudah Check-in' : 'Belum Check-in' }}
+                                </span>
+                            @else
+                                <span class="status status-{{ $registration->payment_status }}">{{ $registration->transactionStatusLabel() }}</span>
+                            @endif
                         </div>
                         <dl class="registration-card-meta">
                             <div><dt>Tanggal</dt><dd>{{ $registration->event->starts_at->translatedFormat('d M Y, H:i') }} WIB</dd></div>

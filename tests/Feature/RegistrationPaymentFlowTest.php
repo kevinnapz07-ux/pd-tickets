@@ -102,6 +102,32 @@ class RegistrationPaymentFlowTest extends TestCase
         $this->assertSame(64, strlen($registration->verification_token));
     }
 
+    public function test_ticket_list_uses_real_check_in_status_and_detail_has_no_self_link(): void
+    {
+        $owner = User::factory()->create(['role' => 'peserta']);
+        $waiting = $this->paidTicket($owner, 'Waiting Ticket', null);
+        $checkedIn = $this->paidTicket($owner, 'Checked Ticket', now());
+
+        $this->actingAs($owner)
+            ->get(route('tickets.index'))
+            ->assertOk()
+            ->assertSee('Tiket Saya')
+            ->assertSee('Tiket aktif yang siap digunakan.')
+            ->assertSee('Belum Check-in')
+            ->assertSee('Sudah Check-in')
+            ->assertSee('Lihat Tiket')
+            ->assertDontSee('Akun Peserta')
+            ->assertDontSee('>Berhasil<', false);
+
+        $this->actingAs($owner)
+            ->get(route('registrations.show', $waiting))
+            ->assertOk()
+            ->assertSee('Kembali ke Beranda')
+            ->assertDontSee('Lihat Tiket');
+
+        $this->assertNotNull($checkedIn->checked_in_at);
+    }
+
     private function registration(string $status = 'pending'): array
     {
         $owner = User::factory()->create(['role' => 'peserta']);
@@ -129,5 +155,28 @@ class RegistrationPaymentFlowTest extends TestCase
         ]);
 
         return [$owner, $registration, $payment];
+    }
+
+    private function paidTicket(User $owner, string $title, mixed $checkedInAt): Registration
+    {
+        $event = Event::create([
+            'title' => $title,
+            'description' => 'Ticket display',
+            'location' => 'Depok',
+            'starts_at' => now()->addWeek(),
+            'quota' => 20,
+            'price' => 0,
+        ]);
+
+        return Registration::create([
+            'event_id' => $event->id,
+            'user_id' => $owner->id,
+            'name' => $owner->name,
+            'email' => $owner->email,
+            'phone' => '0812',
+            'payment_status' => 'paid',
+            'registration_status' => $checkedInAt ? 'checked_in' : 'registered',
+            'checked_in_at' => $checkedInAt,
+        ]);
     }
 }

@@ -131,7 +131,6 @@
                 </div>
             @elseif ($registration->isCheckInReady())
                 <div class="payment-actions">
-                    <a class="button" href="#ticket-qr">Lihat Tiket</a>
                     <a class="link-button" href="{{ route('events.index') }}">Kembali ke Beranda</a>
                 </div>
             @endif
