@@ -9,6 +9,7 @@
 /.npm-cache/
 /public/build/
 /public/hot
+/public/storage
 
 # Local databases and runtime state
 /database/*.sqlite

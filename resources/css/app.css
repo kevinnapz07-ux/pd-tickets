@@ -10005,10 +10005,55 @@ html[data-theme="dark"] body.public-site:not(.fi-body) :where(
     .article-empty,
     .empty,
     .notice,
-    .announcement,
-    .login-prompt
+    .announcement
 ) {
     border-color: var(--public-border, #344157);
     background: var(--public-accent-soft, #3c3423);
     color: var(--public-text, #f8fafc);
+}
+
+html[data-theme="dark"] body.public-site:not(.fi-body) .login-prompt {
+    border-color: var(--public-border, #344157);
+    background: var(--public-surface-raised, #1d2940);
+    color: var(--public-text, #f8fafc);
+}
+
+html[data-theme="dark"] body.public-site:not(.fi-body) .login-prompt p {
+    color: var(--public-muted, #b4bdcc);
+}
+
+/* Enforce the shared purple, pink, and yellow palette over legacy blue rules. */
+body.public-site:not(.fi-body) :where(.button, button[type="submit"]:not(.danger-button)) {
+    background: var(--public-primary, #6d5df6);
+    color: #ffffff;
+}
+
+body.public-site:not(.fi-body) :where(.button, button[type="submit"]:not(.danger-button)):hover {
+    background: var(--public-primary-hover, #5948e8);
+    color: #ffffff;
+}
+
+body.public-site:not(.fi-body) :where(.main-nav .is-active, .topbar .nav-button.is-active) {
+    background: var(--public-primary-soft, #f0edff);
+    color: var(--public-primary, #6d5df6);
+}
+
+body.public-site:not(.fi-body) :where(.main-nav .is-active, .topbar .nav-button.is-active)::after {
+    background: var(--public-accent, #ffc857);
+}
+
+body.public-site:not(.fi-body) :where(.eyebrow, .caption) {
+    color: var(--public-secondary, #ff5c7a);
+}
+
+body.public-site:not(.fi-body) :where(.hero, .profile-hero, .article-hero) {
+    background:
+        radial-gradient(circle at 84% 18%, rgb(255 200 87 / 34%), transparent 24%),
+        linear-gradient(120deg, #3e347f 0%, var(--public-primary, #6d5df6) 52%, var(--public-secondary, #ff5c7a) 112%);
+}
+
+body.public-site:not(.fi-body) :where(.event-card-visual, .article-placeholder, .media-placeholder) {
+    background:
+        radial-gradient(circle at 78% 18%, rgb(255 200 87 / 34%), transparent 24%),
+        linear-gradient(135deg, #3e347f, var(--public-primary, #6d5df6) 56%, var(--public-secondary, #ff5c7a));
 }
