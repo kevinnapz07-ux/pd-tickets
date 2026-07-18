@@ -50,7 +50,6 @@
     <section class="latest-articles">
         <div class="section-heading">
             <div>
-                <p class="eyebrow">Kabar & Renungan</p>
                 <h2>Artikel Terbaru</h2>
             </div>
             <a class="link-button" href="{{ route('articles.index') }}">Lihat Semua Artikel</a>
@@ -59,7 +58,7 @@
             @forelse ($latestArticles as $article)
                 @include('articles.partials.card', ['article' => $article])
             @empty
-                <div class="article-empty">Belum ada artikel yang dipublikasikan. Nantikan kabar, renungan, dan informasi kegiatan terbaru dari PDUG.</div>
+                <div class="article-empty">Nantikan informasi kegiatan terbaru dari PDUG.</div>
             @endforelse
         </div>
     </section>

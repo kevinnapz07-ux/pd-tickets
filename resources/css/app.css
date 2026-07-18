@@ -11276,3 +11276,92 @@ body.public-site:not(.fi-body) .account-info-list :where(dt, dd) {
         grid-column: auto;
     }
 }
+
+/* Keep public section labels aligned with the headings below them. */
+body.public-site:not(.fi-body) .eyebrow {
+    justify-content: flex-start;
+    width: 100%;
+    margin-left: 0;
+    padding-left: 0;
+    text-align: left;
+}
+
+body.public-site:not(.fi-body) .eyebrow::before {
+    display: none;
+}
+
+body.public-site:not(.fi-body) :where(
+    .section-heading > div,
+    .about-story > div:first-child,
+    .profile-grid.about-grid article
+) {
+    align-items: flex-start;
+    text-align: left;
+}
+
+/* Final alignment pass for the public navigation, profile, tickets, and about page. */
+@media (min-width: 901px) {
+    body.public-site:not(.fi-body) .topbar-shell,
+    body.public-site:not(.fi-body) .topbar-right,
+    body.public-site:not(.fi-body) .main-nav,
+    body.public-site:not(.fi-body) .header-actions {
+        flex-wrap: nowrap;
+    }
+
+    body.public-site:not(.fi-body) .topbar-right {
+        min-width: 0;
+        margin-left: auto;
+        justify-content: flex-end;
+    }
+
+    body.public-site:not(.fi-body) .main-nav {
+        flex: 0 0 auto;
+    }
+
+    body.public-site:not(.fi-body) :where(.main-nav a, .main-nav button, .account-trigger) {
+        white-space: nowrap;
+    }
+}
+
+body.public-site:not(.fi-body) .participant-profile-layout {
+    align-items: start;
+}
+
+body.public-site:not(.fi-body) .participant-profile-menu,
+body.public-site:not(.fi-body) .participant-profile-content {
+    align-self: start;
+    margin-top: 0;
+}
+
+body.public-site:not(.fi-body) .participant-profile-menu :where(a, button, summary) {
+    gap: 0;
+}
+
+body.public-site:not(.fi-body) .ticket-list-page,
+body.public-site:not(.fi-body) .ticket-list-page :where(
+    .section-heading,
+    .registration-card,
+    .registration-card-heading,
+    .registration-card-heading > div,
+    .registration-card-meta,
+    .registration-card-meta dt,
+    .registration-card-meta dd
+) {
+    text-align: left;
+}
+
+body.public-site:not(.fi-body) .ticket-list-page .section-heading {
+    justify-content: flex-start;
+}
+
+body.public-site:not(.fi-body) .ticket-list-page .registration-card-heading > div {
+    width: 100%;
+}
+
+body.public-site:not(.fi-body) .profile-grid.about-grid article {
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}

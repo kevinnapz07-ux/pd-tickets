@@ -17,24 +17,22 @@
                 @endif
             </div>
             <h1>{{ $user->name }}</h1>
-            <p class="participant-hero-subtitle">Kelola informasi akun, tiket, dan riwayat pendaftaran event Anda.</p>
-            <p class="participant-member-since">Member sejak {{ $user->created_at?->translatedFormat('F Y') ?? '-' }}</p>
         </div>
     </section>
 
     <section class="participant-profile participant-profile-layout" data-profile-tabs data-initial-profile-tab="{{ $showPasswordTab ? 'ubah-password' : 'data-diri' }}">
         <aside class="participant-profile-menu" aria-label="Menu profil" role="tablist">
             <button class="{{ $showPasswordTab ? '' : 'is-active' }}" type="button" role="tab" aria-selected="{{ $showPasswordTab ? 'false' : 'true' }}" aria-controls="profile-panel-data-diri" data-profile-tab="data-diri">
-                <span aria-hidden="true">👤</span> Data Diri
+                Data Diri
             </button>
-            <a href="{{ route('tickets.index') }}"><span aria-hidden="true">🎟</span> Tiket Saya</a>
-            <a href="{{ route('participant.activity') }}"><span aria-hidden="true">↻</span> Riwayat Pembayaran</a>
+            <a href="{{ route('tickets.index') }}">Tiket Saya</a>
+            <a href="{{ route('participant.activity') }}">Riwayat Pembayaran</a>
             <button class="{{ $showPasswordTab ? 'is-active' : '' }}" type="button" role="tab" aria-selected="{{ $showPasswordTab ? 'true' : 'false' }}" aria-controls="profile-panel-ubah-password" data-profile-tab="ubah-password">
-                <span aria-hidden="true">🔒</span> Ubah Password
+                Ubah Password
             </button>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit"><span aria-hidden="true">↪</span> Keluar</button>
+                <button type="submit">Keluar</button>
             </form>
         </aside>
 

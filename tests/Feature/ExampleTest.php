@@ -99,7 +99,8 @@ class ExampleTest extends TestCase
         $response->assertSee('Gunadarma dibakar habis oleh api kemuliaan-Nya.');
         $response->assertSee('The Army of God');
         $response->assertSee('Kegiatan Kami');
-        $response->assertSee('Belum ada artikel yang dipublikasikan. Nantikan kabar, renungan, dan informasi kegiatan terbaru dari PDUG.');
+        $response->assertSee('Nantikan informasi kegiatan terbaru dari PDUG.');
+        $response->assertDontSee('Kabar &amp; Renungan', false);
         $response->assertDontSee('Misi');
         $response->assertDontSee('Bertumbuh, Bersekutu, dan Melayani');
         $response->assertSee('Ada yang bisa kami bantu?');
@@ -786,8 +787,8 @@ class ExampleTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('<h1>Peserta Profil</h1>', false);
-        $response->assertSee('Kelola informasi akun, tiket, dan riwayat pendaftaran event Anda.');
-        $response->assertSee('Member sejak '.$participant->created_at->translatedFormat('F Y'));
+        $response->assertDontSee('Kelola informasi akun, tiket, dan riwayat pendaftaran event Anda.');
+        $response->assertDontSee('Member sejak');
         $response->assertSee('Informasi Akun');
         $response->assertSee('Ubah Password');
         $response->assertSee('name="current_password"', false);
