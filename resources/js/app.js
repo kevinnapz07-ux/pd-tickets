@@ -733,6 +733,39 @@ import { Html5Qrcode } from 'html5-qrcode';
         });
     };
 
+    const setupTicketDetails = () => {
+        document.querySelectorAll('[data-expandable-description]').forEach((description) => {
+            const toggle = description.querySelector('[data-description-toggle]');
+            const content = description.querySelector('p');
+
+            if (! toggle || ! content || description.dataset.expandBound) return;
+
+            description.dataset.expandBound = 'true';
+            toggle.addEventListener('click', () => {
+                const expanded = description.classList.toggle('is-expanded');
+                toggle.textContent = expanded ? 'Tampilkan Lebih Sedikit' : 'Lihat Selengkapnya';
+                toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+            });
+        });
+
+        document.querySelectorAll('[data-copy-text]').forEach((button) => {
+            if (button.dataset.copyBound) return;
+            button.dataset.copyBound = 'true';
+            button.addEventListener('click', async () => {
+                const text = button.dataset.copyText;
+                if (! text) return;
+
+                try {
+                    await navigator.clipboard.writeText(text);
+                    button.textContent = 'Tersalin';
+                    window.setTimeout(() => { button.textContent = 'Copy'; }, 1600);
+                } catch (_) {
+                    button.textContent = 'Gagal menyalin';
+                }
+            });
+        });
+    };
+
     const initialize = () => {
         setupCustomRegistrationFields();
     if (syncFilamentTheme()) {
@@ -752,6 +785,7 @@ import { Html5Qrcode } from 'html5-qrcode';
         setupPricingFields();
         setupTicketScanner();
         setupPasswordResetRequest();
+        setupTicketDetails();
         document.querySelectorAll('form[data-disable-submit]').forEach((form) => {
             if (form.dataset.submitBound) return;
             form.dataset.submitBound = 'true';

@@ -963,7 +963,7 @@ class ExampleTest extends TestCase
 
         $this->get(route('registrations.show', $registration))
             ->assertOk()
-            ->assertSee('Status Transaksi')
+            ->assertDontSee('Status Transaksi')
             ->assertSee('Menunggu Pembayaran');
 
         $cancelResponse = $this->actingAs($participant)->delete(route('participant.registrations.cancel', $registration));

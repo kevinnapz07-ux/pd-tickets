@@ -26,8 +26,8 @@
                             @if (isset($ticketsOnly))
                                 @php($hasCheckedIn = $registration->checked_in_at !== null || $registration->registration_status === 'checked_in')
                                 <span class="ticket-checkin-status {{ $hasCheckedIn ? 'is-checked-in' : 'is-waiting' }}">
-                                    <span aria-hidden="true">{{ $hasCheckedIn ? '✓' : '◷' }}</span>
-                                    {{ $hasCheckedIn ? 'Sudah Check-in' : 'Belum Check-in' }}
+                                    <span aria-hidden="true">{{ $hasCheckedIn ? '✅' : '🎟️' }}</span>
+                                    {{ $hasCheckedIn ? 'Sudah Check-in' : 'Siap Check-in' }}
                                 </span>
                             @else
                                 <span class="status status-{{ $registration->payment_status }}">{{ $registration->transactionStatusLabel() }}</span>

@@ -502,6 +502,202 @@ iframe {
     color: #fff;
 }
 
+.registration-event-summary {
+    gap: 14px;
+    padding: 16px;
+}
+
+.registration-event-summary h2 {
+    margin-block: 2px 6px;
+}
+
+.compact-event-description p {
+    display: -webkit-box;
+    margin: 0;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+}
+
+.compact-event-description.is-expanded p {
+    display: block;
+    overflow: visible;
+}
+
+.compact-event-description button {
+    margin-top: 4px;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: #2563eb;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.event-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.event-summary-grid > div {
+    min-width: 0;
+    padding: 10px 12px;
+}
+
+.event-summary-grid .event-location {
+    grid-column: 1 / -1;
+}
+
+.event-summary-grid dd {
+    overflow-wrap: anywhere;
+}
+
+.compact-badge {
+    display: inline-flex;
+    border: 1px solid #cbd5e1;
+    border-radius: 999px;
+    padding: 2px 8px;
+    background: #f8fafc;
+    color: #334155;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.compact-ticket-statuses {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 14px;
+}
+
+.compact-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid;
+    border-radius: 999px;
+    padding: 4px 9px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.35;
+}
+
+.compact-status.is-paid { border-color:#86efac; background:#dcfce7; color:#166534; }
+.compact-status.is-registered { border-color:#93c5fd; background:#dbeafe; color:#1d4ed8; }
+.compact-status.is-ready,
+.compact-status.is-pending { border-color:#fde68a; background:#fef3c7; color:#92400e; }
+.compact-status.is-error { border-color:#fca5a5; background:#fee2e2; color:#b91c1c; }
+
+.compact-qr-checkin {
+    margin-top: 14px;
+    padding: 14px;
+}
+
+.compact-qr-checkin img {
+    width: min(100%, 210px);
+}
+
+.participant-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    margin-top: 16px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    background: #e2e8f0;
+}
+
+.participant-detail-grid > div {
+    min-width: 0;
+    padding: 10px 12px;
+    background: #fff;
+}
+
+.participant-detail-grid dt,
+.order-reference span {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.participant-detail-grid dd {
+    margin: 3px 0 0;
+    overflow-wrap: anywhere;
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.order-reference {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px 12px;
+}
+
+.order-reference > div {
+    min-width: 0;
+}
+
+.order-reference span {
+    display: block;
+}
+
+.order-reference code {
+    display: block;
+    margin-top: 2px;
+    overflow-wrap: anywhere;
+    color: #334155;
+    font-size: 12px;
+}
+
+[data-theme="dark"] .compact-event-description button {
+    color: #93c5fd;
+}
+
+[data-theme="dark"] .compact-badge {
+    border-color: #52637b;
+    background: #26354a;
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .compact-status.is-paid { border-color:#27834d; background:#123d27; color:#bbf7d0; }
+[data-theme="dark"] .compact-status.is-registered { border-color:#356aa0; background:#142f4d; color:#bfdbfe; }
+[data-theme="dark"] .compact-status:is(.is-ready, .is-pending) { border-color:#9a6d1f; background:#473211; color:#fde68a; }
+[data-theme="dark"] .compact-status.is-error { border-color:#9f3f4a; background:#4b1f26; color:#fecaca; }
+
+[data-theme="dark"] .participant-detail-grid {
+    border-color: #3b4b63;
+    background: #3b4b63;
+}
+
+[data-theme="dark"] .participant-detail-grid > div {
+    background: #172337;
+}
+
+[data-theme="dark"] .participant-detail-grid dt,
+[data-theme="dark"] .order-reference span {
+    color: #aebdd0;
+}
+
+[data-theme="dark"] .participant-detail-grid dd,
+[data-theme="dark"] .order-reference code {
+    color: #f8fafc;
+}
+
+[data-theme="dark"] .order-reference {
+    border-color: #3b4b63;
+    background: #111c2f;
+}
+
 @media (max-width: 640px) {
     .my-registrations {
         padding-block: 24px 40px;
@@ -525,6 +721,27 @@ iframe {
 
     .ticket-checkin-status {
         align-self: flex-start;
+    }
+
+    .event-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .event-summary-grid :is(.event-location, .event-date-time, .event-registration-type) {
+        grid-column: auto;
+    }
+
+    .participant-detail-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .order-reference {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .order-reference .link-button {
+        width: 100%;
     }
 
     .registration-card-actions,
@@ -8190,5 +8407,44 @@ body:not(.fi-body) :where(.brand small, .footer-identity p, .footer-links a) {
     body:not(.fi-body) :where(.section-heading h1, .section-heading h2, .about-story h2, .about-identity h2, .about-contact-title h2, .participant-history > div > h1, .modal-heading h2) { font-size: 26px; }
     body:not(.fi-body) :where(.hero-copy > p, .profile-hero > div > p:first-of-type, .participant-hero-subtitle) { font-size: 16px; }
     body:not(.fi-body) :where(.event-card h3, .upcoming-card h3, .managed-event-heading h3) { font-size: 22px; }
+}
+
+/* Final compact ticket-detail overrides */
+body:not(.fi-body) .registration-event-summary {
+    gap: 14px;
+    margin-block: 18px 6px;
+    padding: 16px;
+}
+
+body:not(.fi-body) .event-summary-grid {
+    grid-template-columns: minmax(0, 2fr) minmax(120px, 1fr);
+    gap: 8px;
+}
+
+body:not(.fi-body) .event-summary-grid .event-location {
+    grid-column: 1 / -1;
+}
+
+body:not(.fi-body) .event-summary-grid > div {
+    padding: 10px 12px;
+}
+
+body:not(.fi-body) .compact-qr-checkin {
+    margin-top: 14px;
+    padding: 14px;
+}
+
+body:not(.fi-body) .compact-qr-checkin img {
+    width: min(100%, 210px);
+}
+
+@media (max-width: 640px) {
+    body:not(.fi-body) .event-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    body:not(.fi-body) .event-summary-grid > * {
+        grid-column: auto;
+    }
 }
 

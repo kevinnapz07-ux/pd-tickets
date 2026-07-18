@@ -21,49 +21,80 @@
                 <div>
                     <p class="eyebrow">Informasi Event</p>
                     <h2>{{ $registration->event->title }}</h2>
-                    <p>{{ Str::limit($registration->event->description, 180) }}</p>
+                    <div class="compact-event-description" data-expandable-description>
+                        <p>{{ $registration->event->description }}</p>
+                        <button type="button" data-description-toggle>Lihat Selengkapnya</button>
+                    </div>
                 </div>
                 <dl class="event-summary-grid">
-                    <div><dt>Tanggal</dt><dd>{{ $registration->event->starts_at->translatedFormat('l, d F Y') }}</dd></div>
-                    <div><dt>Waktu</dt><dd>{{ $registration->event->starts_at->format('H:i') }}{{ $registration->event->ends_at ? ' - '.$registration->event->ends_at->format('H:i') : '' }} WIB</dd></div>
-                    <div><dt>Lokasi</dt><dd>{{ $registration->event->location }}</dd></div>
-                    <div><dt>Jenis Pendaftaran</dt><dd>{{ $registration->event->price > 0 ? 'Berbayar' : 'Gratis' }}</dd></div>
+                    <div class="event-date-time"><dt>Tanggal & Waktu</dt><dd>{{ $registration->event->starts_at->translatedFormat('D, d M Y') }} · {{ $registration->event->starts_at->format('H:i') }}{{ $registration->event->ends_at ? '–'.$registration->event->ends_at->format('H:i') : '' }} WIB</dd></div>
+                    <div class="event-location"><dt>Lokasi</dt><dd>{{ $registration->event->location }}</dd></div>
+                    <div class="event-registration-type"><dt>Jenis Pendaftaran</dt><dd><span class="compact-badge">{{ $registration->event->price > 0 ? 'Berbayar' : 'Gratis' }}</span></dd></div>
                 </dl>
             </section>
 
-            <dl class="info-list">
-                @if ($registration->event->price > 0)
-                    <div><dt>Status Transaksi</dt><dd><span class="status status-{{ $registration->payment_status }}">{{ $registration->transactionStatusLabel() }}</span></dd></div>
+            @php
+                $categoryLabel = collect($registration->event->registrationCategories())->firstWhere('key', $registration->participant_type)['label'] ?? Str::headline(str_replace('_', ' ', $registration->participant_type));
+                $customFields = collect($registration->custom_fields ?? []);
+                $gender = $customFields->get('gender');
+                $domicile = $customFields->get('domicile');
+                $hasCheckedIn = $registration->checked_in_at !== null || $registration->registration_status === 'checked_in';
+            @endphp
+
+            <div class="compact-ticket-statuses" aria-label="Status tiket">
+                @if ($registration->event->price <= 0 || $registration->payment_status === 'paid')
+                    <span class="compact-status is-paid"><span aria-hidden="true">●</span> Lunas</span>
+                @elseif ($registration->payment_status === 'pending')
+                    <span class="compact-status is-pending"><span aria-hidden="true">●</span> Menunggu Pembayaran</span>
+                @else
+                    <span class="compact-status is-error"><span aria-hidden="true">●</span> {{ $registration->transactionStatusLabel() }}</span>
                 @endif
-                <div><dt>Status Pendaftaran</dt><dd><span class="status status-{{ $registration->registration_status ?? 'pending' }}">{{ $registration->registrationStatusLabel() }}</span></dd></div>
+                @if (in_array($registration->registration_status, ['registered', 'checked_in', 'completed'], true))
+                    <span class="compact-status is-registered"><span aria-hidden="true">●</span> Terdaftar</span>
+                @endif
+                @if ($registration->isCheckInReady() || $hasCheckedIn)
+                    <span class="compact-status {{ $hasCheckedIn ? 'is-paid' : 'is-ready' }}">
+                        <span aria-hidden="true">{{ $hasCheckedIn ? '✓' : '◷' }}</span>
+                        {{ $hasCheckedIn ? 'Sudah Check-in' : 'Siap Check-in' }}
+                    </span>
+                @endif
+            </div>
+
+            @if ($registration->isCheckInReady())
+                <section class="qr-checkin compact-qr-checkin" id="ticket-qr">
+                    <div>
+                        <p class="eyebrow">QR Check-in</p>
+                        <h2>Tunjukkan saat hadir</h2>
+                    </div>
+                    <img src="{{ $registration->qrCodeDataUri() }}" alt="QR Check-in {{ $registration->registration_code }}">
+                </section>
+            @endif
+
+            <dl class="participant-detail-grid">
                 <div><dt>Email</dt><dd>{{ $registration->email }}</dd></div>
-                @php
-                    $categoryLabel = collect($registration->event->registrationCategories())->firstWhere('key', $registration->participant_type)['label'] ?? Str::headline(str_replace('_', ' ', $registration->participant_type));
-                @endphp
-                <div><dt>Kategori</dt><dd>{{ $categoryLabel }}</dd></div>
                 <div><dt>No. HP</dt><dd>{{ $registration->phone }}</dd></div>
+                <div><dt>Kategori</dt><dd>{{ $categoryLabel }}</dd></div>
+                <div><dt>Domisili</dt><dd>{{ $domicile ?: '-' }}</dd></div>
+                <div><dt>Jenis Kelamin</dt><dd>{{ $gender ? Str::headline(str_replace('_', ' ', $gender)) : '-' }}</dd></div>
+                <div><dt>Nominal</dt><dd>{{ $registration->event->price > 0 ? 'Rp '.number_format($registration->event->price, 0, ',', '.') : 'Gratis' }}</dd></div>
                 @if ($registration->participant_type === 'mahasiswa_gunadarma')
                     <div><dt>NPM</dt><dd>{{ $registration->student_id }}</dd></div>
                     <div><dt>Area Kampus</dt><dd>{{ ucfirst($registration->campus_area) }}</dd></div>
                     <div><dt>Angkatan</dt><dd>{{ $registration->class_year }}</dd></div>
                     <div><dt>Program Studi</dt><dd>{{ $registration->study_program }}</dd></div>
                 @endif
-                @foreach (($registration->custom_fields ?? []) as $field => $value)
+                @foreach ($customFields->except(['gender', 'domicile']) as $field => $value)
                     <div><dt>{{ \App\Models\Event::registrationFieldLabel($field) }}</dt><dd>{{ $value }}</dd></div>
                 @endforeach
-                <div><dt>Nominal</dt><dd>{{ $registration->event->price > 0 ? 'Rp '.number_format($registration->event->price, 0, ',', '.') : 'Gratis' }}</dd></div>
-                @if ($registration->event->price > 0)
-                    <div><dt>Order ID</dt><dd>{{ $registration->payment?->order_id ?? '-' }}</dd></div>
-                @endif
             </dl>
 
-            @if ($registration->isCheckInReady())
-                <section class="qr-checkin" id="ticket-qr">
+            @if ($registration->event->price > 0)
+                <section class="order-reference">
                     <div>
-                        <p class="eyebrow">QR Check-in</p>
-                        <h2>Tunjukkan saat hadir</h2>
+                        <span>Order ID</span>
+                        <code>{{ $registration->payment?->order_id ?? '-' }}</code>
                     </div>
-                    <img src="{{ $registration->qrCodeDataUri() }}" alt="QR Check-in {{ $registration->registration_code }}">
+                    <button class="link-button" type="button" data-copy-text="{{ $registration->payment?->order_id }}" data-copy-label="Order ID">Copy</button>
                 </section>
             @endif
 

@@ -113,7 +113,7 @@ class RegistrationPaymentFlowTest extends TestCase
             ->assertOk()
             ->assertSee('Tiket Saya')
             ->assertSee('Tiket aktif yang siap digunakan.')
-            ->assertSee('Belum Check-in')
+            ->assertSee('Siap Check-in')
             ->assertSee('Sudah Check-in')
             ->assertSee('Lihat Tiket')
             ->assertDontSee('Akun Peserta')
@@ -122,6 +122,14 @@ class RegistrationPaymentFlowTest extends TestCase
         $this->actingAs($owner)
             ->get(route('registrations.show', $waiting))
             ->assertOk()
+            ->assertSeeText('Tanggal & Waktu')
+            ->assertSee('Lihat Selengkapnya')
+            ->assertSee('Lunas')
+            ->assertSee('Terdaftar')
+            ->assertSee('Siap Check-in')
+            ->assertSee('Kode Registrasi')
+            ->assertDontSee('Status Transaksi')
+            ->assertDontSee('Status Pendaftaran')
             ->assertSee('Kembali ke Beranda')
             ->assertDontSee('Lihat Tiket');
 
