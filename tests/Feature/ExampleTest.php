@@ -99,6 +99,7 @@ class ExampleTest extends TestCase
         $response->assertSee('Gunadarma dibakar habis oleh api kemuliaan-Nya.');
         $response->assertSee('The Army of God');
         $response->assertSee('Kegiatan Kami');
+        $response->assertSee('Belum ada artikel yang dipublikasikan. Nantikan kabar, renungan, dan informasi kegiatan terbaru dari PDUG.');
         $response->assertDontSee('Misi');
         $response->assertDontSee('Bertumbuh, Bersekutu, dan Melayani');
         $response->assertSee('Ada yang bisa kami bantu?');
@@ -791,6 +792,10 @@ class ExampleTest extends TestCase
         $response->assertSee('Ubah Password');
         $response->assertSee('name="current_password"', false);
         $response->assertDontSee('Ganti Password');
+        $response->assertSee('data-profile-tabs', false);
+        $response->assertSee('data-profile-panel="data-diri"', false);
+        $response->assertSee('data-profile-panel="ubah-password"', false);
+        $response->assertSee('id="profile-panel-ubah-password"', false);
         $response->assertSee('Nama Lengkap');
         $response->assertSee('Tanggal Bergabung');
         $response->assertSee('Peserta Profil');

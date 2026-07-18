@@ -59,7 +59,7 @@
             @forelse ($latestArticles as $article)
                 @include('articles.partials.card', ['article' => $article])
             @empty
-                <div class="article-empty">Artikel terbaru akan segera hadir.</div>
+                <div class="article-empty">Belum ada artikel yang dipublikasikan. Nantikan kabar, renungan, dan informasi kegiatan terbaru dari PDUG.</div>
             @endforelse
         </div>
     </section>

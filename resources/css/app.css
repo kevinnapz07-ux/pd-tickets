@@ -10834,6 +10834,189 @@ body.public-site:not(.fi-body) .event-card-content > .button {
     }
 }
 
+/* Final corrections from the focused homepage, about, and profile audit. */
+body.public-site:not(.fi-body) .event-grid.public-event-rail.is-single {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+body.public-site:not(.fi-body) .event-grid.public-event-rail:not(.is-single) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+body.public-site:not(.fi-body) .latest-articles {
+    margin-top: clamp(42px, 5vw, 58px);
+}
+
+body.public-site:not(.fi-body) .latest-articles .section-heading {
+    align-items: center;
+}
+
+body.public-site:not(.fi-body) .latest-articles .section-heading .eyebrow {
+    margin-bottom: 6px;
+}
+
+body.public-site:not(.fi-body) .latest-articles .article-empty {
+    min-height: 0;
+    padding: 22px 24px;
+    line-height: 1.65;
+    text-align: left;
+}
+
+body.public-site:not(.fi-body) .profile-grid.about-grid article {
+    min-height: 0;
+}
+
+body.public-site:not(.fi-body) .participant-hero {
+    min-height: clamp(220px, 27vw, 300px);
+    padding-block: clamp(28px, 4vw, 44px);
+}
+
+body.public-site:not(.fi-body) .participant-hero-content {
+    gap: 10px;
+}
+
+body.public-site:not(.fi-body) .participant-hero-content h1 {
+    margin: 4px 0 0;
+}
+
+body.public-site:not(.fi-body) .participant-hero-content :where(.participant-hero-subtitle, .participant-member-since) {
+    margin: 0;
+}
+
+body.public-site:not(.fi-body) .participant-profile-layout {
+    grid-template-columns: 240px minmax(0, 1fr);
+    align-items: start;
+    gap: 28px;
+    min-height: 0;
+    margin-top: clamp(32px, 5vw, 52px);
+    padding-bottom: clamp(48px, 7vw, 80px);
+}
+
+body.public-site:not(.fi-body) .participant-profile-menu {
+    position: sticky;
+    top: 96px;
+    z-index: 2;
+    height: auto;
+}
+
+body.public-site:not(.fi-body) .participant-profile-menu > button.is-active {
+    background: var(--public-primary-soft);
+    color: var(--public-primary);
+}
+
+body.public-site:not(.fi-body) .participant-profile-content {
+    display: block;
+    min-width: 0;
+    height: auto;
+    overflow: visible;
+}
+
+body.public-site:not(.fi-body) .profile-tab-panel {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    margin: 0;
+}
+
+body.public-site:not(.fi-body) .profile-tab-panel[hidden] {
+    display: none !important;
+}
+
+body.public-site:not(.fi-body) .participant-card-heading {
+    margin: 0 0 24px;
+}
+
+body.public-site:not(.fi-body) .participant-card-heading :where(h2, p) {
+    margin-top: 0;
+}
+
+body.public-site:not(.fi-body) .participant-card-heading h2 {
+    margin-bottom: 8px;
+    font-size: clamp(25px, 3vw, 32px);
+}
+
+body.public-site:not(.fi-body) .participant-card-heading > p:last-child {
+    max-width: 620px;
+    margin-bottom: 0;
+}
+
+body.public-site:not(.fi-body) .profile-password-panel .profile-password-form {
+    display: grid;
+    width: min(640px, 100%);
+    gap: 19px;
+    margin: 0;
+}
+
+body.public-site:not(.fi-body) .profile-password-panel .profile-password-form label {
+    display: grid;
+    width: 100%;
+    min-width: 0;
+    gap: 8px;
+}
+
+body.public-site:not(.fi-body) .profile-password-panel :where(.password-field, input) {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+body.public-site:not(.fi-body) .profile-password-panel .password-field input {
+    padding-right: 48px;
+}
+
+body.public-site:not(.fi-body) .profile-password-panel .profile-password-submit {
+    width: fit-content;
+    min-width: 210px;
+    margin-top: 4px;
+}
+
+@media (max-width: 1100px) {
+    body.public-site:not(.fi-body) .event-grid.public-event-rail:not(.is-single) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    body.public-site:not(.fi-body) .participant-profile-layout {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    body.public-site:not(.fi-body) .participant-profile-menu {
+        position: static;
+        z-index: auto;
+        display: flex;
+        overflow-x: auto;
+        width: 100%;
+        max-width: 100%;
+        flex-wrap: nowrap;
+        scrollbar-width: thin;
+    }
+
+    body.public-site:not(.fi-body) .participant-profile-menu > :where(a, button, form) {
+        flex: 0 0 auto;
+    }
+}
+
+@media (max-width: 760px) {
+    body.public-site:not(.fi-body) .event-grid.public-event-rail:not(.is-single) {
+        grid-template-columns: 1fr;
+    }
+
+    body.public-site:not(.fi-body) .latest-articles .section-heading {
+        align-items: flex-start;
+    }
+
+    body.public-site:not(.fi-body) .participant-hero {
+        min-height: 210px;
+        padding: 26px 20px;
+    }
+
+    body.public-site:not(.fi-body) .profile-password-panel .profile-password-submit {
+        width: 100%;
+    }
+}
+
 /* Precision alignment corrections based on the complete public-page review. */
 body.public-site:not(.fi-body) {
     --public-content-width: 1280px;

@@ -273,6 +273,43 @@ import { Html5Qrcode } from 'html5-qrcode';
         });
     };
 
+    const setupProfileTabs = () => {
+        document.querySelectorAll('[data-profile-tabs]').forEach((tabs) => {
+            if (tabs.dataset.tabsBound) return;
+
+            const buttons = [...tabs.querySelectorAll('[data-profile-tab]')];
+            const panels = [...tabs.querySelectorAll('[data-profile-panel]')];
+
+            if (buttons.length === 0 || panels.length === 0) return;
+
+            const activate = (name, updateHash = true) => {
+                buttons.forEach((button) => {
+                    const active = button.dataset.profileTab === name;
+                    button.classList.toggle('is-active', active);
+                    button.setAttribute('aria-selected', active ? 'true' : 'false');
+                });
+
+                panels.forEach((panel) => {
+                    panel.hidden = panel.dataset.profilePanel !== name;
+                });
+
+                if (updateHash) {
+                    history.replaceState(null, '', name === 'ubah-password' ? '#ubah-password' : '#data-diri');
+                }
+            };
+
+            tabs.dataset.tabsBound = 'true';
+            buttons.forEach((button) => {
+                button.addEventListener('click', () => activate(button.dataset.profileTab));
+            });
+
+            const requestedTab = window.location.hash === '#ubah-password'
+                ? 'ubah-password'
+                : tabs.dataset.initialProfileTab;
+            activate(requestedTab || 'data-diri', false);
+        });
+    };
+
     const setupParticipantTypeFields = () => {
         document.querySelectorAll('[data-participant-type]').forEach((select) => {
             const form = select.closest('form');
@@ -1013,6 +1050,7 @@ import { Html5Qrcode } from 'html5-qrcode';
         setupMobileMenu();
         setupPublicMotion();
         setupPasswordToggles();
+        setupProfileTabs();
         setupParticipantTypeFields();
         setupRegistrationValidation();
         setupPricingFields();
