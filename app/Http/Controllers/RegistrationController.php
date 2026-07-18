@@ -39,8 +39,6 @@ class RegistrationController extends Controller
     {
         $registrations = Registration::query()
             ->with(['event', 'payment'])
-            ->where('payment_status', 'paid')
-            ->whereIn('registration_status', ['registered', 'checked_in', 'completed'])
             ->where(fn ($query) => $query
                 ->where('user_id', $request->user()->id)
                 ->orWhere(fn ($legacy) => $legacy

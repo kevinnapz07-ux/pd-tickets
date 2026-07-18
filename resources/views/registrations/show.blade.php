@@ -7,8 +7,38 @@
 @endpush
 
 @section('content')
-    <section class="receipt">
-        <div class="receipt-card">
+    @php
+        $categoryLabel = collect($registration->event->registrationCategories())->firstWhere('key', $registration->participant_type)['label'] ?? Str::headline(str_replace('_', ' ', $registration->participant_type));
+        $customFields = collect($registration->custom_fields ?? []);
+        $gender = $customFields->get('gender');
+        $domicile = $customFields->get('domicile');
+        $hasCheckedIn = $registration->checked_in_at !== null || $registration->registration_status === 'checked_in';
+    @endphp
+
+    <section class="detail registration-detail-layout">
+        <article class="detail-main registration-detail-main">
+            <h1>{{ $registration->event->title }}</h1>
+            <p class="event-description detail-description">{{ $registration->event->description }}</p>
+
+            <dl class="info-list">
+                <div><dt>Pembicara</dt><dd>{{ $registration->event->speaker ?? '-' }}</dd></div>
+                <div><dt>Lokasi</dt><dd>{{ $registration->event->location }}</dd></div>
+                <div><dt>Waktu</dt><dd>{{ $registration->event->starts_at->format('H:i') }}{{ $registration->event->ends_at ? ' - '.$registration->event->ends_at->format('H:i') : '' }} WIB</dd></div>
+                <div><dt>Biaya</dt><dd>{{ $registration->event->price > 0 ? 'Rp '.number_format($registration->event->price, 0, ',', '.') : 'Gratis' }}</dd></div>
+                <div><dt>Tanggal</dt><dd>{{ $registration->event->starts_at->translatedFormat('d F Y') }}</dd></div>
+            </dl>
+
+            <div class="map-panel">
+                <h2>Maps Lokasi</h2>
+                <iframe
+                    title="Peta {{ $registration->event->location }}"
+                    src="https://www.google.com/maps?q={{ urlencode($registration->event->location.' Gunadarma') }}&output=embed"
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </article>
+
+        <aside class="form-panel registration-detail-panel">
             <p class="eyebrow">Kode Registrasi</p>
             <h1>{{ $registration->registration_code }}</h1>
             <p>{{ $registration->name }} terdaftar untuk <strong>{{ $registration->event->title }}</strong>.</p>
@@ -16,30 +46,6 @@
             @if (session('payment_error'))
                 <div class="error-box">{{ session('payment_error') }}</div>
             @endif
-
-            <section class="registration-event-summary">
-                <div>
-                    <p class="eyebrow">Informasi Event</p>
-                    <h2>{{ $registration->event->title }}</h2>
-                    <div class="compact-event-description" data-expandable-description>
-                        <p>{{ $registration->event->description }}</p>
-                        <button type="button" data-description-toggle>Lihat Selengkapnya</button>
-                    </div>
-                </div>
-                <div class="compact-event-meta">
-                    <p><span aria-hidden="true">◷</span> {{ $registration->event->starts_at->translatedFormat('d F Y') }} · {{ $registration->event->starts_at->format('H:i') }}{{ $registration->event->ends_at ? '–'.$registration->event->ends_at->format('H:i') : '' }} WIB</p>
-                    <p><span aria-hidden="true">⌖</span> {{ $registration->event->location }}</p>
-                    <span class="compact-badge">{{ $registration->event->price > 0 ? 'Berbayar' : 'Gratis' }}</span>
-                </div>
-            </section>
-
-            @php
-                $categoryLabel = collect($registration->event->registrationCategories())->firstWhere('key', $registration->participant_type)['label'] ?? Str::headline(str_replace('_', ' ', $registration->participant_type));
-                $customFields = collect($registration->custom_fields ?? []);
-                $gender = $customFields->get('gender');
-                $domicile = $customFields->get('domicile');
-                $hasCheckedIn = $registration->checked_in_at !== null || $registration->registration_status === 'checked_in';
-            @endphp
 
             <div class="compact-ticket-statuses" aria-label="Status tiket">
                 @if ($registration->event->price <= 0 || $registration->payment_status === 'paid')
@@ -153,14 +159,14 @@
                         @csrf
                         <button class="button" type="submit">{{ $registration->payment_status === 'expired' ? 'Buat Pembayaran Baru' : 'Bayar Lagi' }}</button>
                     </form>
-                    <a class="link-button" href="{{ route('registrations.index') }}">Kembali ke Registrasi Saya</a>
+                    <a class="link-button" href="{{ route('tickets.index') }}">Kembali ke Tiket Saya</a>
                 </div>
             @elseif ($registration->isCheckInReady())
                 <div class="payment-actions">
                     <a class="link-button" href="{{ route('events.index') }}">Kembali ke Beranda</a>
                 </div>
             @endif
-        </div>
+        </aside>
     </section>
 
     @if ($registration->payment?->snap_token)

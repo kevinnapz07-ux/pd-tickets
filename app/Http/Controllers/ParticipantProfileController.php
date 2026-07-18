@@ -89,7 +89,7 @@ class ParticipantProfileController extends Controller
         $eventTitle = $registration->event->title;
         $registration->update(['registration_status' => 'cancelled']);
 
-        return redirect()->route('participant.activity')
+        return redirect()->route('tickets.index')
             ->with('status', 'Registrasi event '.$eventTitle.' berhasil dibatalkan.');
     }
 }

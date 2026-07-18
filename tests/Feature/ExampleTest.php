@@ -244,10 +244,11 @@ class ExampleTest extends TestCase
 
         $this->get(route('registrations.show', $registration))
             ->assertOk()
-            ->assertSee('Informasi Event')
+            ->assertSee('registration-detail-layout', false)
             ->assertSee('Career Talk')
             ->assertSee('Kampus H')
-            ->assertSee('compact-badge', false)
+            ->assertSee('Maps Lokasi')
+            ->assertSee('<dt>Tanggal</dt>', false)
             ->assertSee('Gratis')
             ->assertSee('QR Check-in')
             ->assertSee('Terdaftar')
@@ -692,7 +693,9 @@ class ExampleTest extends TestCase
         $response->assertSee('Profil');
         $response->assertDontSee('Profil Peserta');
         $response->assertSee(route('participant.profile'));
-        $response->assertSee(route('participant.activity'));
+        $response->assertSee(route('tickets.index'));
+        $response->assertDontSee(route('participant.activity'));
+        $response->assertDontSee(route('registrations.index'));
         $response->assertSee('Logout');
     }
 
@@ -921,7 +924,7 @@ class ExampleTest extends TestCase
 
         $response = $this->actingAs($participant)->delete(route('participant.registrations.cancel', $registration));
 
-        $response->assertRedirect(route('participant.activity'));
+        $response->assertRedirect(route('tickets.index'));
         $response->assertSessionHas('status', 'Registrasi event Event Gratis Cancel berhasil dibatalkan.');
         $this->assertDatabaseHas('registrations', [
             'registration_code' => 'PDG-GRATIS-001',

@@ -470,6 +470,18 @@ iframe {
     color: #fde68a;
 }
 
+.ticket-checkin-status.is-pending {
+    border-color: #cbd5e1;
+    background: #f1f5f9;
+    color: #475569;
+}
+
+[data-theme="dark"] .ticket-checkin-status.is-pending {
+    border-color: #4b5d76;
+    background: #223149;
+    color: #d6e0ec;
+}
+
 [data-theme="dark"] .receipt-card {
     border-color: #3b4b63;
     background: #172337;
@@ -759,6 +771,57 @@ iframe {
         max-height: calc(100dvh - 2rem);
         padding: 18px;
         overflow-y: auto;
+    }
+}
+
+/* Registration detail follows the public event-detail composition. */
+.registration-detail-layout {
+    align-items: start;
+}
+
+.registration-detail-panel {
+    min-width: 0;
+}
+
+.registration-detail-panel > h1 {
+    margin: 4px 0 8px;
+    color: #0f172a;
+    font-size: clamp(26px, 3vw, 36px);
+    overflow-wrap: anywhere;
+}
+
+.registration-detail-panel > p {
+    overflow-wrap: anywhere;
+}
+
+.registration-detail-panel .compact-ticket-statuses {
+    margin-top: 18px;
+}
+
+.registration-detail-panel .compact-qr-checkin {
+    margin-top: 18px;
+}
+
+.registration-detail-panel .participant-detail-accordion {
+    margin-top: 18px;
+}
+
+.ticket-detail-link {
+    min-height: 40px !important;
+}
+
+[data-theme="dark"] .registration-detail-panel > h1 {
+    color: #f8fafc;
+}
+
+@media (max-width: 900px) {
+    .registration-detail-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .registration-detail-main,
+    .registration-detail-panel {
+        min-width: 0;
     }
 }
 

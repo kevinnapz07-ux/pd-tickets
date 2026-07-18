@@ -8,7 +8,7 @@
                     <p class="eyebrow">Akun Peserta</p>
                 @endunless
                 <h1>{{ isset($ticketsOnly) ? 'Tiket Saya' : 'Registrasi Saya' }}</h1>
-                <p>{{ isset($ticketsOnly) ? 'Tiket aktif yang siap digunakan.' : 'Pantau pendaftaran dan lanjutkan pembayaran dari satu tempat.' }}</p>
+                <p>{{ isset($ticketsOnly) ? 'Pantau registrasi, pembayaran, dan tiket event dari satu tempat.' : 'Pantau pendaftaran dan lanjutkan pembayaran dari satu tempat.' }}</p>
             </div>
         </div>
         @if ($registrations->isEmpty())
@@ -25,9 +25,10 @@
                         <div class="registration-card-heading">
                             <div><p class="eyebrow">{{ $registration->registration_code }}</p><h2>{{ $registration->event->title }}</h2></div>
                             @if (isset($ticketsOnly))
-                                <span class="ticket-checkin-status {{ $hasCheckedIn ? 'is-checked-in' : 'is-waiting' }}">
-                                    <span aria-hidden="true">{{ $hasCheckedIn ? '✅' : '🎟️' }}</span>
-                                    {{ $hasCheckedIn ? 'Sudah Check-in' : 'Siap Check-in' }}
+                                @php($ticketReady = $registration->isCheckInReady())
+                                <span class="ticket-checkin-status {{ $hasCheckedIn ? 'is-checked-in' : ($ticketReady ? 'is-waiting' : 'is-pending') }}">
+                                    <span aria-hidden="true">{{ $hasCheckedIn ? '✅' : ($ticketReady ? '🎟️' : '◷') }}</span>
+                                    {{ $hasCheckedIn ? 'Sudah Check-in' : ($ticketReady ? 'Siap Check-in' : $registration->transactionStatusLabel()) }}
                                 </span>
                             @else
                                 <span class="status status-{{ $registration->payment_status }}">{{ $registration->transactionStatusLabel() }}</span>
@@ -46,10 +47,17 @@
                             @endif
                         </dl>
                         <div class="registration-card-actions">
-                            @if (isset($ticketsOnly) && ! $hasCheckedIn)
+                            @if (isset($ticketsOnly) && $ticketReady && ! $hasCheckedIn)
                                 <button class="button" type="button" data-ticket-modal-open="ticket-qr-modal-{{ $registration->id }}" aria-controls="ticket-qr-modal-{{ $registration->id }}">Tampilkan QR</button>
                             @elseif (isset($ticketsOnly) && $hasCheckedIn)
                                 <button class="link-button ticket-status-button" type="button" data-ticket-modal-open="ticket-status-modal-{{ $registration->id }}" aria-controls="ticket-status-modal-{{ $registration->id }}">Lihat Status</button>
+                            @elseif (isset($ticketsOnly) && $registration->payment_status === 'pending')
+                                <a class="button" href="{{ route('registrations.show', $registration) }}">Lanjutkan Pembayaran</a>
+                            @elseif (isset($ticketsOnly) && in_array($registration->payment_status, ['expired', 'failed', 'cancelled'], true))
+                                <form method="POST" action="{{ route('registrations.payment.retry', $registration) }}" data-disable-submit>
+                                    @csrf
+                                    <button class="button" type="submit">{{ $registration->payment_status === 'expired' ? 'Buat Pembayaran Baru' : 'Bayar Lagi' }}</button>
+                                </form>
                             @elseif ($registration->isCheckInReady())
                                 <a class="button" href="{{ route('registrations.show', $registration) }}">Lihat Tiket</a>
                             @elseif ($registration->payment_status === 'pending')
@@ -63,10 +71,13 @@
                             @else
                                 <a class="link-button" href="{{ route('registrations.show', $registration) }}">Lihat Detail Registrasi</a>
                             @endif
+                            @if (isset($ticketsOnly))
+                                <a class="link-button ticket-detail-link" href="{{ route('registrations.show', $registration) }}">Lihat Detail</a>
+                            @endif
                         </div>
                     </article>
 
-                    @if (isset($ticketsOnly) && ! $hasCheckedIn)
+                    @if (isset($ticketsOnly) && $ticketReady && ! $hasCheckedIn)
                         <div class="ticket-modal-backdrop" id="ticket-qr-modal-{{ $registration->id }}" data-ticket-modal aria-hidden="true">
                             <section class="ticket-modal" role="dialog" aria-modal="true" aria-labelledby="ticket-qr-title-{{ $registration->id }}" tabindex="-1">
                                 <button class="ticket-modal-close" type="button" data-ticket-modal-close aria-label="Tutup modal">×</button>
