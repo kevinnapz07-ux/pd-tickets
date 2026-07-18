@@ -8,7 +8,7 @@
         </div>
     </section>
 
-    <section class="about-story">
+    <section class="about-story about-shared-card">
         <div>
             <p class="eyebrow">Tentang PDUG</p>
             <h2>Cerita Kami</h2>
@@ -22,11 +22,11 @@
 
     <section class="about-identity">
         <div class="profile-grid about-grid">
-            <article>
+            <article class="about-shared-card">
                 <p class="eyebrow">Visi Global</p>
                 <h2>Gunadarma dibakar habis oleh api kemuliaan-Nya.</h2>
             </article>
-            <article>
+            <article class="about-shared-card">
                 <p class="eyebrow">Visi Generasi</p>
                 <h2>The Army of God</h2>
                 <small>Yoel 2:1–11</small>
@@ -41,9 +41,9 @@
             </div>
         </div>
         <div class="about-program-grid">
-            <article><span>01</span><h3>Persekutuan & Ibadah</h3><p>Ruang untuk beribadah, berdoa, dan mengalami pertumbuhan rohani bersama.</p></article>
-            <article><span>02</span><h3>Pemuridan</h3><p>Pendampingan yang menolong mahasiswa mengenal firman dan hidup sebagai murid Kristus.</p></article>
-            <article><span>03</span><h3>Pelayanan Kampus</h3><p>Kesempatan untuk melayani, membangun komunitas, dan menjadi berkat di lingkungan kampus.</p></article>
+            <article class="about-shared-card"><span>01</span><h3>Persekutuan & Ibadah</h3><p>Ruang untuk beribadah, berdoa, dan mengalami pertumbuhan rohani bersama.</p></article>
+            <article class="about-shared-card"><span>02</span><h3>Pemuridan</h3><p>Pendampingan yang menolong mahasiswa mengenal firman dan hidup sebagai murid Kristus.</p></article>
+            <article class="about-shared-card"><span>03</span><h3>Pelayanan Kampus</h3><p>Kesempatan untuk melayani, membangun komunitas, dan menjadi berkat di lingkungan kampus.</p></article>
         </div>
     </section>
 

@@ -100,6 +100,7 @@ class ExampleTest extends TestCase
         $response->assertSee('Gunadarma dibakar habis oleh api kemuliaan-Nya.');
         $response->assertSee('The Army of God');
         $response->assertSee('Kegiatan Kami');
+        $this->assertSame(6, substr_count($response->getContent(), 'about-shared-card'));
         $response->assertSee('Nantikan informasi kegiatan terbaru dari PDUG.');
         $response->assertDontSee('Kabar &amp; Renungan', false);
         $response->assertDontSee('Misi');

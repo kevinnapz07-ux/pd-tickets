@@ -10392,15 +10392,10 @@ body.public-site:not(.fi-body) .profile-grid.about-grid {
 
 body.public-site:not(.fi-body) .profile-grid.about-grid article {
     min-height: 190px;
-    padding: clamp(24px, 4vw, 36px);
 }
 
 body.public-site:not(.fi-body) .about-program-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-body.public-site:not(.fi-body) .about-program-grid article {
-    padding: 28px;
 }
 
 body.public-site:not(.fi-body) .about-program-grid h3 {
@@ -11358,14 +11353,6 @@ body.public-site:not(.fi-body) .ticket-list-page .registration-card-heading > di
     width: 100%;
 }
 
-body.public-site:not(.fi-body) .profile-grid.about-grid article {
-    min-height: 0;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    box-shadow: none;
-}
-
 @media (min-width: 761px) {
     body.public-site:not(.fi-body) .event-catalog-section .search-form {
         width: min(380px, 100%);
@@ -11510,20 +11497,24 @@ body.public-site:not(.fi-body) .participant-profile-content .participant-card {
     }
 }
 
-/* Match the About story and vision panels to the Kegiatan Kami card system. */
-body.public-site:not(.fi-body) .about-story,
-body.public-site:not(.fi-body) .profile-grid.about-grid article {
+/* One shared card source for Cerita Kami, Visi, and Kegiatan Kami. */
+body.public-site:not(.fi-body) .about-shared-card {
     min-width: 0;
-    border: 1px solid #dbe4f0;
-    border-radius: 20px;
-    background: #ffffff;
-    padding: 26px;
-    box-shadow: 0 12px 30px rgb(15 23 42 / 6%);
+    border: 1px solid var(--public-border);
+    border-radius: var(--public-radius);
+    background: var(--public-surface);
+    padding: 28px;
+    color: var(--public-text);
+    box-shadow: var(--public-shadow);
     transition: border-color .25s ease, box-shadow .25s ease;
 }
 
-body.public-site:not(.fi-body) .about-story {
-    border-bottom: 1px solid #dbe4f0;
+body.public-site:not(.fi-body) .about-shared-card :where(h2, h3) {
+    color: var(--public-text);
+}
+
+body.public-site:not(.fi-body) .about-shared-card :where(p:not(.eyebrow), small) {
+    color: var(--public-muted);
 }
 
 body.public-site:not(.fi-body) .about-identity {
@@ -11552,29 +11543,15 @@ body.public-site:not(.fi-body) .profile-grid.about-grid article small {
     padding-top: 10px;
 }
 
-body.public-site:not(.fi-body) .about-story:hover,
-body.public-site:not(.fi-body) .profile-grid.about-grid article:hover {
+body.public-site:not(.fi-body) .about-shared-card:hover {
     border-color: rgb(109 93 246 / 45%);
     box-shadow: var(--public-shadow-hover);
-}
-
-html[data-theme="dark"] body.public-site:not(.fi-body) .about-story,
-html[data-theme="dark"] body.public-site:not(.fi-body) .profile-grid.about-grid article {
-    border-color: #334155;
-    background: #111d31;
-    box-shadow: 0 12px 30px rgb(0 0 0 / 16%);
 }
 
 html[data-theme="dark"] body.public-site:not(.fi-body) .about-identity {
     border: 0;
     background: transparent;
     box-shadow: none;
-}
-
-html[data-theme="dark"] body.public-site:not(.fi-body) .about-story:hover,
-html[data-theme="dark"] body.public-site:not(.fi-body) .profile-grid.about-grid article:hover {
-    border-color: rgb(109 93 246 / 45%);
-    box-shadow: var(--public-shadow-hover);
 }
 
 @media (max-width: 820px) {
@@ -11585,8 +11562,7 @@ html[data-theme="dark"] body.public-site:not(.fi-body) .profile-grid.about-grid 
 }
 
 @media (max-width: 760px) {
-    body.public-site:not(.fi-body) .about-story,
-    body.public-site:not(.fi-body) .profile-grid.about-grid article {
+    body.public-site:not(.fi-body) .about-shared-card {
         padding: 22px;
     }
 }
