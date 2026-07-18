@@ -77,7 +77,7 @@ class RegistrationController extends Controller
         foreach ($selectedFields as $field) {
             $attributes[$field] = Str::lower(Event::registrationFieldLabel($field));
             $rules[$field] = match ($field) {
-                'name' => ['required', 'string', 'max:120'],
+                'name' => ['required', 'string', 'max:120', "regex:/^[\\pL\\s.'\\-]+$/u"],
                 'email' => [
                     'required',
                     'email',
@@ -87,7 +87,7 @@ class RegistrationController extends Controller
                 ],
                 'phone' => ['required', 'string', 'regex:/^(?:\\+62|62|0)8[1-9][0-9]{7,11}$/'],
                 'gender' => ['required', Rule::in(['laki_laki', 'perempuan'])],
-                'domicile' => ['required', 'string', 'max:120'],
+                'domicile' => ['required', 'string', 'max:120', "regex:/^[\\pL\\s.'\\-]+$/u"],
                 'student_id' => ['required', 'string', 'max:30'],
                 'campus_area' => ['required', Rule::in(['depok', 'kalimalang', 'karawaci', 'cengkareng', 'salemba'])],
                 'class_year' => ['required', 'string', 'max:10'],
@@ -104,6 +104,8 @@ class RegistrationController extends Controller
                 'email.unique' => 'Email ini sudah terdaftar untuk event tersebut.',
                 'email.regex' => 'Email peserta wajib menggunakan alamat Gmail (@gmail.com).',
                 'phone.regex' => 'Nomor WhatsApp harus memakai format Indonesia yang valid, misalnya 081234567890 atau 6281234567890.',
+                'name.regex' => 'Nama lengkap hanya boleh berisi huruf, spasi, titik, apostrof, atau tanda hubung.',
+                'domicile.regex' => 'Domisili hanya boleh berisi huruf, spasi, titik, apostrof, atau tanda hubung.',
                 'participant_type.required' => 'Pilih kategori registrasi.',
                 'participant_type.in' => 'Kategori registrasi yang dipilih tidak tersedia.',
             ],

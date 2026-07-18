@@ -23,6 +23,10 @@
         gap: 18px;
     }
 
+    .public-registration-form .category-fields[aria-hidden="true"] {
+        display: none;
+    }
+
     .public-registration-form .registration-field {
         display: grid;
         gap: 8px;
@@ -111,16 +115,6 @@
     .registration-confirm-actions button[aria-busy="true"] {
         cursor: wait;
         opacity: .8;
-    }
-
-    @media (min-width: 760px) {
-        .public-registration-form .category-fields {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .public-registration-form .category-fields .registration-field:has(textarea) {
-            grid-column: 1 / -1;
-        }
     }
 
     @media (max-width: 640px) {

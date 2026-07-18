@@ -323,6 +323,20 @@ import { Html5Qrcode } from 'html5-qrcode';
             form.querySelectorAll('[data-indonesian-phone]').forEach((field) => {
                 bindValidation(field, 'Gunakan nomor Indonesia, misalnya 081234567890 atau 6281234567890.');
             });
+
+            form.querySelectorAll('[data-text-only]').forEach((field) => {
+                if (field.dataset.textOnlyBound) return;
+                field.dataset.textOnlyBound = 'true';
+
+                const validateText = () => {
+                    const containsNumber = /\d/u.test(field.value);
+                    field.setCustomValidity(containsNumber ? 'Kolom ini tidak boleh berisi angka.' : '');
+                };
+
+                field.addEventListener('input', validateText);
+                field.addEventListener('blur', validateText);
+                field.addEventListener('invalid', validateText);
+            });
         });
     };
 

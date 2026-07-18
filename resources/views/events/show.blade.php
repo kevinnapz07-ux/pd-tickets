@@ -103,6 +103,7 @@
                                             'class_year' => '[0-9]{4}',
                                             default => null,
                                         };
+                                        $isTextOnly = in_array($field, ['name', 'domicile'], true);
                                     @endphp
 
                                     <label class="registration-field" for="{{ $fieldId }}">
@@ -117,7 +118,7 @@
                                         @elseif ($inputType === 'textarea')
                                             <textarea id="{{ $fieldId }}" name="{{ $fieldName }}" rows="3" placeholder="{{ $definition['placeholder'] ?? '' }}" data-category-field data-confirm-label="{{ $definition['label'] }}" data-required="{{ $isRequired ? 'true' : 'false' }}" @error($fieldName) aria-invalid="true" aria-describedby="{{ $errorId }}" @enderror @disabled(! $isActive)>{{ $oldValue }}</textarea>
                                         @else
-                                            <input id="{{ $fieldId }}" type="{{ $inputType }}" name="{{ $fieldName }}" value="{{ $oldValue }}" placeholder="{{ $definition['placeholder'] ?? '' }}" @if ($inputMode) inputmode="{{ $inputMode }}" @endif @if ($pattern) pattern="{{ $pattern }}" @endif @if ($field === 'email') autocomplete="email" data-gmail-field @elseif ($field === 'phone') autocomplete="tel" data-indonesian-phone @elseif ($field === 'name') autocomplete="name" @endif data-category-field data-confirm-label="{{ $definition['label'] }}" data-required="{{ $isRequired ? 'true' : 'false' }}" @error($fieldName) aria-invalid="true" aria-describedby="{{ $errorId }}" @enderror @disabled(! $isActive)>
+                                            <input id="{{ $fieldId }}" type="{{ $inputType }}" name="{{ $fieldName }}" value="{{ $oldValue }}" placeholder="{{ $definition['placeholder'] ?? '' }}" @if ($inputMode) inputmode="{{ $inputMode }}" @endif @if ($pattern) pattern="{{ $pattern }}" @endif @if ($isTextOnly) data-text-only @endif @if ($field === 'email') autocomplete="email" data-gmail-field @elseif ($field === 'phone') autocomplete="tel" data-indonesian-phone @elseif ($field === 'name') autocomplete="name" @endif data-category-field data-confirm-label="{{ $definition['label'] }}" data-required="{{ $isRequired ? 'true' : 'false' }}" @error($fieldName) aria-invalid="true" aria-describedby="{{ $errorId }}" @enderror @disabled(! $isActive)>
                                         @endif
                                         @error($fieldName) <small class="field-error" id="{{ $errorId }}">{{ $message }}</small> @enderror
                                     </label>

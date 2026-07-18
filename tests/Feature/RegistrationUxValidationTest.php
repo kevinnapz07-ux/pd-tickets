@@ -93,7 +93,33 @@ class RegistrationUxValidationTest extends TestCase
             ->assertSee('pattern="[A-Za-z0-9._%+\-]+@gmail\.com"', false)
             ->assertSee('data-registration-submit', false)
             ->assertSee('class="button-spinner"', false)
-            ->assertSee('required-mark', false);
+            ->assertSee('required-mark', false)
+            ->assertSee('data-text-only', false);
+
+        $this->assertStringContainsString(
+            '.public-registration-form .category-fields[aria-hidden="true"]',
+            file_get_contents(resource_path('css/app.css')),
+        );
+    }
+
+    public function test_name_and_domicile_reject_numbers(): void
+    {
+        $participant = $this->participant();
+        $event = $this->event();
+
+        $this->actingAs($participant)
+            ->post(route('registrations.store', $event), [
+                'participant_type' => 'umum',
+                'name' => 'Kevin123',
+                'email' => 'kevin.text@gmail.com',
+                'phone' => '081234567890',
+                'gender' => 'laki_laki',
+                'domicile' => 'Depok2',
+            ])
+            ->assertSessionHasErrors([
+                'name' => 'Nama lengkap hanya boleh berisi huruf, spasi, titik, apostrof, atau tanda hubung.',
+                'domicile' => 'Domisili hanya boleh berisi huruf, spasi, titik, apostrof, atau tanda hubung.',
+            ]);
     }
 
     private function participant(): User
