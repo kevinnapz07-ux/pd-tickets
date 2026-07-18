@@ -12007,3 +12007,88 @@ body.public-site:not(.fi-body) .about-shared-card:focus-within {
         padding: 22px;
     }
 }
+
+/* Semantic public colors: status meaning must not reuse decorative amber. */
+body.public-site:not(.fi-body) {
+    --public-secondary: #2563eb;
+    --public-secondary-hover: #1d4ed8;
+    --public-secondary-soft: #eff6ff;
+    --public-info: #2563eb;
+    --public-info-soft: #eff6ff;
+    --public-info-border: #bfdbfe;
+    --public-success: #15803d;
+    --public-success-soft: #dcfce7;
+    --public-success-border: #86efac;
+    --public-warning: #b45309;
+    --public-warning-soft: #fffbeb;
+    --public-warning-border: #fde68a;
+    --public-danger: #b91c1c;
+    --public-danger-soft: #fef2f2;
+    --public-danger-border: #fecaca;
+}
+
+html[data-theme="dark"] body.public-site:not(.fi-body) {
+    --public-secondary: #60a5fa;
+    --public-secondary-hover: #93c5fd;
+    --public-secondary-soft: #172f58;
+    --public-info: #93c5fd;
+    --public-info-soft: #172f58;
+    --public-info-border: #356aa0;
+    --public-success: #bbf7d0;
+    --public-success-soft: #123d27;
+    --public-success-border: #27834d;
+    --public-warning: #fde68a;
+    --public-warning-soft: #473211;
+    --public-warning-border: #9a6d1f;
+    --public-danger: #fecaca;
+    --public-danger-soft: #4b1f26;
+    --public-danger-border: #9f3f4a;
+}
+
+body.public-site:not(.fi-body) .toast-notice {
+    border: 1px solid var(--public-success-border);
+    background: var(--public-success-soft);
+    color: var(--public-success);
+    box-shadow: var(--public-shadow);
+}
+
+body.public-site:not(.fi-body) :where(.notice:not(.toast-notice), .announcement) {
+    border: 1px solid var(--public-info-border);
+    background: var(--public-info-soft);
+    color: var(--public-info);
+}
+
+body.public-site:not(.fi-body) :where(.empty, .article-empty) {
+    border: 1px solid var(--public-border);
+    border-radius: var(--public-card-radius, 20px);
+    background: var(--public-surface);
+    color: var(--public-muted);
+    box-shadow: var(--public-shadow);
+}
+
+body.public-site:not(.fi-body) .success-box {
+    border-color: var(--public-success-border);
+    background: var(--public-success-soft);
+    color: var(--public-success);
+}
+
+body.public-site:not(.fi-body) :where(.warning-box, [class*="status-warning"]) {
+    border-color: var(--public-warning-border);
+    background: var(--public-warning-soft);
+    color: var(--public-warning);
+}
+
+body.public-site:not(.fi-body) .error-box {
+    border-color: var(--public-danger-border);
+    background: var(--public-danger-soft);
+    color: var(--public-danger);
+}
+
+body.public-site:not(.fi-body) :where(
+    [class*="status-success"],
+    .ticket-checkin-status.is-checked-in
+) {
+    border-color: var(--public-success-border);
+    background: var(--public-success-soft);
+    color: var(--public-success);
+}
