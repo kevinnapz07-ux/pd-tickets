@@ -12443,3 +12443,88 @@ body.public-site:not(.fi-body) .event-catalog-section .search-form .link-button 
         width: 100%;
     }
 }
+
+/* Consistent spacing and card rhythm for the registration guide modal. */
+body.public-site:not(.fi-body) .how-modal {
+    border-radius: var(--public-card-radius, 20px);
+    padding: clamp(20px, 3vw, 28px);
+}
+
+body.public-site:not(.fi-body) .how-modal .modal-heading {
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+body.public-site:not(.fi-body) .how-modal .modal-heading h2 {
+    margin: 0;
+}
+
+body.public-site:not(.fi-body) .how-modal .modal-description {
+    margin-top: 10px;
+}
+
+body.public-site:not(.fi-body) .how-modal .modal-close {
+    flex: 0 0 40px;
+    margin: 0;
+}
+
+body.public-site:not(.fi-body) .how-modal .step-grid {
+    align-items: stretch;
+    gap: 16px;
+}
+
+body.public-site:not(.fi-body) .how-modal .step-grid article {
+    display: flex;
+    min-width: 0;
+    height: 100%;
+    flex-direction: column;
+    border-radius: var(--public-card-radius, 20px);
+    padding: 22px;
+    box-shadow: var(--public-shadow);
+}
+
+body.public-site:not(.fi-body) .how-modal .step-heading {
+    min-height: 38px;
+    align-items: center;
+}
+
+body.public-site:not(.fi-body) .how-modal .step-heading > span {
+    flex: 0 0 38px;
+}
+
+body.public-site:not(.fi-body) .how-modal .step-heading > svg {
+    width: 24px;
+    height: 24px;
+    flex: 0 0 24px;
+    margin: 0 1px 0 16px;
+    opacity: .82;
+}
+
+body.public-site:not(.fi-body) .how-modal .step-grid h3 {
+    margin: 14px 0 8px;
+    line-height: 1.3;
+}
+
+body.public-site:not(.fi-body) .how-modal .step-grid p {
+    margin: 0;
+    line-height: 1.7;
+}
+
+@media (max-width: 640px) {
+    body.public-site:not(.fi-body) .how-modal {
+        padding: 18px;
+    }
+
+    body.public-site:not(.fi-body) .how-modal .modal-heading {
+        gap: 14px;
+        margin-bottom: 18px;
+    }
+
+    body.public-site:not(.fi-body) .how-modal .step-grid article {
+        padding: 18px;
+    }
+
+    body.public-site:not(.fi-body) .how-modal .step-grid h3 {
+        margin-top: 12px;
+    }
+}

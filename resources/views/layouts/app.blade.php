@@ -133,7 +133,6 @@
         <section class="how-modal" role="dialog" aria-modal="true" aria-labelledby="how-modal-title" aria-describedby="how-modal-description" tabindex="-1">
             <div class="modal-heading">
                 <div>
-                    <p class="eyebrow">Cara Registrasi</p>
                     <h2 id="how-modal-title">Cara Registrasi Event</h2>
                     <p class="modal-description" id="how-modal-description">Ikuti langkah berikut untuk mendaftar dan mendapatkan tiket event PD Gunadarma.</p>
                 </div>
