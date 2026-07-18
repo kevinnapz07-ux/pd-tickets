@@ -10706,7 +10706,7 @@ body.public-site:not(.fi-body) .event-card-content .event-description-preview {
     display: -webkit-box;
     min-height: 0;
     overflow: hidden;
-    margin: 18px 0 18px;
+    margin: 0 0 18px;
     color: var(--public-muted);
     line-height: 1.65;
     white-space: normal;
@@ -10716,15 +10716,15 @@ body.public-site:not(.fi-body) .event-card-content .event-description-preview {
 
 body.public-site:not(.fi-body) .event-card-meta-list {
     display: grid;
-    gap: 10px;
+    gap: 9px;
     margin: 0;
 }
 
 body.public-site:not(.fi-body) .event-card-meta-list > div {
     display: grid;
-    grid-template-columns: 20px 62px minmax(0, 1fr);
+    grid-template-columns: 72px minmax(0, 1fr);
     align-items: start;
-    gap: 9px;
+    gap: 14px;
 }
 
 body.public-site:not(.fi-body) .event-card-meta-list :where(dt, dd) {
@@ -10747,28 +10747,6 @@ body.public-site:not(.fi-body) .event-card-meta-list dd {
 body.public-site:not(.fi-body) .event-card-meta-list > div:last-child dd {
     color: var(--public-secondary);
     font-weight: 800;
-}
-
-body.public-site:not(.fi-body) .event-card-meta-item::before {
-    display: grid;
-    width: 20px;
-    height: 20px;
-    place-items: center;
-    border-radius: 999px;
-    background: var(--public-secondary-soft);
-    color: var(--public-secondary);
-    font-size: 11px;
-    font-weight: 900;
-    line-height: 1;
-}
-
-body.public-site:not(.fi-body) .event-card-meta-item.is-location::before { content: "L"; }
-body.public-site:not(.fi-body) .event-card-meta-item.is-date::before { content: "T"; }
-body.public-site:not(.fi-body) .event-card-meta-item.is-quota::before { content: "K"; }
-body.public-site:not(.fi-body) .event-card-meta-item.is-price::before { content: "H"; }
-
-body.public-site:not(.fi-body) .event-card-meta-item.is-price::before {
-    background: color-mix(in srgb, var(--public-secondary-soft) 72%, transparent);
 }
 
 body.public-site:not(.fi-body) .event-card-content .event-footer {
@@ -10834,9 +10812,7 @@ body.public-site:not(.fi-body) .event-card-content > .button {
         aspect-ratio: 16 / 9;
     }
 
-    body.public-site:not(.fi-body) .event-card-meta-list > div {
-        grid-template-columns: 20px 58px minmax(0, 1fr);
-    }
+    body.public-site:not(.fi-body) .event-card-meta-list > div { grid-template-columns: 68px minmax(0, 1fr); }
 }
 
 @media (max-width: 390px) {
@@ -10865,6 +10841,11 @@ body.public-site:not(.fi-body) .event-card-content > .button {
 
     body.public-site:not(.fi-body) .event-card-content {
         padding: 19px;
+    }
+
+    body.public-site:not(.fi-body) .event-card-meta-list > div {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 2px;
     }
 }
 
