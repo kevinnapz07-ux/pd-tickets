@@ -21,8 +21,20 @@
         </div>
     </section>
 
-    <section class="participant-profile">
-        <article class="profile-info participant-card">
+    <section class="participant-profile participant-profile-layout">
+        <aside class="participant-profile-menu" aria-label="Menu profil">
+            <a class="is-active" href="#data-diri"><span aria-hidden="true">👤</span> Data Diri</a>
+            <a href="{{ route('tickets.index') }}"><span aria-hidden="true">🎟</span> Tiket Saya</a>
+            <a href="{{ route('participant.activity') }}"><span aria-hidden="true">↻</span> Riwayat Pembayaran</a>
+            <a href="#ubah-password"><span aria-hidden="true">🔒</span> Ubah Password</a>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit"><span aria-hidden="true">↪</span> Keluar</button>
+            </form>
+        </aside>
+
+        <div class="participant-profile-content">
+        <article class="profile-info participant-card" id="data-diri" data-reveal>
             <div>
                 <p class="eyebrow">Informasi Akun</p>
             </div>
@@ -33,7 +45,7 @@
             </dl>
         </article>
 
-        <details class="profile-info participant-card profile-password-card" @if ($errors->hasAny(['current_password', 'password']) || session('status')) open @endif>
+        <details class="profile-info participant-card profile-password-card" id="ubah-password" data-reveal @if ($errors->hasAny(['current_password', 'password']) || session('status')) open @endif>
             <summary class="profile-password-summary">
                 <span>Ganti Password</span>
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
@@ -86,6 +98,7 @@
                 </form>
             </div>
         </details>
+        </div>
     </section>
 
 @endsection

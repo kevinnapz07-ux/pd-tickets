@@ -206,6 +206,31 @@ import { Html5Qrcode } from 'html5-qrcode';
         });
     };
 
+    const setupPublicMotion = () => {
+        const header = document.querySelector('.topbar');
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const syncHeader = () => header?.classList.toggle('is-scrolled', window.scrollY > 12);
+
+        syncHeader();
+        window.addEventListener('scroll', syncHeader, { passive: true });
+
+        const items = document.querySelectorAll('[data-reveal]');
+        if (reducedMotion || ! ('IntersectionObserver' in window)) {
+            items.forEach((item) => item.classList.add('is-visible'));
+            return;
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (! entry.isIntersecting) return;
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+            });
+        }, { threshold: 0.12 });
+
+        items.forEach((item) => observer.observe(item));
+    };
+
     const setupPasswordToggles = () => {
         document.querySelectorAll('[data-password-toggle]').forEach((button) => {
             const field = button.closest('.password-field');
@@ -908,6 +933,7 @@ import { Html5Qrcode } from 'html5-qrcode';
         setupToasts();
         setupAccountMenus();
         setupMobileMenu();
+        setupPublicMotion();
         setupPasswordToggles();
         setupParticipantTypeFields();
         setupPricingFields();

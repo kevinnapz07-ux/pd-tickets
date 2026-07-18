@@ -9148,3 +9148,192 @@ body:not(.fi-body) .participant-detail-grid dd {
     }
 }
 
+/* Public UI refresh */
+body:not(.fi-body) .topbar {
+    transition: background-color .25s ease, border-color .25s ease, box-shadow .25s ease, backdrop-filter .25s ease;
+}
+
+body:not(.fi-body) .topbar.is-scrolled {
+    background: rgb(255 255 255 / 82%);
+    box-shadow: 0 12px 36px rgb(15 23 42 / 10%);
+    backdrop-filter: blur(16px) saturate(145%);
+}
+
+[data-theme="dark"] body:not(.fi-body) .topbar.is-scrolled { background: rgb(15 23 42 / 82%); }
+
+body:not(.fi-body) .header-avatar {
+    display: grid;
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    place-items: center;
+    border: 2px solid rgb(37 99 235 / 18%);
+    border-radius: 999px;
+    background: linear-gradient(135deg, #2563eb, #0f766e);
+    box-shadow: 0 6px 18px rgb(37 99 235 / 20%);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+body:not(.fi-body) .authenticated-account-trigger { gap: 9px; padding-block: 3px; padding-left: 4px; }
+
+body:not(.fi-body) .event-card.public-event-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: 0 10px 30px rgb(15 23 42 / 7%);
+    transition: transform .28s ease, border-color .28s ease, box-shadow .28s ease;
+}
+
+body:not(.fi-body) .event-card.public-event-card:hover {
+    border-color: rgb(37 99 235 / 42%);
+    box-shadow: 0 22px 50px rgb(15 23 42 / 14%);
+    transform: translateY(-6px);
+}
+
+body:not(.fi-body) .event-card-visual {
+    position: relative;
+    display: grid;
+    min-height: 152px;
+    place-items: center;
+    overflow: hidden;
+    background: linear-gradient(135deg, #172554 0%, #2563eb 54%, #0f766e 100%);
+}
+
+body:not(.fi-body) .event-card-visual > svg {
+    width: 72px;
+    fill: none;
+    stroke: rgb(255 255 255 / 22%);
+    stroke-width: 1.2;
+    transition: transform .4s ease;
+}
+
+body:not(.fi-body) .public-event-card:hover .event-card-visual > svg { transform: scale(1.12) rotate(-3deg); }
+
+body:not(.fi-body) .event-card-orb {
+    position: absolute;
+    right: -30px;
+    bottom: -45px;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 10%);
+}
+
+body:not(.fi-body) .event-card-visual .event-date {
+    position: absolute;
+    bottom: 14px;
+    left: 14px;
+    width: 64px;
+    height: 64px;
+    border: 1px solid rgb(255 255 255 / 40%);
+    background: rgb(255 255 255 / 92%);
+    box-shadow: 0 8px 24px rgb(15 23 42 / 18%);
+    color: #172554;
+    backdrop-filter: blur(8px);
+}
+
+body:not(.fi-body) .event-card-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 22px;
+}
+
+[data-theme="dark"] body:not(.fi-body) .event-card.public-event-card { border-color: #334155; background: #111d31; }
+
+body:not(.fi-body) [data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity .5s ease, transform .5s ease, box-shadow .28s ease, border-color .28s ease;
+}
+
+body:not(.fi-body) [data-reveal].is-visible { opacity: 1; transform: none; }
+
+body:not(.fi-body) .participant-profile-layout {
+    display: grid;
+    grid-template-columns: 250px minmax(0, 1fr);
+    align-items: start;
+    gap: 24px;
+}
+
+body:not(.fi-body) .participant-profile-menu {
+    position: sticky;
+    top: 96px;
+    display: grid;
+    gap: 5px;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 12px 32px rgb(15 23 42 / 7%);
+}
+
+body:not(.fi-body) .participant-profile-menu :is(a, button) {
+    display: flex;
+    width: 100%;
+    min-height: 46px;
+    align-items: center;
+    gap: 11px;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    padding: 10px 12px;
+    color: #475569;
+    font: inherit;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+}
+
+body:not(.fi-body) .participant-profile-menu :is(a, button):hover,
+body:not(.fi-body) .participant-profile-menu a.is-active { background: #eff6ff; color: #1d4ed8; }
+body:not(.fi-body) .participant-profile-menu form { margin: 0; border-top: 1px solid #e2e8f0; padding-top: 5px; }
+body:not(.fi-body) .participant-profile-menu form button { color: #b91c1c; }
+body:not(.fi-body) .participant-profile-content { display: grid; min-width: 0; gap: 20px; }
+body:not(.fi-body) .participant-profile-content .participant-card { margin-top: 0; scroll-margin-top: 110px; }
+[data-theme="dark"] body:not(.fi-body) .participant-profile-menu { border-color: #334155; background: #111d31; }
+[data-theme="dark"] body:not(.fi-body) .participant-profile-menu :is(a, button) { color: #cbd5e1; }
+[data-theme="dark"] body:not(.fi-body) .participant-profile-menu :is(a, button):hover,
+[data-theme="dark"] body:not(.fi-body) .participant-profile-menu a.is-active { background: #172f58; color: #93c5fd; }
+
+@media (max-width: 760px) {
+    body:not(.fi-body) .public-event-rail {
+        display: flex;
+        width: calc(100% + 20px);
+        gap: 16px;
+        overflow-x: auto;
+        margin-right: -20px;
+        padding: 4px 20px 24px 2px;
+        scroll-padding-left: 2px;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        overscroll-behavior-inline: contain;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    body:not(.fi-body) .public-event-rail::-webkit-scrollbar { display: none; }
+    body:not(.fi-body) .public-event-rail .public-event-card { flex: 0 0 min(84vw, 330px); scroll-snap-align: start; }
+    body:not(.fi-body) .participant-profile-layout { grid-template-columns: 1fr; }
+    body:not(.fi-body) .participant-profile-menu {
+        position: static;
+        display: flex;
+        overflow-x: auto;
+        padding: 8px;
+        scroll-snap-type: x proximity;
+        scrollbar-width: none;
+    }
+    body:not(.fi-body) .participant-profile-menu :is(a, form) { flex: 0 0 auto; scroll-snap-align: start; }
+    body:not(.fi-body) .participant-profile-menu form { border-top: 0; border-left: 1px solid #e2e8f0; padding-top: 0; padding-left: 5px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body:not(.fi-body) [data-reveal] { opacity: 1; transform: none; transition: none; }
+    body:not(.fi-body) .event-card.public-event-card,
+    body:not(.fi-body) .event-card-visual > svg { transition: none; }
+}

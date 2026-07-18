@@ -64,9 +64,9 @@
                         <a class="nav-button" href="{{ route('filament.admin.pages.dashboard') }}">Dashboard</a>
                     @endif
                     <div class="account-menu" data-account-menu>
-                        <button class="nav-button account-trigger" type="button" data-account-toggle aria-expanded="false" aria-haspopup="true">
+                        <button class="nav-button account-trigger authenticated-account-trigger" type="button" data-account-toggle aria-expanded="false" aria-haspopup="true" aria-label="Buka menu akun {{ auth()->user()->name }}">
+                            <span class="header-avatar" aria-hidden="true">{{ mb_strtoupper(mb_substr(trim(auth()->user()->name), 0, 1)) ?: '?' }}</span>
                             <span class="account-trigger-label">
-                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0M12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"></path></svg>
                                 <span>{{ auth()->user()->name }}</span>
                             </span>
                             <svg class="account-trigger-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
@@ -86,13 +86,12 @@
                         <button class="nav-button account-trigger login-menu-trigger{{ request()->routeIs('login', 'register') ? ' is-active' : '' }}" type="button" data-account-toggle aria-expanded="false" aria-haspopup="true">
                             <span class="account-trigger-label">
                                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0M12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"></path></svg>
-                                Login
+                                <span>Login</span>
                             </span>
                             <svg class="account-trigger-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
                         </button>
                         <div class="account-popover" data-account-popover>
                             <a href="{{ route('login') }}">Login</a>
-                            <a href="{{ route('register') }}">Daftar Akun</a>
                             @include('layouts.partials.theme-switcher')
                         </div>
                     </div>
