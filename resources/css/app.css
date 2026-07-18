@@ -11514,16 +11514,16 @@ body.public-site:not(.fi-body) .participant-profile-content .participant-card {
 body.public-site:not(.fi-body) .about-story,
 body.public-site:not(.fi-body) .profile-grid.about-grid article {
     min-width: 0;
-    border: 1px solid var(--public-border);
-    border-radius: var(--public-radius);
-    background: var(--public-surface);
-    padding: clamp(24px, 3vw, 28px);
-    box-shadow: var(--public-shadow);
+    border: 1px solid #dbe4f0;
+    border-radius: 20px;
+    background: #ffffff;
+    padding: 26px;
+    box-shadow: 0 12px 30px rgb(15 23 42 / 6%);
     transition: border-color .25s ease, box-shadow .25s ease;
 }
 
 body.public-site:not(.fi-body) .about-story {
-    border-bottom: 1px solid var(--public-border);
+    border-bottom: 1px solid #dbe4f0;
 }
 
 body.public-site:not(.fi-body) .about-identity {
@@ -11536,6 +11536,7 @@ body.public-site:not(.fi-body) .about-identity {
 
 body.public-site:not(.fi-body) .profile-grid.about-grid {
     align-items: stretch;
+    gap: 22px;
 }
 
 body.public-site:not(.fi-body) .profile-grid.about-grid article {
@@ -11559,9 +11560,9 @@ body.public-site:not(.fi-body) .profile-grid.about-grid article:hover {
 
 html[data-theme="dark"] body.public-site:not(.fi-body) .about-story,
 html[data-theme="dark"] body.public-site:not(.fi-body) .profile-grid.about-grid article {
-    border-color: var(--public-border);
-    background: var(--public-surface);
-    box-shadow: var(--public-shadow);
+    border-color: #334155;
+    background: #111d31;
+    box-shadow: 0 12px 30px rgb(0 0 0 / 16%);
 }
 
 html[data-theme="dark"] body.public-site:not(.fi-body) .about-identity {
@@ -11574,6 +11575,13 @@ html[data-theme="dark"] body.public-site:not(.fi-body) .about-story:hover,
 html[data-theme="dark"] body.public-site:not(.fi-body) .profile-grid.about-grid article:hover {
     border-color: rgb(109 93 246 / 45%);
     box-shadow: var(--public-shadow-hover);
+}
+
+@media (max-width: 820px) {
+    body.public-site:not(.fi-body) .about-story {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 22px;
+    }
 }
 
 @media (max-width: 760px) {
