@@ -77,6 +77,66 @@ class TicketQrCodeTest extends TestCase
         $this->assertTrue($ticket->fresh()->checked_in_at->equalTo($firstCheckIn));
     }
 
+    public function test_scanner_page_is_focused_and_ready_for_automatic_check_in(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $this->actingAs($admin)
+            ->get(route('admin.tickets.scanner'))
+            ->assertOk()
+            ->assertSee('Scanner QR Tiket')
+            ->assertSee('Kode Tiket Manual')
+            ->assertSee('data-ticket-result', false)
+            ->assertSee('Memverifikasi tiket...')
+            ->assertSee('Scan Lagi')
+            ->assertDontSee('Administrasi Event')
+            ->assertDontSee('Arahkan kamera belakang')
+            ->assertDontSee('Check-in Peserta');
+    }
+
+    public function test_scanner_json_check_in_accepts_qr_url_and_returns_popup_details(): void
+    {
+        $ticket = $this->ticket(['registration_code' => 'IRJ-A8F29K']);
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $this->actingAs($admin)
+            ->postJson(route('admin.tickets.checkin'), [
+                'ticket_reference' => $ticket->verificationUrl(),
+            ])
+            ->assertOk()
+            ->assertJson([
+                'message' => 'Check-in berhasil.',
+                'participant_name' => $ticket->name,
+                'event_name' => $ticket->event->title,
+                'ticket_code' => 'IRJ-A8F29K',
+            ])
+            ->assertJsonStructure(['checked_in_at']);
+
+        $this->assertNotNull($ticket->fresh()->checked_in_at);
+    }
+
+    public function test_scanner_keeps_legacy_codes_valid_and_rejects_wrong_event(): void
+    {
+        $legacy = $this->ticket(['registration_code' => 'PDUG-2026-LEGACY']);
+        $otherEventTicket = $this->ticket();
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $this->actingAs($admin)
+            ->postJson(route('admin.tickets.checkin'), [
+                'ticket_reference' => $legacy->registration_code,
+            ])
+            ->assertOk()
+            ->assertJsonPath('ticket_code', 'PDUG-2026-LEGACY');
+
+        $this->actingAs($admin)
+            ->postJson(route('admin.tickets.checkin'), [
+                'ticket_reference' => $otherEventTicket->verification_token,
+                'event_id' => $legacy->event_id,
+            ])
+            ->assertUnprocessable()
+            ->assertJsonPath('message', 'Tiket berasal dari event yang berbeda.');
+    }
+
     public function test_pending_and_cancelled_tickets_cannot_check_in(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);

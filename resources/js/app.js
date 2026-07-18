@@ -602,22 +602,115 @@ import { Html5Qrcode } from 'html5-qrcode';
     const setupTicketScanner = () => {
         const reader = document.querySelector('[data-ticket-scanner]');
         const reference = document.querySelector('[data-ticket-reference]');
+        const form = document.querySelector('[data-ticket-checkin-form]');
+        const submit = document.querySelector('[data-ticket-submit]');
+        const loading = document.querySelector('[data-ticket-scanner-loading]');
+        const result = document.querySelector('[data-ticket-result]');
+        const resultIcon = document.querySelector('[data-ticket-result-icon]');
+        const resultTitle = document.querySelector('[data-ticket-result-title]');
+        const resultMessage = document.querySelector('[data-ticket-result-message]');
+        const resultDetails = document.querySelector('[data-ticket-result-details]');
+        const scanAgain = document.querySelector('[data-ticket-scan-again]');
 
-        if (! reader || ! reference) return;
+        if (! reader || ! reference || ! form || form.dataset.scannerBound) return;
 
+        form.dataset.scannerBound = 'true';
         const scanner = new Html5Qrcode(reader.id);
-        Html5Qrcode.getCameras()
-            .then(() => scanner.start(
+        let processing = false;
+        let cameraAvailable = true;
+
+        const startScanner = async () => {
+            if (! cameraAvailable) return;
+
+            try {
+                await scanner.start(
                 { facingMode: 'environment' },
                 { fps: 10, qrbox: { width: 240, height: 240 } },
-                (decodedText) => {
+                async (decodedText) => {
+                    if (processing) return;
                     reference.value = decodedText;
-                    reference.focus();
-                    scanner.stop().catch(() => {});
+                    await processCheckIn();
                 },
                 () => {},
-            ))
+                );
+            } catch (_) {
+                cameraAvailable = false;
+                reader.innerHTML = '<p class="ticket-scanner-fallback">Kamera tidak tersedia. Gunakan input kode tiket manual.</p>';
+            }
+        };
+
+        const stopScanner = async () => {
+            try {
+                await scanner.stop();
+            } catch (_) {}
+        };
+
+        const showResult = (success, payload) => {
+            resultIcon.textContent = success ? '✓' : '!';
+            resultIcon.classList.toggle('is-success', success);
+            resultIcon.classList.toggle('is-error', ! success);
+            resultTitle.textContent = success ? 'Check-in Berhasil' : 'Check-in Gagal';
+            resultMessage.textContent = payload.message;
+            resultDetails.hidden = ! success;
+
+            if (success) {
+                resultDetails.querySelector('[data-ticket-participant]').textContent = payload.participant_name;
+                resultDetails.querySelector('[data-ticket-event]').textContent = payload.event_name;
+                resultDetails.querySelector('[data-ticket-code]').textContent = payload.ticket_code;
+                resultDetails.querySelector('[data-ticket-time]').textContent = payload.checked_in_at;
+            }
+
+            result.hidden = false;
+            document.body.classList.add('modal-open');
+            scanAgain.focus();
+        };
+
+        const processCheckIn = async () => {
+            if (processing || ! reference.value.trim()) return;
+
+            processing = true;
+            submit.disabled = true;
+            loading.hidden = false;
+            await stopScanner();
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: new FormData(form),
+                });
+                const payload = await response.json();
+                showResult(response.ok, payload);
+            } catch (_) {
+                showResult(false, { message: 'Tiket belum dapat diverifikasi. Periksa koneksi lalu coba lagi.' });
+            } finally {
+                loading.hidden = true;
+            }
+        };
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            processCheckIn();
+        });
+
+        scanAgain?.addEventListener('click', async () => {
+            result.hidden = true;
+            document.body.classList.remove('modal-open');
+            reference.value = '';
+            submit.disabled = false;
+            processing = false;
+            await startScanner();
+            if (! cameraAvailable) reference.focus();
+        });
+
+        Html5Qrcode.getCameras()
+            .then(startScanner)
             .catch(() => {
+                cameraAvailable = false;
                 reader.innerHTML = '<p class="ticket-scanner-fallback">Kamera tidak tersedia. Gunakan input kode tiket manual.</p>';
             });
     };

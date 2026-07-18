@@ -486,15 +486,36 @@ iframe {
 .ticket-public-details div { background:#fff; padding:14px 16px; }
 .ticket-public-details dt { color:#64748b; font-size:12px; font-weight:800; text-transform:uppercase; }
 .ticket-public-details dd { margin:4px 0 0; color:#0f172a; font-weight:800; }
-.ticket-scanner-heading { margin-bottom:24px; }
-.ticket-scanner-grid { display:grid; gap:22px; }
-#ticket-qr-reader { min-height:280px; overflow:hidden; border:2px dashed #94a3b8; border-radius:16px; background:#f8fafc; }
+.ticket-scanner-heading { margin-bottom:20px; text-align:center; }
+.ticket-scanner-heading h1 { margin:0; }
+.ticket-scanner-grid { display:grid; gap:18px; }
+.ticket-scanner-stage { position:relative; min-width:0; }
+#ticket-qr-reader { min-height:280px; overflow:hidden; border:1px solid #cbd5e1; border-radius:16px; background:#f8fafc; }
 .ticket-scanner-fallback { padding:32px; text-align:center; color:#64748b; }
+.ticket-scanner-loading { position:absolute; inset:0; z-index:2; display:grid; place-content:center; justify-items:center; gap:12px; border-radius:16px; background:rgb(15 23 42 / 82%); color:#fff; }
+.ticket-scanner-loading[hidden] { display:none; }
+.ticket-scanner-spinner { width:34px; height:34px; border:3px solid rgb(255 255 255 / 35%); border-top-color:#fff; border-radius:50%; animation:ticket-spin .8s linear infinite; }
+.ticket-scanner-result-backdrop { position:fixed; inset:0; z-index:100; display:grid; place-items:center; padding:16px; background:rgb(15 23 42 / 68%); }
+.ticket-scanner-result-backdrop[hidden] { display:none; }
+.ticket-scanner-result { width:min(100%, 430px); max-height:calc(100dvh - 32px); overflow-y:auto; border-radius:20px; padding:24px; background:#fff; box-shadow:0 24px 70px rgb(15 23 42 / 30%); text-align:center; }
+.ticket-scanner-result-icon { display:grid; width:56px; height:56px; margin:0 auto 14px; place-items:center; border-radius:50%; font-size:30px; font-weight:900; }
+.ticket-scanner-result-icon.is-success { background:#dcfce7; color:#15803d; }
+.ticket-scanner-result-icon.is-error { background:#fee2e2; color:#b91c1c; }
+.ticket-scanner-result h2 { margin:0 0 6px; }
+.ticket-scanner-result > p { margin:0 0 18px; color:#64748b; }
+.ticket-scanner-result dl { display:grid; gap:1px; margin:0 0 20px; overflow:hidden; border:1px solid #e2e8f0; border-radius:14px; background:#e2e8f0; text-align:left; }
+.ticket-scanner-result dl div { min-width:0; padding:11px 13px; background:#fff; }
+.ticket-scanner-result dt { color:#64748b; font-size:12px; font-weight:700; }
+.ticket-scanner-result dd { margin:2px 0 0; overflow-wrap:anywhere; color:#0f172a; font-weight:700; }
+@keyframes ticket-spin { to { transform:rotate(360deg); } }
 .qr-checkin img { padding:16px; background:#fff; }
 
 [data-theme="dark"] .ticket-verification-card,
 [data-theme="dark"] .ticket-scanner-page,
-[data-theme="dark"] .ticket-public-details div { border-color:#334155; background:#111c2f; }
+[data-theme="dark"] .ticket-public-details div,
+[data-theme="dark"] .ticket-scanner-result,
+[data-theme="dark"] .ticket-scanner-result dl div { border-color:#334155; background:#111c2f; }
+[data-theme="dark"] .ticket-scanner-result dd { color:#e2e8f0; }
 [data-theme="dark"] .ticket-public-details dd { color:#e2e8f0; }
 
 @media (max-width: 600px) {
