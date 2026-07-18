@@ -34,20 +34,17 @@ class AuthController extends Controller
         $remember = $request->boolean('remember');
         $redirect = $credentials['redirect'] ?? null;
         unset($credentials['redirect']);
+        $credentials['role'] = 'peserta';
 
         if (! Auth::attempt($credentials, $remember)) {
             return back()->withInput($request->only('email'))
-                ->withErrors(['email' => 'Email atau password tidak valid.']);
+                ->withErrors(['email' => 'Email atau password yang Anda masukkan tidak valid.']);
         }
 
         $request->session()->regenerate();
         RateLimiter::clear('auth:public-login|'.$request->ip());
         $user = $request->user();
         $message = 'Login berhasil. Selamat datang, '.$user->name.'.';
-
-        if ($user->role === 'admin') {
-            return redirect()->route('filament.admin.pages.dashboard');
-        }
 
         $destination = $this->safeInternalRedirect($request, $redirect)
             ?? $this->safeInternalRedirect($request, $request->session()->pull('url.intended'));

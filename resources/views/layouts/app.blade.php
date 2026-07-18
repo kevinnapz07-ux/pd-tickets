@@ -119,7 +119,7 @@
                 <article>
                     <div class="step-heading"><span>1</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0M12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"></path></svg></div>
                     <h3>Masuk atau Daftar</h3>
-                    <p>Masuk menggunakan akun peserta. Jika belum memiliki akun, lakukan pendaftaran terlebih dahulu.</p>
+                    <p>Masuk menggunakan akun Anda. Jika belum memiliki akun, lakukan pendaftaran terlebih dahulu.</p>
                 </article>
                 <article>
                     <div class="step-heading"><span>2</span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M16 3v4M8 3v4M3 11h18"></path></svg></div>
@@ -129,7 +129,7 @@
                 <article>
                     <div class="step-heading"><span>3</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6M8 13h8M8 17h6"></path></svg></div>
                     <h3>Isi Data Registrasi</h3>
-                    <p>Lengkapi data peserta pada formulir registrasi, lalu periksa kembali sebelum dikirim.</p>
+                    <p>Lengkapi data pada formulir registrasi, lalu periksa kembali sebelum dikirim.</p>
                 </article>
                 <article>
                     <div class="step-heading"><span>4</span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"></rect><path d="M2 10h20M16 15h2"></path></svg></div>

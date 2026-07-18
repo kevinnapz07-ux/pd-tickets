@@ -25,7 +25,30 @@ class AuthenticationFlowTest extends TestCase
         ]);
 
         $response->assertRedirect(route('login'));
-        $response->assertSessionHasErrors('email');
+        $response->assertSessionHasErrors([
+            'email' => 'Email atau password yang Anda masukkan tidak valid.',
+        ]);
+        $this->assertGuest();
+    }
+
+    public function test_public_login_returns_the_same_error_for_admin_credentials(): void
+    {
+        User::factory()->create([
+            'email' => 'admin@example.com',
+            'password' => 'password-benar',
+            'role' => 'admin',
+        ]);
+
+        $response = $this->from(route('login'))->post(route('login.store'), [
+            'email' => 'admin@example.com',
+            'password' => 'password-benar',
+        ]);
+
+        $response->assertRedirect(route('login'));
+        $response->assertSessionHasErrors([
+            'email' => 'Email atau password yang Anda masukkan tidak valid.',
+        ]);
+        $response->assertSessionMissing('status');
         $this->assertGuest();
     }
 

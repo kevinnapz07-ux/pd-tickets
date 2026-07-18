@@ -13,6 +13,11 @@
         $gender = $customFields->get('gender');
         $domicile = $customFields->get('domicile');
         $hasCheckedIn = $registration->checked_in_at !== null || $registration->registration_status === 'checked_in';
+        $transactionStatusClass = match ($registration->payment_status) {
+            'pending' => 'is-pending',
+            'paid' => 'is-paid',
+            default => in_array($registration->payment_status, ['expired', 'failed', 'cancelled', 'refunded'], true) ? 'is-error' : 'is-ready',
+        };
     @endphp
 
     <section class="detail registration-detail-layout">
@@ -41,20 +46,29 @@
         <aside class="form-panel registration-detail-panel">
             <p class="eyebrow">Kode Registrasi</p>
             <h1>{{ $registration->registration_code }}</h1>
-            <p>{{ $registration->name }} terdaftar untuk <strong>{{ $registration->event->title }}</strong>.</p>
+
+            <dl class="registration-summary" aria-label="Ringkasan registrasi">
+                <div class="registration-summary-event">
+                    <dt>Event</dt>
+                    <dd>{{ $registration->event->title }}</dd>
+                </div>
+                <div>
+                    <dt>Nama</dt>
+                    <dd>{{ $registration->name }}</dd>
+                </div>
+                <div>
+                    <dt>Status</dt>
+                    <dd>
+                        <span class="compact-status {{ $transactionStatusClass }}">
+                            <span aria-hidden="true">●</span>
+                            {{ $registration->transactionStatusLabel() }}
+                        </span>
+                    </dd>
+                </div>
+            </dl>
 
             @if (session('payment_error'))
                 <div class="error-box">{{ session('payment_error') }}</div>
-            @endif
-
-            @if ($registration->payment_status === 'pending' || in_array($registration->payment_status, ['expired', 'failed', 'cancelled', 'refunded'], true))
-                <div class="compact-ticket-statuses" aria-label="Status pembayaran">
-                @if ($registration->payment_status === 'pending')
-                    <span class="compact-status is-pending"><span aria-hidden="true">●</span> Menunggu Pembayaran</span>
-                @else
-                    <span class="compact-status is-error"><span aria-hidden="true">●</span> {{ $registration->transactionStatusLabel() }}</span>
-                @endif
-                </div>
             @endif
 
             @if ($registration->isCheckInReady())
@@ -69,7 +83,7 @@
 
             <section class="participant-detail-accordion" data-participant-accordion>
                 <button type="button" aria-expanded="false" aria-controls="participant-detail-panel-{{ $registration->id }}" data-accordion-toggle>
-                    <span>Detail Peserta</span>
+                    <span>Informasi Registrasi</span>
                     <span class="accordion-chevron" aria-hidden="true">⌄</span>
                 </button>
                 <div id="participant-detail-panel-{{ $registration->id }}" data-accordion-panel hidden>

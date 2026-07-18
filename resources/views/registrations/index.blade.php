@@ -5,7 +5,7 @@
         <div class="section-heading">
             <div>
                 @unless (isset($ticketsOnly))
-                    <p class="eyebrow">Akun Peserta</p>
+                    <p class="eyebrow">Akun</p>
                 @endunless
                 <h1>{{ isset($ticketsOnly) ? 'Tiket Saya' : 'Registrasi Saya' }}</h1>
                 <p>{{ isset($ticketsOnly) ? 'Pantau registrasi, pembayaran, dan tiket event dari satu tempat.' : 'Pantau pendaftaran dan lanjutkan pembayaran dari satu tempat.' }}</p>

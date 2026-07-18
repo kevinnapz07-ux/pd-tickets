@@ -42,7 +42,7 @@ class AdminSecurityTest extends TestCase
         $this->assertStringContainsString('no-store', (string) $response->headers->get('Cache-Control'));
     }
 
-    public function test_admin_uses_public_login_and_participant_cannot_reach_admin_panel(): void
+    public function test_public_login_rejects_admin_and_participant_cannot_reach_admin_panel(): void
     {
         $participant = User::factory()->create([
             'email' => 'peserta-admin-login@example.com',
@@ -55,14 +55,15 @@ class AdminSecurityTest extends TestCase
             'role' => 'admin',
         ]);
 
-        $this->post(route('login.store'), [
+        $this->from(route('login'))->post(route('login.store'), [
             'email' => $admin->email,
             'password' => 'password-benar',
             'redirect' => route('events.index'),
-        ])->assertRedirect(route('filament.admin.pages.dashboard'));
-        $this->assertAuthenticatedAs($admin);
-
-        $this->post(route('logout'));
+        ])->assertRedirect(route('login'))
+            ->assertSessionHasErrors([
+                'email' => 'Email atau password yang Anda masukkan tidak valid.',
+            ]);
+        $this->assertGuest();
 
         $this->actingAs($participant)
             ->get(route('filament.admin.pages.dashboard'))

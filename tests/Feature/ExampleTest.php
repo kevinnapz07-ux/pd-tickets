@@ -421,7 +421,7 @@ class ExampleTest extends TestCase
         $response = $this->actingAs($participant)->get(route('events.show', $event));
 
         $response->assertOk();
-        $response->assertSee('Kategori Peserta');
+        $response->assertSee('Kategori Registrasi');
         $response->assertSee('Umum');
         $response->assertSee('Mahasiswa Universitas Gunadarma');
         $response->assertSee('No. HP (WhatsApp)');
@@ -596,7 +596,7 @@ class ExampleTest extends TestCase
         $response->assertRedirect(route('events.index'));
     }
 
-    public function test_admin_login_through_public_login_redirects_to_filament_dashboard(): void
+    public function test_admin_login_through_public_login_is_rejected_without_revealing_role(): void
     {
         User::forceCreate([
             'name' => 'Admin Test',
@@ -610,8 +610,12 @@ class ExampleTest extends TestCase
             'password' => 'password',
         ]);
 
-        $response->assertRedirect(route('filament.admin.pages.dashboard'));
-        $this->assertAuthenticated();
+        $response->assertRedirect(route('login'));
+        $response->assertSessionHasErrors([
+            'email' => 'Email atau password yang Anda masukkan tidak valid.',
+        ]);
+        $response->assertSessionMissing('status');
+        $this->assertGuest();
     }
 
     public function test_participant_login_can_return_to_event_detail(): void
@@ -1055,8 +1059,9 @@ class ExampleTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('Pengunjung');
-        $response->assertSee('Peserta');
+        $response->assertSee('Pengguna');
         $response->assertSee('Admin PD Gunadarma');
+        $response->assertDontSee('Peserta');
     }
 
     public function test_admin_can_create_event(): void

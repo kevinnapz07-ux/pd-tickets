@@ -36,7 +36,7 @@
             @if ($registration)
                 <dl class="ticket-public-details">
                     <div><dt>Kode Tiket</dt><dd>{{ $registration->registration_code }}</dd></div>
-                    <div><dt>Nama Peserta</dt><dd>{{ $registration->name }}</dd></div>
+                    <div><dt>Nama</dt><dd>{{ $registration->name }}</dd></div>
                     <div><dt>Event</dt><dd>{{ $registration->event->title }}</dd></div>
                     <div><dt>Tanggal</dt><dd>{{ $registration->event->starts_at->translatedFormat('l, d F Y') }}</dd></div>
                     <div><dt>Waktu</dt><dd>{{ $registration->event->starts_at->format('H:i') }}{{ $registration->event->ends_at ? ' - '.$registration->event->ends_at->format('H:i') : '' }} WIB</dd></div>

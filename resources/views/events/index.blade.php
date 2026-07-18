@@ -8,7 +8,7 @@
     <section class="hero">
         <div class="hero-copy">
             <h1>{{ $siteSetting?->hero_title ?? 'PDUG' }}</h1>
-            <p>{{ $siteSetting?->hero_subtitle ?? 'Temukan seminar, workshop, dan kegiatan akademik PD Gunadarma. Registrasi peserta dan pembayaran diproses dalam satu alur yang mudah dilacak.' }}</p>
+            <p>{{ $siteSetting?->hero_subtitle ?? 'Temukan seminar, workshop, dan kegiatan akademik PD Gunadarma. Registrasi dan pembayaran diproses dalam satu alur yang mudah dilacak.' }}</p>
         </div>
     </section>
 
@@ -39,7 +39,7 @@
                         <h3>{{ $event->title }}</h3>
                         <p class="event-description event-description-preview">{{ Str::limit($event->description, 180) }}</p>
                         <div class="event-footer">
-                            <span>{{ $event->paid_registrations_count }}/{{ $event->quota }} peserta</span>
+                            <span>{{ $event->paid_registrations_count }}/{{ $event->quota }} orang</span>
                             <span>{{ $event->price > 0 ? 'Rp '.number_format($event->price, 0, ',', '.') : 'Gratis' }}</span>
                         </div>
                         <a class="button" href="{{ route('events.show', ['event' => $event->slug ?: $event->id]) }}">Lihat Detail</a>

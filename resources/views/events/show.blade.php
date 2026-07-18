@@ -33,11 +33,11 @@
             @guest
                 <div class="login-prompt">
                     <p>Silakan login untuk melakukan registrasi.</p>
-                    <a class="button button-full" href="{{ route('login', ['redirect' => request()->fullUrl()]) }}">Login Peserta</a>
+                    <a class="button button-full" href="{{ route('login', ['redirect' => request()->fullUrl()]) }}">Login</a>
                 </div>
             @else
                 @if (auth()->user()->role !== 'peserta')
-                    <div class="error-box">Akun admin hanya dapat melihat dashboard. Gunakan akun peserta untuk registrasi event.</div>
+                    <div class="error-box">Akun admin hanya dapat melihat dashboard. Gunakan akun pengguna untuk registrasi event.</div>
                 @endif
 
                 @if ($errors->any())
@@ -59,8 +59,8 @@
                         <div class="registration-section-heading">
                             <p class="eyebrow">Registrasi</p>
                         </div>
-                        <label>Kategori Peserta
-                            <select name="participant_type" required data-participant-type data-confirm-label="Kategori Peserta">
+                        <label>Kategori Registrasi
+                            <select name="participant_type" required data-participant-type data-confirm-label="Kategori Registrasi">
                                 @foreach ($categories as $category)
                                     <option value="{{ $category['key'] }}" @selected($selectedCategory === $category['key'])>{{ $category['label'] }}</option>
                                 @endforeach

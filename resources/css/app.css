@@ -947,12 +947,50 @@ iframe {
     overflow-wrap: anywhere;
 }
 
-.registration-detail-panel > p {
+.registration-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 24px;
+    margin: 18px 0 0;
+    padding: 18px 0;
+    border-top: 1px solid #dbe3ef;
+    border-bottom: 1px solid #dbe3ef;
+}
+
+.registration-summary > div {
+    min-width: 0;
+}
+
+.registration-summary-event {
+    grid-column: 1 / -1;
+}
+
+.registration-summary dt {
+    margin-bottom: 6px;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.registration-summary dd {
+    margin: 0;
+    color: #0f172a;
+    font-size: 15px;
+    font-weight: 750;
+    line-height: 1.45;
     overflow-wrap: anywhere;
 }
 
-.registration-detail-panel .compact-ticket-statuses {
-    margin-top: 18px;
+.registration-summary-event dd {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 17px;
+}
+
+.registration-summary .compact-status {
+    max-width: 100%;
+    white-space: normal;
 }
 
 .registration-detail-panel .compact-qr-checkin {
@@ -969,6 +1007,18 @@ iframe {
 
 [data-theme="dark"] .registration-detail-panel > h1 {
     color: #f8fafc;
+}
+
+[data-theme="dark"] .registration-summary {
+    border-color: #334155;
+}
+
+[data-theme="dark"] .registration-summary dt {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .registration-summary dd {
+    color: #f1f5f9;
 }
 
 @media (max-width: 900px) {
@@ -989,6 +1039,16 @@ iframe {
 }
 
 @media (max-width: 640px) {
+    .registration-summary {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+        padding: 16px 0;
+    }
+
+    .registration-summary-event {
+        grid-column: auto;
+    }
+
     .modal-backdrop {
         align-items: end;
         padding: 12px;
