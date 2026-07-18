@@ -12344,3 +12344,94 @@ body.public-site:not(.fi-body) .footer-bottom {
         padding: 13px 0;
     }
 }
+
+/* Compact, balanced heading and search controls for the homepage event list. */
+body.public-site:not(.fi-body) .hero + .event-catalog-section {
+    margin-top: clamp(34px, 4vw, 46px);
+}
+
+body.public-site:not(.fi-body) .event-catalog-section > .section-heading {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: end;
+    gap: clamp(24px, 3vw, 32px);
+    margin-bottom: clamp(18px, 2vw, 24px);
+    padding-bottom: 0;
+}
+
+body.public-site:not(.fi-body) .event-catalog-section .section-heading h2 {
+    font-size: clamp(32px, 3vw, 36px);
+    line-height: 1.1;
+}
+
+body.public-site:not(.fi-body) .event-catalog-section .section-heading .eyebrow {
+    margin-bottom: 8px;
+    font-size: clamp(12px, 1.1vw, 13px);
+}
+
+body.public-site:not(.fi-body) .event-catalog-section .search-form {
+    grid-template-columns: minmax(0, 1fr) 86px auto;
+    justify-self: end;
+    width: min(400px, 100%);
+    max-width: 100%;
+    gap: 7px;
+    padding: 5px;
+}
+
+body.public-site:not(.fi-body) .event-catalog-section .search-form input,
+body.public-site:not(.fi-body) .event-catalog-section .search-form .button,
+body.public-site:not(.fi-body) .event-catalog-section .search-form .link-button {
+    min-height: 42px;
+    height: 42px;
+    margin: 0;
+}
+
+body.public-site:not(.fi-body) .event-catalog-section .search-form input {
+    padding: 8px 13px;
+}
+
+body.public-site:not(.fi-body) .event-catalog-section .search-form .button {
+    width: 86px;
+    padding: 8px 12px;
+}
+
+body.public-site:not(.fi-body) .event-catalog-section .search-form .link-button {
+    padding: 8px 12px;
+}
+
+@media (max-width: 720px) {
+    body.public-site:not(.fi-body) .hero + .event-catalog-section {
+        margin-top: 34px;
+    }
+
+    body.public-site:not(.fi-body) .event-catalog-section > .section-heading {
+        grid-template-columns: minmax(0, 1fr);
+        align-items: stretch;
+        gap: 18px;
+        margin-bottom: 20px;
+    }
+
+    body.public-site:not(.fi-body) .event-catalog-section .search-form {
+        justify-self: stretch;
+        width: 100%;
+    }
+}
+
+@media (max-width: 440px) {
+    body.public-site:not(.fi-body) .event-catalog-section .section-heading h2 {
+        font-size: 30px;
+    }
+
+    body.public-site:not(.fi-body) .event-catalog-section .search-form {
+        grid-template-columns: minmax(0, 1fr) 82px;
+    }
+
+    body.public-site:not(.fi-body) .event-catalog-section .search-form .button {
+        width: 82px;
+    }
+
+    body.public-site:not(.fi-body) .event-catalog-section .search-form .link-button {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+}
