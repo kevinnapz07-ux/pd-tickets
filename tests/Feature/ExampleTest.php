@@ -221,7 +221,7 @@ class ExampleTest extends TestCase
 
         $response = $this->actingAs($participant)->post(route('registrations.store', $event), [
             'name' => 'Kevin Nugraha',
-            'email' => 'kevin@example.com',
+            'email' => 'kevin.registration@gmail.com',
             'participant_type' => 'mahasiswa_gunadarma',
             'phone' => '081234567890',
             'student_id' => '50426000',
@@ -232,7 +232,7 @@ class ExampleTest extends TestCase
 
         $response->assertRedirect();
         $this->assertDatabaseHas('registrations', [
-            'email' => 'kevin@example.com',
+            'email' => 'kevin.registration@gmail.com',
             'user_id' => $participant->id,
             'participant_type' => 'mahasiswa_gunadarma',
             'campus_area' => 'depok',
@@ -242,7 +242,7 @@ class ExampleTest extends TestCase
             'registration_status' => 'registered',
         ]);
 
-        $registration = Registration::where('email', 'kevin@example.com')->first();
+        $registration = Registration::where('email', 'kevin.registration@gmail.com')->first();
 
         $this->get(route('registrations.show', $registration))
             ->assertOk()
@@ -284,7 +284,7 @@ class ExampleTest extends TestCase
         $response = $this->actingAs($participant)->post(route('registrations.store', $event), [
             'participant_type' => 'umum',
             'name' => 'Peserta Umum',
-            'email' => 'umum@example.com',
+            'email' => 'umum.registration@gmail.com',
             'phone' => '081234567890',
             'gender' => 'laki_laki',
             'domicile' => 'Depok',
@@ -292,7 +292,7 @@ class ExampleTest extends TestCase
 
         $response->assertRedirect();
 
-        $registration = Registration::where('email', 'umum@example.com')->first();
+        $registration = Registration::where('email', 'umum.registration@gmail.com')->first();
 
         $this->assertSame('laki_laki', $registration->custom_fields['gender']);
         $this->assertSame('Depok', $registration->custom_fields['domicile']);
@@ -529,7 +529,7 @@ class ExampleTest extends TestCase
         $registrationResponse = $this->actingAs($participant)->post(route('registrations.store', $event), [
             'participant_type' => 'kategori_tambahan_1',
             'name' => 'Peserta Schema',
-            'email' => 'schema@example.com',
+            'email' => 'schema.registration@gmail.com',
             'phone' => '081234567890',
             'asal_gereja' => 'GKI Test',
         ]);
@@ -537,10 +537,10 @@ class ExampleTest extends TestCase
         $registrationResponse->assertRedirect();
         $this->assertDatabaseHas('registrations', [
             'event_id' => $event->id,
-            'email' => 'schema@example.com',
+            'email' => 'schema.registration@gmail.com',
             'participant_type' => 'kategori_tambahan_1',
         ]);
-        $this->assertSame('GKI Test', Registration::where('email', 'schema@example.com')->first()->custom_fields['asal_gereja']);
+        $this->assertSame('GKI Test', Registration::where('email', 'schema.registration@gmail.com')->first()->custom_fields['asal_gereja']);
     }
 
     public function test_participant_cannot_access_admin_dashboard(): void
@@ -803,7 +803,7 @@ class ExampleTest extends TestCase
         $registrationResponse = $this->actingAs($participant)->post(route('registrations.store', $event), [
             'participant_type' => 'umum',
             'name' => 'Peserta Email Akun',
-            'email' => 'email-form-berbeda@example.com',
+            'email' => 'email.form.berbeda@gmail.com',
             'phone' => '081234567890',
             'gender' => 'perempuan',
             'domicile' => 'Depok',
@@ -813,7 +813,7 @@ class ExampleTest extends TestCase
         $this->assertDatabaseHas('registrations', [
             'event_id' => $event->id,
             'user_id' => $participant->id,
-            'email' => 'email-form-berbeda@example.com',
+            'email' => 'email.form.berbeda@gmail.com',
             'registration_status' => 'registered',
         ]);
 
@@ -821,7 +821,7 @@ class ExampleTest extends TestCase
             ->get(route('participant.activity'))
             ->assertOk()
             ->assertSee('Event Email Berbeda')
-            ->assertSee('email-form-berbeda@example.com')
+            ->assertSee('email.form.berbeda@gmail.com')
             ->assertDontSee('Event yang Diikuti : -');
     }
 

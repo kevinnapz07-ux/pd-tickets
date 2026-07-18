@@ -97,9 +97,9 @@ class Event extends Model
     public static function registrationFieldDefinitions(): array
     {
         return [
-            'name' => ['label' => 'Nama Lengkap', 'type' => 'text', 'required' => true],
-            'email' => ['label' => 'Email', 'type' => 'email', 'required' => true],
-            'phone' => ['label' => 'No. HP (WhatsApp)', 'type' => 'text', 'required' => true],
+            'name' => ['label' => 'Nama Lengkap', 'type' => 'text', 'required' => true, 'placeholder' => 'Masukkan nama lengkap'],
+            'email' => ['label' => 'Email Gmail', 'type' => 'email', 'required' => true, 'placeholder' => 'nama@gmail.com'],
+            'phone' => ['label' => 'No. HP (WhatsApp)', 'type' => 'tel', 'required' => true, 'placeholder' => 'Contoh: 081234567890'],
             'gender' => [
                 'label' => 'Jenis Kelamin',
                 'type' => 'select',
@@ -110,7 +110,7 @@ class Event extends Model
                 ],
             ],
             'domicile' => ['label' => 'Domisili', 'type' => 'text', 'required' => true, 'placeholder' => 'Contoh: Depok'],
-            'student_id' => ['label' => 'NPM', 'type' => 'text', 'required' => true],
+            'student_id' => ['label' => 'NPM', 'type' => 'text', 'required' => true, 'placeholder' => 'Masukkan NPM'],
             'campus_area' => [
                 'label' => 'Area Kampus',
                 'type' => 'select',
@@ -125,8 +125,8 @@ class Event extends Model
             ],
             'class_year' => ['label' => 'Angkatan', 'type' => 'text', 'required' => true, 'placeholder' => 'Contoh: 2024'],
             'study_program' => ['label' => 'Program Studi', 'type' => 'text', 'required' => true, 'placeholder' => 'Contoh: Sistem Informasi'],
-            'faculty' => ['label' => 'Fakultas/Unit', 'type' => 'text', 'required' => false],
-            'notes' => ['label' => 'Catatan', 'type' => 'textarea', 'required' => false],
+            'faculty' => ['label' => 'Fakultas/Unit', 'type' => 'text', 'required' => false, 'placeholder' => 'Contoh: Fakultas Ilmu Komputer'],
+            'notes' => ['label' => 'Catatan', 'type' => 'textarea', 'required' => false, 'placeholder' => 'Tambahkan catatan bila diperlukan'],
         ];
     }
 

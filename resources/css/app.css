@@ -8,6 +8,141 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
+@scope (body.public-site) {
+    .public-registration-form {
+        display: grid;
+        gap: 20px;
+    }
+
+    .public-registration-form .registration-section-heading {
+        margin-bottom: 0;
+    }
+
+    .public-registration-form .category-fields {
+        display: grid;
+        gap: 18px;
+    }
+
+    .public-registration-form .registration-field {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+    }
+
+    .public-registration-form .registration-label {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 5px;
+        color: var(--public-text);
+        font-size: 14px;
+        font-weight: 750;
+        line-height: 1.45;
+    }
+
+    .public-registration-form .registration-label small {
+        color: var(--public-muted);
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .public-registration-form .required-mark {
+        color: var(--public-secondary);
+        font-weight: 900;
+    }
+
+    .public-registration-form :where(input, select, textarea) {
+        width: 100%;
+        margin: 0;
+    }
+
+    .public-registration-form textarea {
+        min-height: 110px;
+        resize: vertical;
+    }
+
+    .public-registration-form :where(input, select, textarea)[aria-invalid="true"] {
+        border-color: #dc2626;
+        box-shadow: 0 0 0 3px rgb(220 38 38 / 12%);
+    }
+
+    .public-registration-form .field-error {
+        display: block;
+        margin: 0;
+        color: #b91c1c;
+        font-size: 13px;
+        font-weight: 650;
+        line-height: 1.45;
+    }
+
+    [data-theme="dark"] .public-registration-form .field-error {
+        color: #fca5a5;
+    }
+
+    .registration-submit {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        margin-top: 4px;
+    }
+
+    .registration-submit .button-spinner {
+        display: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid rgb(255 255 255 / 42%);
+        border-top-color: #ffffff;
+        border-radius: 50%;
+        animation: registration-spin .7s linear infinite;
+    }
+
+    .registration-submit.is-loading .button-spinner {
+        display: inline-block;
+    }
+
+    .registration-submit.is-loading {
+        cursor: wait;
+        opacity: .84;
+    }
+
+    .registration-confirm-actions button[aria-busy="true"] {
+        cursor: wait;
+        opacity: .8;
+    }
+
+    @media (min-width: 760px) {
+        .public-registration-form .category-fields {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .public-registration-form .category-fields .registration-field:has(textarea) {
+            grid-column: 1 / -1;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .public-registration-form {
+            gap: 18px;
+        }
+
+        .registration-confirm-actions {
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+        .registration-confirm-actions :where(button, .button, .link-button) {
+            width: 100%;
+        }
+    }
+}
+
+@keyframes registration-spin {
+    to { transform: rotate(360deg); }
+}
+
 /* Unified public typography system — Inter first, system UI fallback. */
 body:not(.fi-body),
 body:not(.fi-body) :where(button, input, select, textarea) {

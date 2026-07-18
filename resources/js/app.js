@@ -275,6 +275,34 @@ import { Html5Qrcode } from 'html5-qrcode';
         });
     };
 
+    const setupRegistrationValidation = () => {
+        document.querySelectorAll('[data-registration-confirm]').forEach((form) => {
+            const bindValidation = (field, message) => {
+                if (field.dataset.validationBound) return;
+                field.dataset.validationBound = 'true';
+
+                const validate = () => {
+                    field.setCustomValidity('');
+                    if (field.value && field.validity.patternMismatch) {
+                        field.setCustomValidity(message);
+                    }
+                };
+
+                field.addEventListener('input', validate);
+                field.addEventListener('blur', validate);
+                field.addEventListener('invalid', validate);
+            };
+
+            form.querySelectorAll('[data-gmail-field]').forEach((field) => {
+                bindValidation(field, 'Gunakan alamat Gmail yang valid, misalnya nama@gmail.com.');
+            });
+
+            form.querySelectorAll('[data-indonesian-phone]').forEach((field) => {
+                bindValidation(field, 'Gunakan nomor Indonesia, misalnya 081234567890 atau 6281234567890.');
+            });
+        });
+    };
+
     const setupCustomRegistrationFields = () => {
         const openCategoryPanel = (categoryTab) => {
             const eventCard = categoryTab.closest('.event-schema-card');
@@ -858,6 +886,7 @@ import { Html5Qrcode } from 'html5-qrcode';
             const confirmButton = modal?.querySelector('[data-registration-confirm-submit]');
             const closeButtons = modal?.querySelectorAll('[data-registration-confirm-close]');
             const submitButton = form.querySelector('button[type="submit"]');
+            const submitLabel = form.querySelector('[data-registration-submit-label]');
             let confirmed = false;
 
             if (! modal || ! summary || ! confirmButton) return;
@@ -891,7 +920,10 @@ import { Html5Qrcode } from 'html5-qrcode';
 
             form.dataset.confirmBound = 'true';
             form.addEventListener('submit', (event) => {
-                if (confirmed) return;
+                if (confirmed || form.dataset.submitting === 'true') {
+                    if (form.dataset.submitting === 'true') event.preventDefault();
+                    return;
+                }
 
                 event.preventDefault();
                 if (! form.reportValidity()) return;
@@ -902,11 +934,19 @@ import { Html5Qrcode } from 'html5-qrcode';
                 if (confirmButton.disabled) return;
 
                 confirmed = true;
+                form.dataset.submitting = 'true';
                 confirmButton.disabled = true;
+                confirmButton.setAttribute('aria-busy', 'true');
                 confirmButton.textContent = 'Mendaftarkan...';
+                if (submitButton) {
+                    submitButton.disabled = true;
+                    submitButton.classList.add('is-loading');
+                    submitButton.setAttribute('aria-busy', 'true');
+                }
+                if (submitLabel) submitLabel.textContent = 'Mendaftarkan...';
                 modal.setAttribute('aria-hidden', 'true');
                 document.body.classList.remove('modal-open');
-                form.requestSubmit(submitButton);
+                form.submit();
             });
 
             closeButtons.forEach((button) => button.addEventListener('click', closeModal));
@@ -936,6 +976,7 @@ import { Html5Qrcode } from 'html5-qrcode';
         setupPublicMotion();
         setupPasswordToggles();
         setupParticipantTypeFields();
+        setupRegistrationValidation();
         setupPricingFields();
         setupTicketScanner();
         setupPasswordResetRequest();

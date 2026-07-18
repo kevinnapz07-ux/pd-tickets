@@ -72,12 +72,20 @@ class RegistrationController extends Controller
         $rules = [
             'participant_type' => ['required', Rule::in($categoryKeys)],
         ];
+        $attributes = ['participant_type' => 'kategori registrasi'];
 
         foreach ($selectedFields as $field) {
+            $attributes[$field] = Str::lower(Event::registrationFieldLabel($field));
             $rules[$field] = match ($field) {
                 'name' => ['required', 'string', 'max:120'],
-                'email' => ['required', 'email', 'max:120', Rule::unique('registrations')->where('event_id', $event->id)],
-                'phone' => ['required', 'string', 'max:30'],
+                'email' => [
+                    'required',
+                    'email',
+                    'max:120',
+                    'regex:/^[A-Z0-9._%+\\-]+@gmail\\.com$/i',
+                    Rule::unique('registrations')->where('event_id', $event->id),
+                ],
+                'phone' => ['required', 'string', 'regex:/^(?:\\+62|62|0)8[1-9][0-9]{7,11}$/'],
                 'gender' => ['required', Rule::in(['laki_laki', 'perempuan'])],
                 'domicile' => ['required', 'string', 'max:120'],
                 'student_id' => ['required', 'string', 'max:30'],
@@ -90,9 +98,17 @@ class RegistrationController extends Controller
             };
         }
 
-        $data = $request->validate($rules, [
-            'email.unique' => 'Email ini sudah terdaftar untuk event tersebut.',
-        ]);
+        $data = $request->validate(
+            $rules,
+            [
+                'email.unique' => 'Email ini sudah terdaftar untuk event tersebut.',
+                'email.regex' => 'Email peserta wajib menggunakan alamat Gmail (@gmail.com).',
+                'phone.regex' => 'Nomor WhatsApp harus memakai format Indonesia yang valid, misalnya 081234567890 atau 6281234567890.',
+                'participant_type.required' => 'Pilih kategori registrasi.',
+                'participant_type.in' => 'Kategori registrasi yang dipilih tidak tersedia.',
+            ],
+            $attributes,
+        );
 
         $customFields = [];
 
@@ -129,7 +145,7 @@ class RegistrationController extends Controller
 
         if ($event->price <= 0) {
             return redirect()->route('registrations.show', $registration)
-                ->with('status', 'Registrasi berhasil. Event ini gratis.');
+                ->with('status', 'Registrasi berhasil. Anda resmi terdaftar pada event gratis ini.');
         }
 
         $payment = Payment::create([
@@ -151,7 +167,8 @@ class RegistrationController extends Controller
             'payload' => $snap,
         ]);
 
-        return redirect()->route('registrations.show', $registration);
+        return redirect()->route('registrations.show', $registration)
+            ->with('status', 'Registrasi berhasil. Silakan selesaikan pembayaran untuk mengaktifkan tiket Anda.');
     }
 
     public function show(Request $request, Registration $registration): View
