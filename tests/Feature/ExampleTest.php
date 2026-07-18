@@ -422,6 +422,10 @@ class ExampleTest extends TestCase
         $response->assertSee('Area Kampus');
         $response->assertSee('Angkatan');
         $response->assertSee('Program Studi');
+        $response->assertSee('<dt>Tanggal</dt>', false);
+        $response->assertSee($event->starts_at->translatedFormat('d F Y'));
+        $response->assertDontSee('<dt>Kuota</dt>', false);
+        $response->assertDontSee('<p class="eyebrow">'.$event->starts_at->translatedFormat('l, d F Y').'</p>', false);
         $response->assertDontSee('<h2>Registrasi Peserta</h2>', false);
     }
 

@@ -97,12 +97,8 @@
             </section>
 
             @if ($registration->payment_status === 'pending' && $registration->payment?->snap_token)
-                <div class="payment-actions">
+                <div class="payment-actions payment-primary-action">
                     <button class="button" id="pay-button" type="button">Lanjut ke Pembayaran</button>
-                    <form method="POST" action="{{ route('registrations.payment.status', $registration) }}" id="payment-status-form">
-                        @csrf
-                        <button class="link-button" type="submit">Cek Status Pembayaran</button>
-                    </form>
                 </div>
 
                 <div class="payment-confirm-backdrop" id="payment-confirm-backdrop" hidden>
@@ -110,15 +106,17 @@
                         <div class="payment-confirm-heading">
                             <div>
                                 <p class="eyebrow">Konfirmasi Pembayaran</p>
-                                <h2 id="payment-confirm-title">Periksa detail transaksi</h2>
+                                <h2 id="payment-confirm-title">Periksa Detail Transaksi</h2>
                             </div>
                             <button class="payment-confirm-close" id="payment-confirm-close" type="button" aria-label="Tutup konfirmasi pembayaran">X</button>
                         </div>
                         <dl class="payment-confirm-details">
-                            <div><dt>Event</dt><dd>{{ $registration->event->title }}</dd></div>
-                            <div><dt>Nominal</dt><dd>Rp {{ number_format($registration->event->price, 0, ',', '.') }}</dd></div>
+                            <div class="payment-detail-event"><dt>Event</dt><dd>{{ $registration->event->title }}</dd></div>
+                            <div><dt>Tanggal</dt><dd>{{ $registration->event->starts_at->translatedFormat('d F Y') }}</dd></div>
+                            <div><dt>Waktu</dt><dd>{{ $registration->event->starts_at->format('H.i') }}{{ $registration->event->ends_at ? '–'.$registration->event->ends_at->format('H.i') : '' }} WIB</dd></div>
+                            <div class="payment-detail-location"><dt>Lokasi</dt><dd>{{ $registration->event->location }}</dd></div>
+                            <div class="payment-detail-amount"><dt>Nominal</dt><dd>Rp{{ number_format($registration->event->price, 0, ',', '.') }}</dd></div>
                         </dl>
-                        <p class="payment-confirm-note">Setelah pembayaran, status akan diperiksa otomatis. Anda juga dapat menggunakan tombol Cek Status Pembayaran.</p>
                         <div class="payment-confirm-actions">
                             <button class="link-button" id="payment-confirm-cancel" type="button">Batal</button>
                             <button class="button" id="payment-confirm-submit" type="button">Bayar Sekarang</button>
@@ -131,11 +129,11 @@
                         <div class="payment-confirm-heading">
                             <div>
                                 <p class="eyebrow">Status Pembayaran</p>
-                                <h2 id="payment-status-title">Hasil pemeriksaan</h2>
+                                <h2 id="payment-status-title">Status Belum Dapat Diperiksa</h2>
                             </div>
                             <button class="payment-confirm-close" id="payment-status-close" type="button" aria-label="Tutup status pembayaran">X</button>
                         </div>
-                        <p class="payment-confirm-note" id="payment-status-message" role="status"></p>
+                        <p class="payment-confirm-note" id="payment-status-message" role="status">Kami belum dapat memverifikasi pembayaran saat ini. Silakan coba kembali beberapa saat lagi.</p>
                         <div class="payment-confirm-actions">
                             <button class="button" id="payment-status-ok" type="button">Tutup</button>
                         </div>
@@ -172,17 +170,27 @@
             const confirmClose = document.getElementById('payment-confirm-close');
             const confirmCancel = document.getElementById('payment-confirm-cancel');
             const confirmSubmit = document.getElementById('payment-confirm-submit');
-            const statusForm = document.getElementById('payment-status-form');
-            const statusButton = statusForm?.querySelector('button');
             const statusBackdrop = document.getElementById('payment-status-backdrop');
             const statusClose = document.getElementById('payment-status-close');
             const statusOk = document.getElementById('payment-status-ok');
+            const statusTitle = document.getElementById('payment-status-title');
             const statusMessage = document.getElementById('payment-status-message');
             const redirectUrl = @json($registration->payment->redirect_url);
+            let paymentProcessing = false;
+
+            const showStatus = (title, message) => {
+                statusTitle.textContent = title;
+                statusMessage.textContent = message;
+                statusBackdrop.hidden = false;
+                document.body.classList.add('modal-open');
+                statusOk?.focus();
+            };
 
             const syncPaymentStatus = async () => {
+                showStatus('Memverifikasi Pembayaran', 'Memverifikasi pembayaran...');
+
                 try {
-                    await fetch(@json(route('registrations.payment.status', $registration)), {
+                    const response = await fetch(@json(route('registrations.payment.status', $registration)), {
                         method: 'POST',
                         headers: {
                             'Accept': 'application/json',
@@ -190,19 +198,34 @@
                             'X-CSRF-TOKEN': @json(csrf_token()),
                         },
                     });
-                } finally {
+
+                    if (! response.ok) {
+                        throw new Error('Payment status verification failed.');
+                    }
+
                     window.location.reload();
+                } catch (_) {
+                    paymentProcessing = false;
+                    confirmSubmit.disabled = false;
+                    confirmSubmit.textContent = 'Bayar Sekarang';
+                    showStatus(
+                        'Status Belum Dapat Diperiksa',
+                        'Kami belum dapat memverifikasi pembayaran saat ini. Silakan coba kembali beberapa saat lagi.',
+                    );
                 }
             };
 
-            const closeConfirmation = () => {
+            const closeConfirmation = (restorePayButton = true) => {
                 if (! confirmBackdrop) {
                     return;
                 }
 
                 confirmBackdrop.hidden = true;
                 document.body.classList.remove('modal-open');
-                payButton?.focus();
+                if (restorePayButton) {
+                    payButton.disabled = false;
+                    payButton?.focus();
+                }
             };
 
             const closeStatus = () => {
@@ -212,36 +235,8 @@
 
                 statusBackdrop.hidden = true;
                 document.body.classList.remove('modal-open');
-                window.location.reload();
+                payButton?.focus();
             };
-
-            statusForm?.addEventListener('submit', async (event) => {
-                event.preventDefault();
-                statusButton.disabled = true;
-                statusButton.textContent = 'Memeriksa...';
-
-                try {
-                    const response = await fetch(statusForm.action, {
-                        method: 'POST',
-                        headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': @json(csrf_token()),
-                        },
-                    });
-                    const result = await response.json();
-
-                    statusMessage.textContent = result.message ?? 'Status pembayaran berhasil diperiksa.';
-                } catch (error) {
-                    statusMessage.textContent = 'Status pembayaran belum dapat diperiksa. Silakan coba kembali.';
-                } finally {
-                    statusButton.disabled = false;
-                    statusButton.textContent = 'Cek Status Pembayaran';
-                    statusBackdrop.hidden = false;
-                    document.body.classList.add('modal-open');
-                    statusOk?.focus();
-                }
-            });
 
             statusClose?.addEventListener('click', closeStatus);
             statusOk?.addEventListener('click', closeStatus);
@@ -256,6 +251,7 @@
                     return;
                 }
 
+                payButton.disabled = true;
                 confirmBackdrop.hidden = false;
                 document.body.classList.add('modal-open');
                 confirmSubmit?.focus();
@@ -280,13 +276,24 @@
             });
 
             confirmSubmit?.addEventListener('click', () => {
-                closeConfirmation();
+                if (paymentProcessing) return;
+
+                paymentProcessing = true;
+                confirmSubmit.disabled = true;
+                confirmSubmit.textContent = 'Memproses...';
+                closeConfirmation(false);
 
                 if (window.snap) {
                     window.snap.pay(@json($registration->payment->snap_token), {
                         onSuccess: syncPaymentStatus,
                         onPending: syncPaymentStatus,
                         onError: syncPaymentStatus,
+                        onClose: () => {
+                            paymentProcessing = false;
+                            confirmSubmit.disabled = false;
+                            confirmSubmit.textContent = 'Bayar Sekarang';
+                            payButton.disabled = false;
+                        },
                     });
                     return;
                 }

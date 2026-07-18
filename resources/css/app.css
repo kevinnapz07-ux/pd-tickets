@@ -3163,6 +3163,11 @@ main {
     margin-left: 0;
 }
 
+.payment-primary-action .button {
+    width: auto;
+    min-width: 190px;
+}
+
 .payment-confirm-backdrop {
     position: fixed;
     inset: 0;
@@ -3218,20 +3223,26 @@ main {
 
 .payment-confirm-details {
     display: grid;
-    gap: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
     margin: 22px 0 0;
 }
 
 .payment-confirm-details > div {
-    display: grid;
-    grid-template-columns: 100px minmax(0, 1fr);
-    gap: 14px;
-    border-bottom: 1px solid #e2e8f0;
-    padding: 13px 0;
+    min-width: 0;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 11px 12px;
+    background: #f8fafc;
+}
+
+.payment-confirm-details :where(.payment-detail-event, .payment-detail-location, .payment-detail-amount) {
+    grid-column: 1 / -1;
 }
 
 .payment-confirm-details dt {
     color: #64748b;
+    font-size: 12px;
     font-weight: 800;
 }
 
@@ -3240,7 +3251,18 @@ main {
     margin: 0;
     color: #0f172a;
     font-weight: 800;
+    line-height: 1.45;
     overflow-wrap: anywhere;
+}
+
+.payment-confirm-details .payment-detail-amount {
+    border-color: #bfdbfe;
+    background: #eff6ff;
+}
+
+.payment-confirm-details .payment-detail-amount dd {
+    color: #1d4ed8;
+    font-size: 19px;
 }
 
 .payment-confirm-note {
@@ -3274,8 +3296,7 @@ main {
     }
 
     .payment-confirm-details > div {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 4px;
+        padding: 10px 11px;
     }
 
     .payment-confirm-actions,
@@ -3285,6 +3306,10 @@ main {
 
     .payment-confirm-actions {
         flex-direction: column-reverse;
+    }
+
+    .payment-primary-action .button {
+        width: 100%;
     }
 }
 
@@ -3312,12 +3337,22 @@ main {
 }
 
 [data-theme="dark"] .payment-confirm-details > div {
-    border-bottom-color: #334155;
+    border-color: #334155;
+    background: #172337;
 }
 
 [data-theme="dark"] .payment-confirm-details dt,
 [data-theme="dark"] .payment-confirm-note {
-    color: #94a3b8;
+    color: #aebdd0;
+}
+
+[data-theme="dark"] .payment-confirm-details .payment-detail-amount {
+    border-color: #31598f;
+    background: #132c4d;
+}
+
+[data-theme="dark"] .payment-confirm-details .payment-detail-amount dd {
+    color: #93c5fd;
 }
 
 [data-theme="dark"] :where(

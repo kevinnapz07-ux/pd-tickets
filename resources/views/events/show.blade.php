@@ -3,7 +3,6 @@
 @section('content')
     <section class="detail">
         <article class="detail-main">
-            <p class="eyebrow">{{ $event->starts_at->translatedFormat('l, d F Y') }}</p>
             <h1>{{ $event->title }}</h1>
             <p class="event-description detail-description">{{ $event->description }}</p>
 
@@ -12,7 +11,7 @@
                 <div><dt>Lokasi</dt><dd>{{ $event->location }}</dd></div>
                 <div><dt>Waktu</dt><dd>{{ $event->starts_at->format('H:i') }}{{ $event->ends_at ? ' - '.$event->ends_at->format('H:i') : '' }} WIB</dd></div>
                 <div><dt>Biaya</dt><dd>{{ $event->price > 0 ? 'Rp '.number_format($event->price, 0, ',', '.') : 'Gratis' }}</dd></div>
-                <div><dt>Kuota</dt><dd>{{ $event->paid_registrations_count }}/{{ $event->quota }} peserta terkonfirmasi</dd></div>
+                <div><dt>Tanggal</dt><dd>{{ $event->starts_at->translatedFormat('d F Y') }}</dd></div>
             </dl>
 
             <div class="map-panel">
