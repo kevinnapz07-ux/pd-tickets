@@ -59,7 +59,7 @@ class AdminSecurityTest extends TestCase
         $this->actingAs($participant)->get('/admin/users')->assertRedirect(route('events.index'));
         $this->actingAs($participant)->get('/admin/events')->assertRedirect(route('events.index'));
         $this->actingAs($participant)->get('/admin/laporan')->assertRedirect(route('events.index'));
-        $this->actingAs($participant)->get('/admin/laporan/export')->assertRedirect(route('events.index'));
+        $this->actingAs($participant)->get('/admin/laporan/pdf')->assertRedirect(route('events.index'));
     }
 
     public function test_admin_can_access_panel_and_responses_are_not_cacheable(): void

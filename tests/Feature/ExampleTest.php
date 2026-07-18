@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\AdminReportController;
 use App\Models\Event;
 use App\Models\Payment;
 use App\Models\Registration;
@@ -9,6 +10,7 @@ use App\Models\SiteSetting;
 use App\Models\User;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
@@ -1311,8 +1313,8 @@ class ExampleTest extends TestCase
             'payment_status' => 'paid',
             'registration_status' => 'registered',
             'custom_fields' => [
-                'gender' => 'Laki-laki',
-                'domicile' => 'Depok',
+                'gender' => 'laki_laki',
+                'domicile' => 'depok',
             ],
         ]);
 
@@ -1332,9 +1334,10 @@ class ExampleTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('Laporan');
-        $response->assertSee('Cetak');
-        $response->assertSee(route('admin.reports.export'), false);
-        $response->assertDontSee('Download');
+        $response->assertSee('Unduh PDF');
+        $response->assertSee(route('admin.reports.pdf'), false);
+        $response->assertDontSee('Excel');
+        $response->assertDontSee('Data Tambahan');
         $response->assertSee('Laporan Per Event');
         $response->assertSee('Laporan Registrasi Event PD Gunadarma');
         $response->assertSee('Event Laporan Gratis');
@@ -1342,6 +1345,14 @@ class ExampleTest extends TestCase
         $response->assertSee('PDG-REPORT-001');
         $response->assertSee('Jenis Kelamin');
         $response->assertSee('Domisili');
+        $response->assertSee('Kategori Peserta');
+        $response->assertSee('Laki-laki');
+        $response->assertSee('Depok');
+        $response->assertSee('Status Pembayaran');
+        $response->assertSee('Status Registrasi');
+        $response->assertSee('Status Check-in');
+        $response->assertSee('Terdaftar');
+        $response->assertDontSee('Belum terdaftar');
         $response->assertSee('Gratis');
         $response->assertSee('Check-in');
 
@@ -1354,24 +1365,41 @@ class ExampleTest extends TestCase
         $filteredResponse->assertSee('PDG-REPORT-001');
         $filteredResponse->assertDontSee('PDG-REPORT-002');
 
-        $exportResponse = $this->actingAs($admin)->get(route('admin.reports.export', [
+        $freeReportRequest = Request::create('/admin/laporan', 'GET', ['event_id' => $freeEvent->id]);
+        $freeReportRequest->setUserResolver(fn (): User => $admin);
+        $freeReport = app(AdminReportController::class)->reportData($freeReportRequest)['eventReports']->first();
+
+        $this->assertSame([
+            'total_registrations' => 1,
+            'total_paid' => 0,
+            'total_check_in' => 0,
+        ], $freeReport['stats']);
+        $this->assertSame('Laki-laki', $freeReport['rows']->first()['gender']);
+        $this->assertSame('Depok', $freeReport['rows']->first()['domicile']);
+        $this->assertSame('Terdaftar', $freeReport['rows']->first()['registration_status']);
+        $this->assertSame('Belum Check-in', $freeReport['rows']->first()['check_in_status']);
+
+        $paidReportRequest = Request::create('/admin/laporan', 'GET', ['event_id' => $paidEvent->id]);
+        $paidReportRequest->setUserResolver(fn (): User => $admin);
+        $paidReport = app(AdminReportController::class)->reportData($paidReportRequest)['eventReports']->first();
+
+        $this->assertSame([
+            'total_registrations' => 1,
+            'total_paid' => 1,
+            'total_check_in' => 1,
+        ], $paidReport['stats']);
+        $this->assertSame('Berhasil', $paidReport['rows']->first()['payment_status']);
+        $this->assertSame('Terdaftar', $paidReport['rows']->first()['registration_status']);
+        $this->assertSame('Sudah Check-in', $paidReport['rows']->first()['check_in_status']);
+
+        $exportResponse = $this->actingAs($admin)->get(route('admin.reports.pdf', [
             'event_id' => $freeEvent->id,
         ]));
 
         $exportResponse->assertOk();
-        $exportResponse->assertDownload('laporan-registrasi-event-laporan-gratis.xls');
-        $exportContent = $exportResponse->streamedContent();
-
-        $this->assertStringContainsString('application/vnd.ms-excel', $exportResponse->headers->get('content-type'));
-        $this->assertStringContainsString('class="title-row"', $exportContent);
-        $this->assertStringContainsString('class="header-row"', $exportContent);
-        $this->assertStringContainsString('Laporan Registrasi Event PD Gunadarma', $exportContent);
-        $this->assertStringContainsString('Ringkasan Kehadiran', $exportContent);
-        $this->assertStringContainsString('Kuota Terisi', $exportContent);
-        $this->assertStringContainsString('Event Laporan Gratis', $exportContent);
-        $this->assertStringContainsString('PDG-REPORT-001', $exportContent);
-        $this->assertStringContainsString('Jenis Kelamin', $exportContent);
-        $this->assertStringNotContainsString('PDG-REPORT-002', $exportContent);
+        $exportResponse->assertDownload('laporan-registrasi-event-laporan-gratis.pdf');
+        $this->assertSame('application/pdf', $exportResponse->headers->get('content-type'));
+        $this->assertStringStartsWith('%PDF-', $exportResponse->getContent());
     }
 
     public function test_admin_can_update_website_settings(): void

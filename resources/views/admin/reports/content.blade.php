@@ -39,9 +39,9 @@
             <div class="report-filter-actions">
                 <button class="button" type="submit">Tampilkan</button>
                 <a class="link-button" href="{{ route('filament.admin.pages.laporan') }}">Reset Filter</a>
-                <a class="link-button report-print-button" href="{{ route('admin.reports.export', request()->query()) }}">
+                <a class="link-button report-print-button" href="{{ route('admin.reports.pdf', request()->query()) }}">
                     <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v7H6z" /></svg>
-                    Cetak
+                    Unduh PDF
                 </a>
             </div>
         </form>
@@ -95,7 +95,8 @@
             @php
                 $event = $eventReport['event'];
                 $items = $eventReport['registrations'];
-                $activeParticipants = $items->where('registration_status', '!=', 'cancelled')->count();
+                $rows = $eventReport['rows'];
+                $stats = $eventReport['stats'];
             @endphp
             <section class="table-section report-table event-report-block">
                 <div class="event-report-header">
@@ -113,8 +114,9 @@
                         <div><dt>Tanggal</dt><dd>{{ $event->starts_at->translatedFormat('d M Y') }}</dd></div>
                         <div><dt>Waktu</dt><dd>{{ $event->starts_at->format('H:i') }} WIB</dd></div>
                         <div><dt>Jenis</dt><dd>{{ $event->price > 0 ? 'Berbayar' : 'Gratis' }}</dd></div>
-                        <div><dt>Peserta</dt><dd>{{ $activeParticipants }}/{{ $event->quota }}</dd></div>
-                        <div><dt>Check-in</dt><dd>{{ $items->where('registration_status', 'checked_in')->count() }}</dd></div>
+                        <div><dt>Registrasi</dt><dd>{{ $stats['total_registrations'] }}/{{ $event->quota }}</dd></div>
+                        <div><dt>Pembayaran Berhasil</dt><dd>{{ $stats['total_paid'] }}</dd></div>
+                        <div><dt>Check-in</dt><dd>{{ $stats['total_check_in'] }}</dd></div>
                     </dl>
                 </div>
 
@@ -128,50 +130,35 @@
                     <div class="report-table-wrap">
                         <table>
                             <thead>
-                                <tr><th>No</th><th>Kode</th><th>Nama</th><th>Email</th><th>No. HP</th><th>Jenis Kelamin</th><th>Domisili</th><th>Kategori</th><th>Data Tambahan</th><th>Transaksi</th><th>Pendaftaran</th><th>Kehadiran</th></tr>
+                                <tr><th>No</th><th>Kode Registrasi</th><th>Nama</th><th>Email</th><th>Nomor HP</th><th>Jenis Kelamin</th><th>Domisili</th><th>Kategori Peserta</th><th>Status Pembayaran</th><th>Status Registrasi</th><th>Status Check-in</th></tr>
                             </thead>
                             <tbody>
-                                @foreach ($items as $registration)
+                                @foreach ($rows as $row)
                                     @php
-                                        $categoryLabel = collect($registration->event->registrationCategories())->firstWhere('key', $registration->participant_type)['label'] ?? Str::headline(str_replace('_', ' ', $registration->participant_type));
-                                        $paymentState = $registration->event->price <= 0 ? 'muted' : match ($registration->payment_status) {
+                                        $registration = $row['registration'];
+                                        $paymentState = match ($registration->payment_status) {
                                             'paid' => 'success',
                                             'pending' => 'warning',
-                                            'failed', 'expired', 'cancelled', 'refunded' => 'danger',
+                                            'failed', 'expired', 'cancelled' => 'danger',
+                                            'refunded' => 'info',
                                             default => 'muted',
                                         };
-                                        $registrationState = match ($registration->registration_status) {
-                                            'checked_in', 'completed' => 'success',
-                                            'registered' => 'info',
-                                            'cancelled' => 'danger',
-                                            default => 'warning',
-                                        };
-                                        $customFields = collect($registration->custom_fields ?? []);
-                                        $gender = $customFields->get('gender');
-                                        $domicile = $customFields->get('domicile');
-                                        $additionalFields = $customFields->except(['gender', 'domicile']);
+                                        $registrationState = $registration->registration_status === 'cancelled' ? 'danger' : 'info';
                                     @endphp
                                     <tr>
                                         <td data-label="No">{{ $loop->iteration }}</td>
-                                        <td data-label="Kode"><strong>{{ $registration->registration_code }}</strong></td>
-                                        <td data-label="Nama">{{ $registration->name }}</td>
-                                        <td data-label="Email">{{ $registration->email }}</td>
-                                        <td data-label="No. HP">{{ $registration->phone ?: '-' }}</td>
-                                        <td data-label="Jenis Kelamin">{{ $gender ? Str::headline(str_replace('_', ' ', $gender)) : '-' }}</td>
-                                        <td data-label="Domisili">{{ $domicile ?: '-' }}</td>
-                                        <td data-label="Kategori">{{ $categoryLabel }}</td>
-                                        <td data-label="Data Tambahan">
-                                            @forelse ($additionalFields as $field => $value)
-                                                <span class="report-custom-field"><strong>{{ \App\Models\Event::registrationFieldLabel($field) }}</strong>{{ $value }}</span>
-                                            @empty
-                                                -
-                                            @endforelse
-                                        </td>
-                                        <td data-label="Transaksi"><span class="report-status report-status-{{ $paymentState }}">{{ $registration->event->price > 0 ? $registration->transactionStatusLabel() : 'Gratis' }}</span></td>
-                                        <td data-label="Pendaftaran"><span class="report-status report-status-{{ $registrationState }}">{{ $registration->registrationStatusLabel() }}</span></td>
-                                        <td data-label="Kehadiran">
-                                            <span class="report-status report-status-{{ $registration->checked_in_at ? 'success' : 'muted' }}">{{ $registration->checked_in_at ? 'Sudah Check-in' : 'Belum Check-in' }}</span>
-                                            @if ($registration->checked_in_at)<small>{{ $registration->checked_in_at->format('d/m/Y H:i') }}</small>@endif
+                                        <td data-label="Kode Registrasi"><strong>{{ $row['code'] }}</strong></td>
+                                        <td data-label="Nama">{{ $row['name'] }}</td>
+                                        <td data-label="Email">{{ $row['email'] }}</td>
+                                        <td data-label="Nomor HP">{{ $row['phone'] }}</td>
+                                        <td data-label="Jenis Kelamin">{{ $row['gender'] }}</td>
+                                        <td data-label="Domisili">{{ $row['domicile'] }}</td>
+                                        <td data-label="Kategori Peserta">{{ $row['category'] }}</td>
+                                        <td data-label="Status Pembayaran"><span class="report-status report-status-{{ $paymentState }}">{{ $row['payment_status'] }}</span></td>
+                                        <td data-label="Status Registrasi"><span class="report-status report-status-{{ $registrationState }}">{{ $row['registration_status'] }}</span></td>
+                                        <td data-label="Status Check-in">
+                                            <span class="report-status report-status-{{ $row['check_in_status'] === 'Sudah Check-in' ? 'success' : 'muted' }}">{{ $row['check_in_status'] }}</span>
+                                            @if ($row['checked_in_at'])<small>{{ $row['checked_in_at'] }}</small>@endif
                                         </td>
                                     </tr>
                                 @endforeach

@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\Registration;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class AdminReportController extends Controller
 {
@@ -19,106 +20,37 @@ class AdminReportController extends Controller
         return view('admin.reports.index', $this->reportData($request));
     }
 
-    public function export(Request $request): StreamedResponse
+    public function pdf(Request $request): Response
     {
         $this->authorizeAdmin($request);
 
         $data = $this->reportData($request);
         $selectedEvent = $data['selectedEvent'];
-        $fileName = 'laporan-registrasi-'.($selectedEvent ? Str::slug($selectedEvent->title) : 'semua-event').'.xls';
+        $fileName = 'laporan-registrasi-'.($selectedEvent ? Str::slug($selectedEvent->title) : 'semua-event').'.pdf';
+        $logoPath = public_path(config('branding.logo'));
+        $data['logoDataUri'] = is_file($logoPath)
+            ? 'data:image/svg+xml;base64,'.base64_encode((string) file_get_contents($logoPath))
+            : null;
 
-        return response()->streamDownload(function () use ($data): void {
-            echo '<!doctype html><html><head><meta charset="UTF-8">';
-            echo '<style>
-                body { font-family: Arial, sans-serif; color: #111827; }
-                table { border-collapse: collapse; width: 100%; table-layout: fixed; }
-                th, td { border: 1px solid #d9d9d9; padding: 7px 9px; font-size: 12px; vertical-align: top; mso-number-format:"\@"; }
-                .title-row th { background: #4f3b82; color: #ffffff; font-size: 16px; text-align: left; padding: 10px; }
-                .meta-row th { background: #ede7f6; color: #2f2454; text-align: left; font-weight: 700; width: 180px; }
-                .meta-row td { background: #faf7ff; }
-                .section-row th { background: #6b4ca0; color: #ffffff; text-align: left; font-size: 13px; padding: 9px; }
-                .event-meta th { background: #f3eefb; color: #3a2a63; text-align: left; width: 180px; }
-                .event-meta td { background: #fbf9ff; }
-                .header-row th { background: #5b3f8f; color: #ffffff; font-weight: 700; text-align: left; }
-                .sub-note { display: block; font-size: 10px; font-style: italic; color: #eee7ff; font-weight: 400; }
-                .zebra td { background: #f8f8fb; }
-                .empty td { color: #6b7280; font-style: italic; }
-                .spacer td { border: 0; height: 12px; padding: 0; }
-                .center { text-align: center; }
-                .nowrap { white-space: nowrap; }
-            </style>';
-            echo '</head><body><table>';
+        $pdf = Pdf::loadView('admin.reports.pdf', $data)
+            ->setPaper('a4', 'landscape')
+            ->setOption('isRemoteEnabled', false);
+        $pdf->render();
 
-            echo '<tr class="title-row"><th colspan="10">Laporan Registrasi Event PD Gunadarma</th></tr>';
-            echo '<tr class="meta-row"><th>Event</th><td colspan="9">'.e($data['selectedEvent']?->title ?? 'Semua Event').'</td></tr>';
-            echo '<tr class="meta-row"><th>Dicetak Pada</th><td colspan="9">'.e(now()->format('d/m/Y H:i').' WIB').'</td></tr>';
-            echo '<tr class="spacer"><td colspan="10"></td></tr>';
-            echo '<tr class="section-row"><th colspan="10">Ringkasan Kehadiran</th></tr>';
-            echo '<tr class="header-row"><th>Terdaftar</th><th>Check-in</th><th>Selesai</th><th>Dibatalkan</th><th colspan="6"></th></tr>';
-            echo '<tr><td>'.e($data['attendanceStats']['registered']).'</td><td>'.e($data['attendanceStats']['checked_in']).'</td><td>'.e($data['attendanceStats']['completed']).'</td><td>'.e($data['attendanceStats']['cancelled']).'</td><td colspan="6"></td></tr>';
-            echo '<tr class="spacer"><td colspan="10"></td></tr>';
+        $canvas = $pdf->getDomPDF()->getCanvas();
+        $font = $pdf->getDomPDF()->getFontMetrics()->getFont('DejaVu Sans', 'normal');
+        $canvas->page_text(
+            690,
+            570,
+            'Halaman {PAGE_NUM} dari {PAGE_COUNT}  |  '.$data['printedAt']->format('d/m/Y H:i').' WIB',
+            $font,
+            7,
+            [0.39, 0.45, 0.55],
+        );
 
-            foreach ($data['eventReports'] as $eventReport) {
-                $event = $eventReport['event'];
-                $items = $eventReport['registrations'];
-
-                echo '<tr class="section-row"><th colspan="10">'.e($event->title).'</th></tr>';
-                echo '<tr class="event-meta"><th>Lokasi</th><td colspan="9">'.e($event->location).'</td></tr>';
-                echo '<tr class="event-meta"><th>Tanggal</th><td colspan="9">'.e($event->starts_at->format('d/m/Y H:i').' WIB').'</td></tr>';
-                echo '<tr class="event-meta"><th>Jenis Pendaftaran</th><td colspan="9">'.e($event->price > 0 ? 'Berbayar' : 'Gratis').'</td></tr>';
-                echo '<tr class="event-meta"><th>Kuota Terisi</th><td colspan="9">'.e($items->where('registration_status', '!=', 'cancelled')->count().'/'.$event->quota).'</td></tr>';
-                echo '<tr class="event-meta"><th>Total Check-in</th><td colspan="9">'.e($items->where('registration_status', 'checked_in')->count()).'</td></tr>';
-                echo '<tr class="header-row">
-                    <th class="center nowrap">No</th>
-                    <th>Kode Registrasi</th>
-                    <th>Nama Lengkap</th>
-                    <th>Email</th>
-                    <th>No. HP</th>
-                    <th>Kategori Peserta</th>
-                    <th>Data Tambahan</th>
-                    <th>Status Transaksi</th>
-                    <th>Status Pendaftaran</th>
-                    <th>Waktu Check-in</th>
-                </tr>';
-
-                if ($items->isEmpty()) {
-                    echo '<tr class="empty"><td colspan="10">Tidak ada data laporan untuk event ini.</td></tr>';
-                    echo '<tr class="spacer"><td colspan="10"></td></tr>';
-
-                    continue;
-                }
-
-                foreach ($items->values() as $index => $registration) {
-                    $categoryLabel = collect($registration->event->registrationCategories())
-                        ->firstWhere('key', $registration->participant_type)['label']
-                        ?? Str::headline(str_replace('_', ' ', (string) $registration->participant_type));
-
-                    $customFields = collect($registration->custom_fields ?? [])
-                        ->map(fn ($value, string $field): string => e(Event::registrationFieldLabel($field)).': '.e($value))
-                        ->implode('<br>');
-
-                    $rowClass = $index % 2 === 1 ? ' class="zebra"' : '';
-
-                    echo '<tr'.$rowClass.'>';
-                    echo '<td class="center">'.e($index + 1).'</td>';
-                    echo '<td>'.e($registration->registration_code).'</td>';
-                    echo '<td>'.e($registration->name).'</td>';
-                    echo '<td>'.e($registration->email).'</td>';
-                    echo '<td>'.e($registration->phone).'</td>';
-                    echo '<td>'.e($categoryLabel).'</td>';
-                    echo '<td>'.($customFields ?: '-').'</td>';
-                    echo '<td>'.e($registration->event->price > 0 ? $registration->transactionStatusLabel() : '-').'</td>';
-                    echo '<td>'.e($registration->registrationStatusLabel()).'</td>';
-                    echo '<td>'.e($registration->checked_in_at?->format('d/m/Y H:i') ?? '-').'</td>';
-                    echo '</tr>';
-                }
-
-                echo '<tr class="spacer"><td colspan="10"></td></tr>';
-            }
-
-            echo '</table></body></html>';
-        }, $fileName, [
-            'Content-Type' => 'application/vnd.ms-excel; charset=UTF-8',
+        return response($pdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="'.$fileName.'"',
         ]);
     }
 
@@ -126,8 +58,16 @@ class AdminReportController extends Controller
     {
         $registrations = Registration::with(['event', 'payment'])
             ->when($request->query('event_id'), fn ($query, $eventId) => $query->where('event_id', $eventId))
-            ->when($request->query('transaction_status'), fn ($query, $status) => $query->where('payment_status', $status))
-            ->when($request->query('registration_status'), fn ($query, $status) => $query->where('registration_status', $status))
+            ->when($request->query('transaction_status'), function ($query, $status) {
+                return $status === 'failed'
+                    ? $query->whereIn('payment_status', ['failed', 'cancelled'])
+                    : $query->where('payment_status', $status);
+            })
+            ->when($request->query('registration_status'), function ($query, $status) {
+                return $status === 'registered'
+                    ? $query->where('registration_status', '!=', 'cancelled')
+                    : $query->where('registration_status', $status);
+            })
             ->orderBy('created_at')
             ->get();
 
@@ -146,30 +86,104 @@ class AdminReportController extends Controller
             'eventReports' => $eventReports,
             'selectedEvent' => $selectedEvent,
             'events' => $events,
-            'transactionStatuses' => Registration::transactionStatusLabels(),
-            'registrationStatuses' => Registration::registrationStatusLabels(),
+            'transactionStatuses' => [
+                'pending' => 'Menunggu Pembayaran',
+                'paid' => 'Berhasil',
+                'failed' => 'Gagal',
+                'expired' => 'Kedaluwarsa',
+                'refunded' => 'Refund',
+            ],
+            'registrationStatuses' => [
+                'registered' => 'Terdaftar',
+                'cancelled' => 'Dibatalkan',
+            ],
             'attendanceStats' => $attendanceStats,
+            'printedAt' => now(),
+            'printedBy' => $request->user()?->name ?? 'Admin',
         ];
     }
 
     private function eventReports(Collection $registrations, ?Event $selectedEvent): Collection
     {
         if ($selectedEvent && $registrations->isEmpty()) {
-            return collect([
-                [
-                    'event' => $selectedEvent,
-                    'registrations' => collect(),
-                ],
-            ]);
+            return collect([$this->eventReport($selectedEvent, collect())]);
         }
 
         return $registrations
             ->groupBy('event_id')
-            ->map(fn (Collection $items): array => [
-                'event' => $items->first()->event,
-                'registrations' => $items,
-            ])
+            ->map(fn (Collection $items): array => $this->eventReport($items->first()->event, $items))
             ->values();
+    }
+
+    private function eventReport(Event $event, Collection $registrations): array
+    {
+        $activeRegistrations = $registrations->where('registration_status', '!=', 'cancelled');
+
+        return [
+            'event' => $event,
+            'registrations' => $registrations,
+            'rows' => $registrations->values()->map(fn (Registration $registration): array => $this->registrationRow($registration)),
+            'stats' => [
+                'total_registrations' => $activeRegistrations->count(),
+                'total_paid' => $event->price > 0
+                    ? $activeRegistrations->where('payment_status', 'paid')->count()
+                    : 0,
+                'total_check_in' => $activeRegistrations
+                    ->filter(fn (Registration $registration): bool => $this->hasCheckedIn($registration))
+                    ->count(),
+            ],
+        ];
+    }
+
+    private function registrationRow(Registration $registration): array
+    {
+        $customFields = collect($registration->custom_fields ?? []);
+        $gender = (string) $customFields->get('gender', '');
+        $genderOptions = Event::registrationFieldDefinitions()['gender']['options'] ?? [];
+        $categoryLabel = collect($registration->event->registrationCategories())
+            ->firstWhere('key', $registration->participant_type)['label']
+            ?? Str::headline(str_replace('_', ' ', (string) $registration->participant_type));
+
+        return [
+            'registration' => $registration,
+            'code' => $registration->registration_code,
+            'name' => $registration->name,
+            'email' => $registration->email,
+            'phone' => $registration->phone ?: '-',
+            'gender' => $gender === '' ? '-' : ($genderOptions[$gender] ?? Str::headline(str_replace('_', ' ', $gender))),
+            'domicile' => filled($customFields->get('domicile'))
+                ? Str::title(Str::lower((string) $customFields->get('domicile')))
+                : '-',
+            'category' => $categoryLabel,
+            'payment_status' => $this->paymentStatusLabel($registration),
+            'registration_status' => $registration->registration_status === 'cancelled' ? 'Dibatalkan' : 'Terdaftar',
+            'check_in_status' => $this->hasCheckedIn($registration) ? 'Sudah Check-in' : 'Belum Check-in',
+            'checked_in_at' => $registration->checked_in_at
+                ? $registration->checked_in_at->format('d/m/Y H:i').' WIB'
+                : null,
+        ];
+    }
+
+    private function paymentStatusLabel(Registration $registration): string
+    {
+        if ($registration->event->price <= 0) {
+            return 'Gratis';
+        }
+
+        return match ($registration->payment_status) {
+            'paid' => 'Berhasil',
+            'pending' => 'Menunggu Pembayaran',
+            'expired' => 'Kedaluwarsa',
+            'refunded' => 'Refund',
+            'failed', 'cancelled' => 'Gagal',
+            default => 'Menunggu Pembayaran',
+        };
+    }
+
+    private function hasCheckedIn(Registration $registration): bool
+    {
+        return $registration->checked_in_at !== null
+            || in_array($registration->registration_status, ['checked_in', 'completed'], true);
     }
 
     private function authorizeAdmin(Request $request): void

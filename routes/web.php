@@ -3,9 +3,9 @@
 use App\Http\Controllers\AdminEventController;
 use App\Http\Controllers\AdminRegistrationController;
 use App\Http\Controllers\AdminReportController;
+use App\Http\Controllers\AdminTicketScannerController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminWebsiteController;
-use App\Http\Controllers\AdminTicketScannerController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ParticipantProfileController;
@@ -64,7 +64,7 @@ Route::middleware(['admin', 'admin.no-cache'])->prefix('admin')->name('admin.')-
     Route::patch('registrations/{registration}/check-in', [AdminRegistrationController::class, 'checkIn'])->name('registrations.checkin');
     Route::delete('registrations/{registration}', [AdminRegistrationController::class, 'destroy'])->name('registrations.destroy');
     Route::get('legacy/reports', [AdminReportController::class, 'index'])->name('reports.index');
-    Route::get('laporan/export', [AdminReportController::class, 'export'])->name('reports.export');
+    Route::get('laporan/pdf', [AdminReportController::class, 'pdf'])->name('reports.pdf');
     Route::get('legacy/website', [AdminWebsiteController::class, 'edit'])->name('website.edit');
     Route::patch('pengaturan-website', [AdminWebsiteController::class, 'update'])->name('website.update');
     Route::patch('website', [AdminWebsiteController::class, 'update'])->name('website.update.legacy');
