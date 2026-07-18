@@ -11582,3 +11582,269 @@ html[data-theme="dark"] body.public-site:not(.fi-body) .profile-grid.about-grid 
         padding: 22px;
     }
 }
+
+/* Public responsive hardening: allow content to shrink without hiding overflow. */
+body.public-site:not(.fi-body) :where(
+    .topbar-shell,
+    .topbar-right,
+    .main-nav,
+    .header-actions,
+    main,
+    main > *,
+    .detail,
+    .detail > *,
+    .section-heading,
+    .section-heading > *,
+    .event-grid,
+    .event-grid > *,
+    .article-grid,
+    .article-grid > *,
+    .profile-grid,
+    .profile-grid > *,
+    .participant-profile-layout,
+    .participant-profile-layout > *,
+    .participant-profile-content,
+    .participant-card,
+    .registration-card,
+    .registration-card-heading > *,
+    .registration-detail-layout > *,
+    .managed-event-card,
+    .managed-event-main,
+    .managed-event-heading > *,
+    .footer-top,
+    .footer-top > *,
+    .footer-links,
+    .footer-links > *,
+    .payment-confirm-heading > *,
+    .modal-heading > *
+) {
+    min-width: 0;
+    max-width: 100%;
+}
+
+body.public-site:not(.fi-body) :where(
+    input,
+    select,
+    textarea,
+    button,
+    .button,
+    .link-button,
+    .danger-button,
+    form,
+    iframe,
+    img,
+    svg
+) {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+body.public-site:not(.fi-body) :where(
+    h1,
+    h2,
+    h3,
+    h4,
+    p,
+    li,
+    dt,
+    dd,
+    label,
+    small,
+    a,
+    button,
+    .status,
+    .compact-status,
+    .field-error,
+    .error-box,
+    .success-box,
+    .notice
+) {
+    overflow-wrap: anywhere;
+}
+
+body.public-site:not(.fi-body) :where(
+    .registration-code,
+    .ticket-modal-code,
+    .order-reference,
+    .info-list dd,
+    .registration-summary dd,
+    .participant-detail-grid dd,
+    .managed-event-meta dd,
+    .footer-contact-value
+) {
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
+
+body.public-site:not(.fi-body) :where(
+    .registration-card-actions,
+    .managed-event-actions,
+    .payment-actions,
+    .payment-confirm-actions,
+    .auth-actions
+) {
+    align-items: stretch;
+    flex-wrap: wrap;
+}
+
+body.public-site:not(.fi-body) :where(
+    .registration-card-actions,
+    .managed-event-actions,
+    .payment-actions,
+    .payment-confirm-actions
+) > :where(a, button, form) {
+    min-width: 0;
+    max-width: 100%;
+}
+
+body.public-site:not(.fi-body) :where(
+    .qr-checkin img,
+    .ticket-modal-qr,
+    .ticket-qr,
+    img[alt^="QR"]
+) {
+    width: min(100%, 280px);
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: contain;
+}
+
+body.public-site:not(.fi-body) :where(
+    .payment-confirm-dialog,
+    .ticket-modal,
+    .how-modal,
+    .account-popover
+) {
+    max-width: calc(100vw - (var(--public-gutter) * 2));
+    max-height: calc(100dvh - 32px);
+}
+
+body.public-site:not(.fi-body) .account-popover {
+    right: 0;
+    left: auto;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+    body.public-site:not(.fi-body) .participant-profile-menu {
+        display: grid;
+        overflow: visible;
+        grid-template-columns: minmax(0, 1fr);
+        width: 100%;
+        max-width: 100%;
+        gap: 4px;
+        padding: 8px;
+        scroll-snap-type: none;
+    }
+
+    body.public-site:not(.fi-body) .participant-profile-menu > :where(a, button, form) {
+        display: block;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        flex: 1 1 auto;
+        margin: 0;
+        scroll-snap-align: none;
+        white-space: normal;
+    }
+
+    body.public-site:not(.fi-body) .participant-profile-menu > :where(a, button),
+    body.public-site:not(.fi-body) .participant-profile-menu form button {
+        width: 100%;
+        justify-content: flex-start;
+        white-space: normal;
+    }
+
+    body.public-site:not(.fi-body) .participant-profile-menu form {
+        border-top: 1px solid var(--public-border);
+        border-left: 0;
+        padding-top: 5px;
+        padding-left: 0;
+    }
+
+    body.public-site:not(.fi-body) :where(
+        .managed-event-card,
+        .registration-card-heading,
+        .managed-event-heading,
+        .payment-confirm-heading
+    ) {
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 640px) {
+    body.public-site:not(.fi-body) :where(
+        .participant-card,
+        .profile-info,
+        .form-panel,
+        .auth-panel,
+        .receipt-card,
+        .registration-card,
+        .registration-empty,
+        .payment-confirm-dialog,
+        .ticket-modal
+    ) {
+        width: 100%;
+        height: auto;
+        padding: 20px;
+    }
+
+    body.public-site:not(.fi-body) :where(
+        .registration-card-actions,
+        .managed-event-actions,
+        .payment-actions,
+        .payment-confirm-actions
+    ) {
+        flex-direction: column;
+    }
+
+    body.public-site:not(.fi-body) :where(
+        .registration-card-actions,
+        .managed-event-actions,
+        .payment-actions,
+        .payment-confirm-actions
+    ) > :where(a, button, form),
+    body.public-site:not(.fi-body) :where(
+        .registration-card-actions,
+        .managed-event-actions,
+        .payment-actions,
+        .payment-confirm-actions
+    ) form :where(button, .button, .link-button) {
+        width: 100%;
+    }
+
+    body.public-site:not(.fi-body) .account-popover {
+        width: min(280px, calc(100vw - 24px));
+    }
+
+    body.public-site:not(.fi-body) .footer-top {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    body.public-site:not(.fi-body) .footer-identity,
+    body.public-site:not(.fi-body) .footer-links {
+        grid-column: auto;
+    }
+}
+
+@media (max-width: 390px) {
+    body.public-site:not(.fi-body) {
+        --public-gutter: 14px;
+    }
+
+    body.public-site:not(.fi-body) :where(
+        .participant-card,
+        .profile-info,
+        .form-panel,
+        .auth-panel,
+        .receipt-card,
+        .registration-card,
+        .registration-empty
+    ) {
+        padding: 18px;
+    }
+
+    body.public-site:not(.fi-body) .participant-profile-menu {
+        padding: 6px;
+    }
+}
