@@ -12528,3 +12528,62 @@ body.public-site:not(.fi-body) .how-modal .step-grid p {
         margin-top: 12px;
     }
 }
+
+/* Minimal ticket check-in status: text color communicates state without badges. */
+body.public-site:not(.fi-body) .ticket-list-page .registration-card-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 12px 20px;
+}
+
+body.public-site:not(.fi-body) .ticket-list-page .ticket-checkin-status {
+    display: block;
+    align-self: start;
+    justify-self: end;
+    max-width: 100%;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
+    font-size: 13px;
+    font-weight: 750;
+    line-height: 1.45;
+    text-align: right;
+    white-space: nowrap;
+}
+
+body.public-site:not(.fi-body) .ticket-list-page .ticket-checkin-status.is-checked-in,
+html[data-theme="dark"] body.public-site:not(.fi-body) .ticket-list-page .ticket-checkin-status.is-checked-in {
+    border: 0;
+    background: transparent;
+    color: var(--public-success);
+    box-shadow: none;
+}
+
+body.public-site:not(.fi-body) .ticket-list-page .ticket-checkin-status.is-waiting,
+html[data-theme="dark"] body.public-site:not(.fi-body) .ticket-list-page .ticket-checkin-status.is-waiting {
+    border: 0;
+    background: transparent;
+    color: var(--public-warning);
+    box-shadow: none;
+}
+
+body.public-site:not(.fi-body) .ticket-list-page .ticket-checkin-status.is-pending,
+html[data-theme="dark"] body.public-site:not(.fi-body) .ticket-list-page .ticket-checkin-status.is-pending {
+    border: 0;
+    background: transparent;
+    color: var(--public-muted);
+    box-shadow: none;
+}
+
+@media (max-width: 440px) {
+    body.public-site:not(.fi-body) .ticket-list-page .registration-card-heading {
+        gap: 10px;
+    }
+
+    body.public-site:not(.fi-body) .ticket-list-page .ticket-checkin-status {
+        font-size: 12px;
+    }
+}

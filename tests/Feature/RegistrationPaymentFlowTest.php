@@ -117,7 +117,7 @@ class RegistrationPaymentFlowTest extends TestCase
             ->get(route('tickets.index'))
             ->assertOk()
             ->assertSee('Tiket Saya')
-            ->assertSee('Pantau registrasi, pembayaran, dan tiket event dari satu tempat.')
+            ->assertSee('Semua tiket event Anda tersedia di sini. Tampilkan QR Code saat akan melakukan check-in.')
             ->assertSee('Siap Check-in')
             ->assertSee('Sudah Check-in')
             ->assertSee('Menunggu Pembayaran')

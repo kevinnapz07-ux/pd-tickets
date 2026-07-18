@@ -8,7 +8,7 @@
                     <p class="eyebrow">Akun</p>
                 @endunless
                 <h1>{{ isset($ticketsOnly) ? 'Tiket Saya' : 'Registrasi Saya' }}</h1>
-                <p>{{ isset($ticketsOnly) ? 'Pantau registrasi, pembayaran, dan tiket event dari satu tempat.' : 'Pantau pendaftaran dan lanjutkan pembayaran dari satu tempat.' }}</p>
+                <p>{{ isset($ticketsOnly) ? 'Semua tiket event Anda tersedia di sini. Tampilkan QR Code saat akan melakukan check-in.' : 'Pantau pendaftaran dan lanjutkan pembayaran dari satu tempat.' }}</p>
             </div>
         </div>
         @if ($registrations->isEmpty())
@@ -27,7 +27,6 @@
                             @if (isset($ticketsOnly))
                                 @php($ticketReady = $registration->isCheckInReady())
                                 <span class="ticket-checkin-status {{ $hasCheckedIn ? 'is-checked-in' : ($ticketReady ? 'is-waiting' : 'is-pending') }}">
-                                    <span aria-hidden="true">{{ $hasCheckedIn ? '✅' : ($ticketReady ? '🎟️' : '◷') }}</span>
                                     {{ $hasCheckedIn ? 'Sudah Check-in' : ($ticketReady ? 'Siap Check-in' : $registration->transactionStatusLabel()) }}
                                 </span>
                             @else
