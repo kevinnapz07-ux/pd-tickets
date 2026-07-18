@@ -532,13 +532,45 @@ iframe {
     display: grid;
     width: 52px;
     height: 52px;
-    margin-bottom: 12px;
+    margin: 0 auto 12px;
     place-items: center;
     border-radius: 999px;
     background: #dcfce7;
     color: #15803d;
     font-size: 28px;
     font-weight: 800;
+}
+
+.payment-success-dialog {
+    position: relative;
+    text-align: center;
+}
+
+.payment-success-dialog > :where(.eyebrow, h2, p) {
+    margin-inline: auto;
+}
+
+.payment-success-dialog .eyebrow {
+    justify-content: center;
+}
+
+.payment-success-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+}
+
+.payment-success-ticket {
+    display: grid;
+    gap: 5px;
+}
+
+.payment-success-ticket span {
+    color: var(--muted, #64748b);
+}
+
+.payment-success-dialog .payment-confirm-actions {
+    justify-content: center;
 }
 
 .receipt-card > h1,

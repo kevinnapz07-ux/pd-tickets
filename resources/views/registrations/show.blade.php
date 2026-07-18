@@ -389,12 +389,13 @@
 
     @if ($registration->payment_status === 'pending')
         <div class="payment-confirm-backdrop" id="payment-success-backdrop" hidden>
-            <section class="payment-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="payment-success-title">
+            <section class="payment-confirm-dialog payment-success-dialog" role="dialog" aria-modal="true" aria-labelledby="payment-success-title" aria-describedby="payment-success-message">
+                <button class="payment-confirm-close payment-success-close" id="payment-success-close" type="button" aria-label="Tutup pemberitahuan pembayaran berhasil">×</button>
                 <div class="payment-success-icon" aria-hidden="true">✓</div>
                 <p class="eyebrow">Tiket Aktif</p>
                 <h2 id="payment-success-title">Pembayaran Berhasil</h2>
-                <p>Pembayaran kamu telah diterima. Tiket sudah diterbitkan dan dapat digunakan.</p>
-                <p><strong>{{ $registration->event->title }}</strong><br>{{ $registration->registration_code }}</p>
+                <p id="payment-success-message">Pembayaran kamu telah diterima. Tiket sudah diterbitkan dan dapat digunakan.</p>
+                <p class="payment-success-ticket"><strong>{{ $registration->event->title }}</strong><span>{{ $registration->registration_code }}</span></p>
                 <div class="payment-confirm-actions">
                     <a class="button" id="payment-success-ticket" href="{{ route('registrations.show', $registration) }}#ticket-qr">Lihat Tiket</a>
                     <a class="link-button" href="{{ route('events.index') }}">Kembali ke Beranda</a>
@@ -416,10 +417,21 @@
                             stopped = true;
                             const modal = document.getElementById('payment-success-backdrop');
                             const ticket = document.getElementById('payment-success-ticket');
+                            const close = document.getElementById('payment-success-close');
                             if (ticket && result.ticket_url) ticket.href = result.ticket_url + '#ticket-qr';
                             if (modal) {
                                 modal.hidden = false;
                                 document.body.classList.add('modal-open');
+                                close?.focus();
+
+                                const dismiss = () => window.location.reload();
+                                close?.addEventListener('click', dismiss, {once: true});
+                                modal.addEventListener('click', (event) => {
+                                    if (event.target === modal) dismiss();
+                                });
+                                document.addEventListener('keydown', (event) => {
+                                    if (event.key === 'Escape' && !modal.hidden) dismiss();
+                                });
                             }
                         } else if (['expired', 'failed', 'cancelled'].includes(result.status)) {
                             stopped = true;

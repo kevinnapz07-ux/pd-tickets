@@ -176,6 +176,13 @@ class RegistrationPaymentFlowTest extends TestCase
             ->assertSee('Kembali ke Beranda')
             ->assertDontSee('Lihat Tiket');
 
+        $this->actingAs($owner)
+            ->get(route('registrations.show', $pending))
+            ->assertOk()
+            ->assertSee('id="payment-success-close"', false)
+            ->assertSee('payment-success-dialog', false)
+            ->assertSee('Tutup pemberitahuan pembayaran berhasil');
+
         $admin = User::factory()->create(['role' => 'admin']);
         $this->actingAs($admin)
             ->get(route('registrations.show', $waiting))
