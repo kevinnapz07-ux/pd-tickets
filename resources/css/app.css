@@ -9133,15 +9133,29 @@ body:not(.fi-body) .participant-detail-grid dd {
     padding-inline: 44px;
 }
 
+.ticket-qr-modal .eyebrow {
+    margin-bottom: 12px;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+}
+
 .ticket-modal h2 {
     margin: 4px 0 8px;
     color: #0f172a;
 }
 
+.ticket-qr-modal h2 {
+    margin: 0 0 18px;
+}
+
 .ticket-modal-event {
-    margin: 0;
+    margin: 0 0 22px;
     color: #334155;
-    font-weight: 700;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.45;
     overflow-wrap: anywhere;
 }
 
@@ -9158,7 +9172,7 @@ body:not(.fi-body) .participant-detail-grid dd {
     display: block;
     width: min(100%, 230px);
     aspect-ratio: 1;
-    margin: 0 auto 14px;
+    margin: 0 auto 20px;
     border: 1px solid #dbe3ef;
     border-radius: 14px;
     padding: 10px;
@@ -9166,7 +9180,7 @@ body:not(.fi-body) .participant-detail-grid dd {
 }
 
 .ticket-modal-note {
-    margin: 0 auto 18px;
+    margin: 0 auto 22px;
     color: #475569;
     line-height: 1.55;
 }
