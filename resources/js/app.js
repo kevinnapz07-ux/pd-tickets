@@ -130,6 +130,29 @@ import { Html5Qrcode } from 'html5-qrcode';
         });
     };
 
+    const setupImageLoading = () => {
+        document.querySelectorAll('img[loading="lazy"]').forEach((image) => {
+            if (image.dataset.imageBound) return;
+            image.dataset.imageBound = 'true';
+
+            const frame = image.parentElement;
+            const finish = () => frame?.classList.remove('is-image-loading');
+
+            frame?.classList.add('is-image-loading');
+            image.addEventListener('load', finish, { once: true });
+            image.addEventListener('error', () => {
+                const fallback = image.dataset.imageFallback;
+                if (fallback && image.src !== fallback) {
+                    image.src = fallback;
+                    return;
+                }
+                finish();
+            });
+
+            if (image.complete) finish();
+        });
+    };
+
     const setupAccountMenus = () => {
         const menus = document.querySelectorAll('[data-account-menu]');
 
@@ -971,6 +994,7 @@ import { Html5Qrcode } from 'html5-qrcode';
     }
         setupHowToOrderModal();
         setupToasts();
+        setupImageLoading();
         setupAccountMenus();
         setupMobileMenu();
         setupPublicMotion();

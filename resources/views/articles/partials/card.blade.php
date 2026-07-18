@@ -1,7 +1,7 @@
 <article class="article-card" data-reveal>
     <a class="article-card-media" href="{{ route('articles.show', $article) }}" tabindex="-1" aria-hidden="true">
         @if ($article->thumbnail_url)
-            <img src="{{ $article->thumbnail_url }}" alt="" loading="lazy">
+            <img src="{{ $article->thumbnail_url }}" alt="" loading="lazy" decoding="async" data-image-fallback="{{ asset('images/event-placeholder.svg') }}">
         @else
             <img src="{{ asset('images/event-placeholder.svg') }}" alt="" loading="lazy">
         @endif

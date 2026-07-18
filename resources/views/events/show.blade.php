@@ -5,7 +5,7 @@
         <article class="detail-main">
             <div class="event-detail-poster">
                 @if ($event->image_url)
-                    <img src="{{ $event->image_url }}" alt="Poster {{ $event->title }}" loading="lazy">
+                    <img src="{{ $event->image_url }}" alt="Poster {{ $event->title }}" loading="lazy" decoding="async" data-image-fallback="{{ asset('images/event-placeholder.svg') }}">
                 @else
                     <img src="{{ asset('images/event-placeholder.svg') }}" alt="Poster event belum tersedia" loading="lazy">
                 @endif

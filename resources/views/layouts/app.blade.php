@@ -12,12 +12,37 @@
             ?? (request()->routeIs('events.show') && isset($event) ? Str::limit(strip_tags($event->description), 155) : null)
             ?? $routeDescription
             ?? $brandSubtitle;
+        $isSensitivePage = request()->routeIs('tickets.verify', 'password.reset');
+        $canonicalUrl = $isSensitivePage ? null : url()->current();
+        $pageImage = $metaImage
+            ?? (isset($event) && $event->image_url ? $event->image_url : null)
+            ?? (isset($article) && $article->thumbnail_url ? $article->thumbnail_url : null)
+            ?? asset(config('branding.logo'));
+        $openGraphType = isset($article) ? 'article' : 'website';
     @endphp
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $browserTitle }}</title>
     <meta name="application-name" content="{{ $brandTitle }}">
     <meta name="description" content="{{ $pageDescription }}">
+    @if ($canonicalUrl)
+        <link rel="canonical" href="{{ $canonicalUrl }}">
+    @else
+        <meta name="robots" content="noindex, nofollow, noarchive">
+    @endif
+    <meta property="og:locale" content="id_ID">
+    <meta property="og:type" content="{{ $openGraphType }}">
+    <meta property="og:site_name" content="{{ $brandTitle }}">
+    <meta property="og:title" content="{{ $browserTitle }}">
+    <meta property="og:description" content="{{ $pageDescription }}">
+    @if ($canonicalUrl)
+        <meta property="og:url" content="{{ $canonicalUrl }}">
+    @endif
+    <meta property="og:image" content="{{ $pageImage }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $browserTitle }}">
+    <meta name="twitter:description" content="{{ $pageDescription }}">
+    <meta name="twitter:image" content="{{ $pageImage }}">
     <meta name="how-to-order-title" content="Cara Registrasi • {{ $brandTitle }}">
     <meta name="how-to-order-description" content="Panduan langkah demi langkah untuk memilih event, melakukan registrasi, dan menyelesaikan pembayaran.">
     <link rel="icon" type="image/svg+xml" href="{{ asset(config('branding.favicon')) }}">
@@ -35,6 +60,7 @@
     @stack('head')
 </head>
 <body class="{{ request()->routeIs('admin.*') ? 'legacy-admin' : 'public-site' }}">
+    <a class="skip-link" href="#main-content">Lewati ke konten utama</a>
     <header class="topbar">
         <div class="topbar-shell">
         <a class="brand" href="{{ route('events.index') }}">
@@ -144,7 +170,7 @@
         </section>
     </div>
 
-    <main>
+    <main id="main-content" tabindex="-1">
         @if (session('status') && ! request()->routeIs('password.request'))
             <div class="notice toast-notice" role="status" data-toast>{{ session('status') }}</div>
         @endif

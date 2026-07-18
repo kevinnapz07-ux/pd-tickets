@@ -22,7 +22,7 @@
 
         <div class="article-detail-media">
             @if ($article->thumbnail_url)
-                <img src="{{ $article->thumbnail_url }}" alt="Thumbnail {{ $article->title }}">
+                <img src="{{ $article->thumbnail_url }}" alt="Thumbnail {{ $article->title }}" loading="lazy" decoding="async" data-image-fallback="{{ asset('images/event-placeholder.svg') }}">
             @else
                 <img src="{{ asset('images/event-placeholder.svg') }}" alt="" loading="lazy">
             @endif

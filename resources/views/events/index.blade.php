@@ -32,7 +32,7 @@
                 <article class="event-card public-event-card" data-reveal>
                     <div class="event-card-visual" aria-hidden="true">
                         @if ($event->image_url)
-                            <img src="{{ $event->image_url }}" alt="" loading="lazy">
+                            <img src="{{ $event->image_url }}" alt="" loading="lazy" decoding="async" data-image-fallback="{{ asset('images/event-placeholder.svg') }}">
                         @else
                             <img src="{{ asset('images/event-placeholder.svg') }}" alt="" loading="lazy">
                         @endif
@@ -71,7 +71,7 @@
                     <article class="upcoming-card" data-reveal>
                         <div class="upcoming-poster">
                             @if ($upcomingEvent->image_url)
-                                <img src="{{ $upcomingEvent->image_url }}" alt="Poster {{ $upcomingEvent->title }}" loading="lazy">
+                                <img src="{{ $upcomingEvent->image_url }}" alt="Poster {{ $upcomingEvent->title }}" loading="lazy" decoding="async" data-image-fallback="{{ asset('images/event-placeholder.svg') }}">
                             @else
                                 <img src="{{ asset('images/event-placeholder.svg') }}" alt="" loading="lazy">
                             @endif
