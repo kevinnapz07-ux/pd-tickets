@@ -748,20 +748,18 @@ import { Html5Qrcode } from 'html5-qrcode';
             });
         });
 
-        document.querySelectorAll('[data-copy-text]').forEach((button) => {
-            if (button.dataset.copyBound) return;
-            button.dataset.copyBound = 'true';
-            button.addEventListener('click', async () => {
-                const text = button.dataset.copyText;
-                if (! text) return;
+        document.querySelectorAll('[data-participant-accordion]').forEach((accordion) => {
+            const toggle = accordion.querySelector('[data-accordion-toggle]');
+            const panel = accordion.querySelector('[data-accordion-panel]');
 
-                try {
-                    await navigator.clipboard.writeText(text);
-                    button.textContent = 'Tersalin';
-                    window.setTimeout(() => { button.textContent = 'Copy'; }, 1600);
-                } catch (_) {
-                    button.textContent = 'Gagal menyalin';
-                }
+            if (! toggle || ! panel || accordion.dataset.accordionBound) return;
+
+            accordion.dataset.accordionBound = 'true';
+            toggle.addEventListener('click', () => {
+                const expanded = toggle.getAttribute('aria-expanded') === 'true';
+                toggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+                panel.hidden = expanded;
+                accordion.classList.toggle('is-expanded', ! expanded);
             });
         });
     };

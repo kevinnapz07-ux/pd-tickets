@@ -26,11 +26,11 @@
                         <button type="button" data-description-toggle>Lihat Selengkapnya</button>
                     </div>
                 </div>
-                <dl class="event-summary-grid">
-                    <div class="event-date-time"><dt>Tanggal & Waktu</dt><dd>{{ $registration->event->starts_at->translatedFormat('D, d M Y') }} · {{ $registration->event->starts_at->format('H:i') }}{{ $registration->event->ends_at ? '–'.$registration->event->ends_at->format('H:i') : '' }} WIB</dd></div>
-                    <div class="event-location"><dt>Lokasi</dt><dd>{{ $registration->event->location }}</dd></div>
-                    <div class="event-registration-type"><dt>Jenis Pendaftaran</dt><dd><span class="compact-badge">{{ $registration->event->price > 0 ? 'Berbayar' : 'Gratis' }}</span></dd></div>
-                </dl>
+                <div class="compact-event-meta">
+                    <p><span aria-hidden="true">◷</span> {{ $registration->event->starts_at->translatedFormat('d F Y') }} · {{ $registration->event->starts_at->format('H:i') }}{{ $registration->event->ends_at ? '–'.$registration->event->ends_at->format('H:i') : '' }} WIB</p>
+                    <p><span aria-hidden="true">⌖</span> {{ $registration->event->location }}</p>
+                    <span class="compact-badge">{{ $registration->event->price > 0 ? 'Berbayar' : 'Gratis' }}</span>
+                </div>
             </section>
 
             @php
@@ -70,33 +70,31 @@
                 </section>
             @endif
 
-            <dl class="participant-detail-grid">
-                <div><dt>Email</dt><dd>{{ $registration->email }}</dd></div>
-                <div><dt>No. HP</dt><dd>{{ $registration->phone }}</dd></div>
-                <div><dt>Kategori</dt><dd>{{ $categoryLabel }}</dd></div>
-                <div><dt>Domisili</dt><dd>{{ $domicile ?: '-' }}</dd></div>
-                <div><dt>Jenis Kelamin</dt><dd>{{ $gender ? Str::headline(str_replace('_', ' ', $gender)) : '-' }}</dd></div>
-                <div><dt>Nominal</dt><dd>{{ $registration->event->price > 0 ? 'Rp '.number_format($registration->event->price, 0, ',', '.') : 'Gratis' }}</dd></div>
-                @if ($registration->participant_type === 'mahasiswa_gunadarma')
-                    <div><dt>NPM</dt><dd>{{ $registration->student_id }}</dd></div>
-                    <div><dt>Area Kampus</dt><dd>{{ ucfirst($registration->campus_area) }}</dd></div>
-                    <div><dt>Angkatan</dt><dd>{{ $registration->class_year }}</dd></div>
-                    <div><dt>Program Studi</dt><dd>{{ $registration->study_program }}</dd></div>
-                @endif
-                @foreach ($customFields->except(['gender', 'domicile']) as $field => $value)
-                    <div><dt>{{ \App\Models\Event::registrationFieldLabel($field) }}</dt><dd>{{ $value }}</dd></div>
-                @endforeach
-            </dl>
-
-            @if ($registration->event->price > 0)
-                <section class="order-reference">
-                    <div>
-                        <span>Order ID</span>
-                        <code>{{ $registration->payment?->order_id ?? '-' }}</code>
-                    </div>
-                    <button class="link-button" type="button" data-copy-text="{{ $registration->payment?->order_id }}" data-copy-label="Order ID">Copy</button>
-                </section>
-            @endif
+            <section class="participant-detail-accordion" data-participant-accordion>
+                <button type="button" aria-expanded="false" aria-controls="participant-detail-panel-{{ $registration->id }}" data-accordion-toggle>
+                    <span>Detail Peserta</span>
+                    <span class="accordion-chevron" aria-hidden="true">⌄</span>
+                </button>
+                <div id="participant-detail-panel-{{ $registration->id }}" data-accordion-panel hidden>
+                    <dl class="participant-detail-grid">
+                        <div class="participant-email"><dt>Email</dt><dd>{{ $registration->email }}</dd></div>
+                        <div><dt>No. HP</dt><dd>{{ $registration->phone }}</dd></div>
+                        <div><dt>Kategori</dt><dd>{{ $categoryLabel }}</dd></div>
+                        <div><dt>Domisili</dt><dd>{{ $domicile ?: '-' }}</dd></div>
+                        <div><dt>Jenis Kelamin</dt><dd>{{ $gender ? Str::headline(str_replace('_', ' ', $gender)) : '-' }}</dd></div>
+                        <div><dt>Nominal</dt><dd>{{ $registration->event->price > 0 ? 'Rp '.number_format($registration->event->price, 0, ',', '.') : 'Gratis' }}</dd></div>
+                        @if ($registration->participant_type === 'mahasiswa_gunadarma')
+                            <div><dt>NPM</dt><dd>{{ $registration->student_id }}</dd></div>
+                            <div><dt>Area Kampus</dt><dd>{{ ucfirst($registration->campus_area) }}</dd></div>
+                            <div><dt>Angkatan</dt><dd>{{ $registration->class_year }}</dd></div>
+                            <div><dt>Program Studi</dt><dd>{{ $registration->study_program }}</dd></div>
+                        @endif
+                        @foreach ($customFields->except(['gender', 'domicile']) as $field => $value)
+                            <div><dt>{{ \App\Models\Event::registrationFieldLabel($field) }}</dt><dd>{{ $value }}</dd></div>
+                        @endforeach
+                    </dl>
+                </div>
+            </section>
 
             @if ($registration->payment_status === 'pending' && $registration->payment?->snap_token)
                 <div class="payment-actions">
@@ -119,7 +117,6 @@
                         <dl class="payment-confirm-details">
                             <div><dt>Event</dt><dd>{{ $registration->event->title }}</dd></div>
                             <div><dt>Nominal</dt><dd>Rp {{ number_format($registration->event->price, 0, ',', '.') }}</dd></div>
-                            <div><dt>Order ID</dt><dd>{{ $registration->payment->order_id }}</dd></div>
                         </dl>
                         <p class="payment-confirm-note">Setelah pembayaran, status akan diperiksa otomatis. Anda juga dapat menggunakan tombol Cek Status Pembayaran.</p>
                         <div class="payment-confirm-actions">

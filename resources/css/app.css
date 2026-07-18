@@ -8411,22 +8411,38 @@ body:not(.fi-body) :where(.brand small, .footer-identity p, .footer-links a) {
 
 /* Final compact ticket-detail overrides */
 body:not(.fi-body) .registration-event-summary {
-    gap: 14px;
+    gap: 10px;
     margin-block: 18px 6px;
     padding: 16px;
 }
 
-body:not(.fi-body) .event-summary-grid {
-    grid-template-columns: minmax(0, 2fr) minmax(120px, 1fr);
-    gap: 8px;
+body:not(.fi-body) .compact-event-description p {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
 }
 
-body:not(.fi-body) .event-summary-grid .event-location {
-    grid-column: 1 / -1;
+body:not(.fi-body) .compact-event-meta {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
 }
 
-body:not(.fi-body) .event-summary-grid > div {
-    padding: 10px 12px;
+body:not(.fi-body) .compact-event-meta p {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    min-width: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+    color: #475569;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.45;
+}
+
+body:not(.fi-body) .compact-event-meta .compact-badge {
+    justify-self: start;
+    margin-top: 3px;
 }
 
 body:not(.fi-body) .compact-qr-checkin {
@@ -8438,13 +8454,115 @@ body:not(.fi-body) .compact-qr-checkin img {
     width: min(100%, 210px);
 }
 
+body:not(.fi-body) .participant-detail-accordion {
+    margin-top: 14px;
+    overflow: hidden;
+    border: 1px solid #dbe3ef;
+    border-radius: 14px;
+    background: #fff;
+}
+
+body:not(.fi-body) .participant-detail-accordion > button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    min-height: 48px;
+    border: 0;
+    padding: 11px 14px;
+    background: transparent;
+    color: #0f172a;
+    font: inherit;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+}
+
+body:not(.fi-body) .participant-detail-accordion > button:hover {
+    background: #f8fafc;
+}
+
+body:not(.fi-body) .accordion-chevron {
+    color: #64748b;
+    font-size: 20px;
+    transition: transform 180ms ease;
+}
+
+body:not(.fi-body) .participant-detail-accordion.is-expanded .accordion-chevron {
+    transform: rotate(180deg);
+}
+
+body:not(.fi-body) .participant-detail-accordion [data-accordion-panel] {
+    border-top: 1px solid #e2e8f0;
+    padding: 12px;
+}
+
+body:not(.fi-body) .participant-detail-accordion [data-accordion-panel][hidden] {
+    display: none;
+}
+
+body:not(.fi-body) .participant-detail-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px 14px;
+    margin: 0;
+    overflow: visible;
+    border: 0;
+    background: transparent;
+}
+
+body:not(.fi-body) .participant-detail-grid > div {
+    padding: 0;
+    background: transparent;
+}
+
+body:not(.fi-body) .participant-detail-grid dd {
+    line-height: 1.45;
+}
+
+[data-theme="dark"] body:not(.fi-body) .compact-event-meta p {
+    color: #c0ccda;
+}
+
+[data-theme="dark"] body:not(.fi-body) .participant-detail-accordion {
+    border-color: #3b4b63;
+    background: #172337;
+}
+
+[data-theme="dark"] body:not(.fi-body) .participant-detail-accordion > button {
+    color: #f8fafc;
+}
+
+[data-theme="dark"] body:not(.fi-body) .participant-detail-accordion > button:hover {
+    background: #1e2d43;
+}
+
+[data-theme="dark"] body:not(.fi-body) .participant-detail-accordion [data-accordion-panel] {
+    border-color: #3b4b63;
+}
+
+[data-theme="dark"] body:not(.fi-body) .participant-detail-grid {
+    border: 0;
+    background: transparent;
+}
+
+[data-theme="dark"] body:not(.fi-body) .participant-detail-grid > div {
+    background: transparent;
+}
+
 @media (max-width: 640px) {
-    body:not(.fi-body) .event-summary-grid {
-        grid-template-columns: 1fr;
+    body:not(.fi-body) .participant-detail-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    body:not(.fi-body) .event-summary-grid > * {
-        grid-column: auto;
+    body:not(.fi-body) .participant-detail-grid .participant-email {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (min-width: 641px) and (max-width: 900px) {
+    body:not(.fi-body) .participant-detail-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
