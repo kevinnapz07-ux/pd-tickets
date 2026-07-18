@@ -11940,3 +11940,70 @@ body.public-site:not(.fi-body) .footer-bottom p {
         padding: 12px 18px;
     }
 }
+
+/* Browser-safe card radius token shared by every public card surface. */
+body.public-site:not(.fi-body) {
+    --public-card-radius: 20px;
+}
+
+body.public-site:not(.fi-body) :where(
+    .event-card,
+    .upcoming-card,
+    .article-card,
+    .about-shared-card,
+    .profile-info,
+    .participant-card,
+    .form-panel,
+    .auth-panel,
+    .receipt-card,
+    .registration-card,
+    .registration-empty,
+    .managed-event-card,
+    .actor-grid article
+) {
+    border-radius: var(--public-card-radius, 20px);
+}
+
+body.public-site:not(.fi-body) .about-shared-card {
+    overflow: hidden;
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--public-border, #e7e5f1);
+    border-radius: var(--public-card-radius, 20px);
+    background: var(--public-surface, #ffffff);
+    background-clip: padding-box;
+    padding: 28px;
+    color: var(--public-text, #25233a);
+    box-shadow: var(--public-shadow, 0 12px 32px rgb(37 35 58 / 8%));
+    isolation: isolate;
+    transition: border-color .25s ease, box-shadow .25s ease;
+}
+
+html[data-theme="dark"] body.public-site:not(.fi-body) .about-shared-card {
+    border-color: var(--public-border, #344157);
+    background: var(--public-surface, #182235);
+    color: var(--public-text, #f8fafc);
+    box-shadow: var(--public-shadow, 0 14px 34px rgb(0 0 0 / 24%));
+}
+
+body.public-site:not(.fi-body) .about-shared-card:hover {
+    border-color: rgb(109 93 246 / 45%);
+    box-shadow: var(--public-shadow-hover, 0 22px 52px rgb(37 35 58 / 15%));
+}
+
+body.public-site:not(.fi-body) .about-shared-card:focus-within {
+    border-color: var(--public-primary, #6d5df6);
+    box-shadow:
+        0 0 0 3px var(--public-ring, rgb(109 93 246 / 30%)),
+        var(--public-shadow, 0 12px 32px rgb(37 35 58 / 8%));
+}
+
+@media (max-width: 760px) {
+    body.public-site:not(.fi-body) {
+        --public-card-radius: 18px;
+    }
+
+    body.public-site:not(.fi-body) .about-shared-card {
+        padding: 22px;
+    }
+}
