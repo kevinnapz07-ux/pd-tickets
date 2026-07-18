@@ -37,7 +37,7 @@
     <section class="about-programs">
         <div class="section-heading">
             <div>
-                <p class="eyebrow">Kegiatan Kami</p>
+                <h2>Kegiatan Kami</h2>
             </div>
         </div>
         <div class="about-program-grid">
