@@ -36,8 +36,6 @@ class AdminWebsiteController extends Controller
                 }
             }],
             'contact_address' => ['required', 'string', 'max:180'],
-            'registration_section_title' => ['required', 'string', 'max:120'],
-            'registration_section_description' => ['nullable', 'string'],
         ]);
 
         SiteSetting::current()->update($data);

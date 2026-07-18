@@ -38,13 +38,6 @@ class SiteSettingForm
                     ->helperText('Gunakan nomor WhatsApp Indonesia, misalnya 082199773846 atau +62 821-9977-3846.'),
                 TextInput::make('contact_address')
                     ->label('Alamat'),
-                TextInput::make('registration_section_title')
-                    ->label('Judul Section Data Registrasi')
-                    ->required()
-                    ->default('Data Registrasi'),
-                Textarea::make('registration_section_description')
-                    ->label('Keterangan Section Data Registrasi')
-                    ->columnSpanFull(),
             ]);
     }
 }

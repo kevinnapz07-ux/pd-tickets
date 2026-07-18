@@ -1637,6 +1637,16 @@ html.fi.dark body.fi-body {
     box-shadow: 0 0 0 1px rgb(255 255 255 / 10%);
 }
 
+.fi.dark .filament-custom-page select {
+    color-scheme: dark;
+}
+
+.fi.dark .filament-custom-page select option,
+.fi.dark .filament-custom-page select optgroup {
+    background: var(--gray-900);
+    color: #fff;
+}
+
 .fi.dark .filament-custom-page .link-button {
     background: rgb(255 255 255 / 5%);
     color: var(--gray-300);

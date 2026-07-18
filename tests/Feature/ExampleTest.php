@@ -481,6 +481,10 @@ class ExampleTest extends TestCase
         $editResponse->assertSee('No. HP (WhatsApp)');
         $editResponse->assertSee('Data tambahan');
         $editResponse->assertSee('Tambah Field');
+        $editResponse->assertDontSee('Judul Bagian');
+        $editResponse->assertDontSee('Deskripsi Bagian');
+        $editResponse->assertDontSee('registration_section_title', false);
+        $editResponse->assertDontSee('registration_section_description', false);
 
         $response = $this->actingAs($admin)->patch(route('admin.website.update'), [
             'site_name' => 'PD Gunadarma',
@@ -490,8 +494,6 @@ class ExampleTest extends TestCase
             'contact_email' => 'admin@pdug.test',
             'contact_phone' => '082199773846',
             'contact_address' => 'Kampus Gunadarma',
-            'registration_section_title' => 'Data Peserta Custom',
-            'registration_section_description' => 'Isi sesuai kategori.',
             'event_registration_builder' => [
                 $event->id => [
                     'categories' => [
@@ -1391,16 +1393,16 @@ class ExampleTest extends TestCase
             'contact_email' => 'admin@pdug.test',
             'contact_phone' => '082199773846',
             'contact_address' => 'Kampus Gunadarma',
-            'registration_section_title' => 'Data Peserta',
-            'registration_section_description' => 'Pilih Umum atau Mahasiswa Universitas Gunadarma.',
+            'registration_section_title' => 'Nilai lama yang tidak relevan',
+            'registration_section_description' => 'Deskripsi lama yang tidak relevan.',
         ]);
 
         $response->assertRedirect();
         $this->assertDatabaseHas('site_settings', [
             'site_name' => 'PDUG Event Center',
             'hero_title' => 'Agenda PDUG',
-            'registration_section_title' => 'Data Peserta',
-            'registration_section_description' => 'Pilih Umum atau Mahasiswa Universitas Gunadarma.',
+            'registration_section_title' => 'Data Registrasi',
+            'registration_section_description' => 'Pilih kategori peserta agar form menampilkan data yang sesuai.',
         ]);
 
         $publicResponse = $this->get(route('events.index'));

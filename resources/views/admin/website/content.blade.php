@@ -147,22 +147,6 @@
 
             <section class="cms-tab-panel" id="cms-panel-registration" role="tabpanel" data-cms-panel="registration" hidden>
             <div class="admin-form-section">
-                <div>
-                    <p class="eyebrow">Section Data Registrasi</p>
-                    <h2>Data Peserta Event</h2>
-                    <p class="field-help">Atur teks section dan kategori form registrasi yang tampil pada event tertentu.</p>
-                </div>
-                <label>Judul Bagian <span class="required-indicator">*</span>
-                    <input name="registration_section_title" value="{{ old('registration_section_title', $setting->registration_section_title ?? 'Data Registrasi') }}" maxlength="120" required>
-                    <small class="field-help">Judul yang muncul sebelum formulir pendaftaran peserta.</small>
-                    <small class="character-counter" data-character-counter></small>
-                </label>
-                <label>Deskripsi Bagian
-                    <textarea name="registration_section_description" rows="3">{{ old('registration_section_description', $setting->registration_section_description) }}</textarea>
-                    <small class="field-help">Petunjuk singkat sebelum peserta memilih kategori registrasi.</small>
-                </label>
-            </div>
-            <div class="admin-form-section">
                 @php
                     $fieldDefinitions = \App\Models\Event::registrationFieldDefinitions();
                     $defaultCategoryOptions = collect(\App\Models\Event::defaultRegistrationCategories())
@@ -181,7 +165,7 @@
                 <div>
                     <p class="eyebrow">Pengaturan Form Registrasi Event<span class="sr-only"> - Kategori Peserta per Event</span></p>
                     <h2>Konfigurasi Form Registrasi</h2>
-                    <p class="field-help">Atur kategori peserta dan tentukan data apa saja yang wajib diisi pada formulir registrasi setiap event.</p>
+                    <p class="field-help">Atur kategori dan tentukan informasi yang wajib diisi pada formulir registrasi setiap event.</p>
                 </div>
                 <div class="schema-overview" aria-label="Ringkasan konfigurasi event">
                     <span><strong>{{ $events->count() }}</strong> event tersedia</span>
