@@ -11365,3 +11365,9 @@ body.public-site:not(.fi-body) .profile-grid.about-grid article {
     background: transparent;
     box-shadow: none;
 }
+
+@media (min-width: 761px) {
+    body.public-site:not(.fi-body) .event-catalog-section .search-form {
+        width: min(380px, 100%);
+    }
+}

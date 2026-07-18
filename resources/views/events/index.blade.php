@@ -1,6 +1,13 @@
 @extends('layouts.app', ['title' => 'Beranda'])
 
 @section('content')
+    @php
+        $heroSubtitle = trim((string) ($siteSetting?->hero_subtitle ?? ''));
+        if ($heroSubtitle === '' || str_starts_with($heroSubtitle, 'Temukan seminar, workshop, dan kegiatan akademik PD Gunadarma.')) {
+            $heroSubtitle = 'UKM Kerohanian Universitas Gunadarma';
+        }
+    @endphp
+
     @auth
         <p class="homepage-welcome">Selamat datang kembali, <strong>{{ auth()->user()->name }}</strong></p>
     @endauth
@@ -8,8 +15,7 @@
     <section class="hero">
         <div class="hero-copy">
             <h1>{{ $siteSetting?->hero_title ?? 'PDUG' }}</h1>
-            <p>{{ $siteSetting?->hero_subtitle ?? 'Temukan seminar, workshop, dan kegiatan akademik PD Gunadarma. Registrasi dan pembayaran diproses dalam satu alur yang mudah dilacak.' }}</p>
-            <a class="button hero-cta" href="#event-tersedia">Lihat Event</a>
+            <p>{{ $heroSubtitle }}</p>
         </div>
     </section>
 

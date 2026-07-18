@@ -49,7 +49,8 @@ class ExampleTest extends TestCase
         $response->assertSee('Jam Layanan');
         $response->assertSee('Cara Registrasi Event');
         $response->assertSee('Cara Daftar');
-        $response->assertSee('Lihat Event');
+        $response->assertSee('UKM Kerohanian Universitas Gunadarma');
+        $response->assertDontSee('class="button hero-cta"', false);
         $response->assertSee('>Cari</button>', false);
         $response->assertSee('Tanggal');
         $response->assertSee('Kuota');
