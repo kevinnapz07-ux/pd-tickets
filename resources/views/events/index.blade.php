@@ -26,7 +26,7 @@
                 <h2>Event Tersedia</h2>
             </div>
             <form class="search-form" method="GET" action="{{ route('events.index') }}">
-                <input name="search" value="{{ $search }}" placeholder="Cari event, lokasi, pembicara">
+                <input name="search" value="{{ $search }}" placeholder="Cari event...">
                 <button class="button" type="submit">Cari</button>
                 @if ($search !== '')
                     <a class="link-button" href="{{ route('events.index') }}">Reset</a>

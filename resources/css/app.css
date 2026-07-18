@@ -12092,3 +12092,70 @@ body.public-site:not(.fi-body) :where(
     background: var(--public-success-soft);
     color: var(--public-success);
 }
+
+/* Compact search control for the Event Tersedia heading. */
+body.public-site:not(.fi-body) .event-catalog-section > .section-heading {
+    align-items: center;
+}
+
+body.public-site:not(.fi-body) .event-catalog-section .search-form {
+    grid-template-columns: minmax(280px, 320px) 96px auto;
+    justify-self: end;
+    width: max-content;
+    max-width: 100%;
+    gap: 8px;
+    padding: 6px;
+}
+
+body.public-site:not(.fi-body) .event-catalog-section .search-form input {
+    width: 100%;
+    min-width: 0;
+    min-height: 46px;
+    height: 46px;
+    padding: 10px 14px;
+}
+
+body.public-site:not(.fi-body) .event-catalog-section .search-form .button {
+    width: 96px;
+    min-height: 46px;
+    height: 46px;
+    padding: 10px 14px;
+}
+
+body.public-site:not(.fi-body) .event-catalog-section .search-form .link-button {
+    min-height: 46px;
+    padding: 10px 14px;
+}
+
+@media (max-width: 760px) {
+    body.public-site:not(.fi-body) .event-catalog-section > .section-heading {
+        align-items: stretch;
+    }
+
+    body.public-site:not(.fi-body) .event-catalog-section .search-form {
+        grid-template-columns: minmax(0, 1fr) 96px auto;
+        justify-self: stretch;
+        width: 100%;
+    }
+}
+
+@media (max-width: 640px) {
+    body.public-site:not(.fi-body) .event-catalog-section .search-form {
+        grid-template-columns: minmax(0, 1fr) 96px;
+    }
+
+    body.public-site:not(.fi-body) .event-catalog-section .search-form .link-button {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+}
+
+@media (max-width: 440px) {
+    body.public-site:not(.fi-body) .event-catalog-section .search-form {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    body.public-site:not(.fi-body) .event-catalog-section .search-form .button {
+        width: 100%;
+    }
+}
