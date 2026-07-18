@@ -185,10 +185,10 @@
             ? $configuredFooterEmail
             : 'pdgunadarmates@gmail.com';
         $configuredFooterPhone = $siteSetting?->contact_phone;
-        $footerPhoneNumber = \App\Models\SiteSetting::whatsappNumber($configuredFooterPhone) ?? '6281234567890';
+        $footerPhoneNumber = \App\Models\SiteSetting::whatsappNumber($configuredFooterPhone) ?? '6282199773846';
         $footerPhone = \App\Models\SiteSetting::whatsappNumber($configuredFooterPhone)
             ? $configuredFooterPhone
-            : '+62 812-3456-7890';
+            : '0821 9977 3846';
         $configuredFooterAddress = $siteSetting?->contact_address;
         $footerAddress = filled($configuredFooterAddress) && strtolower(trim($configuredFooterAddress)) !== 'kampus gunadarma'
             ? $configuredFooterAddress
@@ -227,23 +227,23 @@
 
             <div class="footer-links">
                 <section>
-                    <h2>Resources</h2>
+                    <h2>Navigasi</h2>
                     <a href="https://www.gunadarma.ac.id">Gunadarma</a>
                     <a href="{{ route('events.index') }}">Event</a>
-                    <a href="{{ route('profile.pdug') }}">About Us</a>
+                    <a href="{{ route('profile.pdug') }}">Tentang PDUG</a>
                     <a href="{{ route('articles.index') }}">Artikel</a>
                 </section>
                 <section>
-                    <h2>Follow Us</h2>
+                    <h2>Ikuti Kami</h2>
                     <a href="https://www.instagram.com/pdgunadarma_official?igsh=bzY3cDQ4bXVzcXVq">Instagram</a>
-                    <a href="https://youtube.com/@pdgunadarma?si=VC8uLeqAqK_C-8a4">Youtube</a>
+                    <a href="https://youtube.com/@pdgunadarma?si=VC8uLeqAqK_C-8a4">YouTube</a>
                     <a href="https://vt.tiktok.com/ZSC45vqwj/">TikTok</a>
                 </section>
             </div>
         </div>
 
         <div class="footer-bottom">
-            <p><span>&copy; {{ now()->year }} PDUG&trade;.</span> <span>All Rights Reserved.</span></p>
+            <p>&copy; {{ now()->year }} PDUG. Hak Cipta Dilindungi.</p>
         </div>
     </footer>
 </body>

@@ -41,10 +41,10 @@ class ExampleTest extends TestCase
         $response->assertSee('<title>Beranda • PD Gunadarma Event</title>', false);
         $response->assertSee('Website resmi registrasi event Persekutuan Doa Universitas Gunadarma.');
         $response->assertSee('images/pd-gunadarma-event.svg');
-        $response->assertSee('About Us');
-        $response->assertSee('Follow Us');
+        $response->assertSee('Tentang PDUG');
+        $response->assertSee('Ikuti Kami');
         $response->assertSee('pdgunadarmates@gmail.com');
-        $response->assertSee('+62 812-3456-7890');
+        $response->assertSee('0821 9977 3846');
         $response->assertSee('Universitas Gunadarma, Depok');
         $response->assertSee('Jam Layanan');
         $response->assertSee('Cara Registrasi Event');
@@ -114,7 +114,7 @@ class ExampleTest extends TestCase
         $response->assertDontSee('pdug@gunadarma.test');
         $response->assertDontSee('021-0000-0000');
         $response->assertSee('pdgunadarmates@gmail.com');
-        $response->assertSee('+62 812-3456-7890');
+        $response->assertSee('0821 9977 3846');
     }
 
     public function test_configured_public_contact_is_rendered_on_about_page_and_footer(): void

@@ -11832,3 +11832,111 @@ body.public-site:not(.fi-body) .account-popover {
         padding: 6px;
     }
 }
+
+/* Compact, top-aligned public footer grid. */
+body.public-site:not(.fi-body) .footer-top {
+    grid-template-columns: minmax(0, 1.8fr) minmax(150px, 1fr) minmax(150px, .8fr);
+    align-items: start;
+    gap: clamp(28px, 3.5vw, 48px);
+    padding-block: clamp(42px, 5vw, 58px);
+}
+
+body.public-site:not(.fi-body) .footer-identity,
+body.public-site:not(.fi-body) .footer-links section {
+    align-self: start;
+}
+
+body.public-site:not(.fi-body) .footer-identity {
+    gap: 14px;
+}
+
+body.public-site:not(.fi-body) .footer-brand-content > p {
+    margin-top: 4px;
+    line-height: 1.5;
+}
+
+body.public-site:not(.fi-body) .footer-contact {
+    gap: 12px;
+    margin-top: 22px;
+}
+
+body.public-site:not(.fi-body) .footer-contact-item {
+    grid-template-columns: 22px 82px minmax(0, 1fr);
+    align-items: start;
+    gap: 9px;
+}
+
+body.public-site:not(.fi-body) .footer-contact-item > svg {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+}
+
+body.public-site:not(.fi-body) .footer-contact-label,
+body.public-site:not(.fi-body) .footer-contact-value {
+    line-height: 1.5;
+}
+
+body.public-site:not(.fi-body) .footer-links section {
+    gap: 7px;
+}
+
+body.public-site:not(.fi-body) .footer-links h2 {
+    margin-bottom: 8px;
+}
+
+body.public-site:not(.fi-body) .footer-links a {
+    min-height: 36px;
+    line-height: 1.45;
+}
+
+body.public-site:not(.fi-body) .footer-bottom {
+    min-height: 0;
+    padding-block: 14px;
+}
+
+body.public-site:not(.fi-body) .footer-bottom p {
+    line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+    body.public-site:not(.fi-body) .footer-top {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 32px;
+        padding-block: 42px;
+    }
+
+    body.public-site:not(.fi-body) .footer-identity {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 640px) {
+    body.public-site:not(.fi-body) .footer-top {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 28px;
+        padding-block: 36px;
+    }
+
+    body.public-site:not(.fi-body) .footer-identity {
+        grid-column: auto;
+    }
+
+    body.public-site:not(.fi-body) .footer-contact-item {
+        grid-template-columns: 22px minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    body.public-site:not(.fi-body) .footer-contact-item > div {
+        display: block;
+    }
+
+    body.public-site:not(.fi-body) .footer-contact-label,
+    body.public-site:not(.fi-body) .footer-contact-value {
+        display: block;
+    }
+
+    body.public-site:not(.fi-body) .footer-bottom {
+        padding: 12px 18px;
+    }
+}
