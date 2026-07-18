@@ -53,10 +53,12 @@
                         </div>
                     </div>
                     <div class="event-card-content">
-                        <p class="event-meta">{{ $event->location }}</p>
                         <h3>{{ $eventTitle }}</h3>
-                        <p class="event-description event-description-preview">{{ Str::limit($eventDescription, 170) }}</p>
                         <dl class="event-card-meta-list">
+                            <div>
+                                <dt>Lokasi</dt>
+                                <dd>{{ $event->location }}</dd>
+                            </div>
                             <div>
                                 <dt>Tanggal</dt>
                                 <dd>{{ $event->starts_at->translatedFormat('d M Y') }}, {{ $event->starts_at->format('H:i') }} WIB</dd>
@@ -65,11 +67,12 @@
                                 <dt>Kuota</dt>
                                 <dd>{{ $event->paid_registrations_count }}/{{ $event->quota }} peserta</dd>
                             </div>
+                            <div>
+                                <dt>Harga</dt>
+                                <dd>{{ $event->price > 0 ? 'Rp '.number_format($event->price, 0, ',', '.') : 'Gratis' }}</dd>
+                            </div>
                         </dl>
-                        <div class="event-footer">
-                            <span>Harga</span>
-                            <strong>{{ $event->price > 0 ? 'Rp '.number_format($event->price, 0, ',', '.') : 'Gratis' }}</strong>
-                        </div>
+                        <p class="event-description event-description-preview">{{ Str::limit($eventDescription, 170) }}</p>
                         <a class="button" href="{{ route('events.show', ['event' => $event->slug ?: $event->id]) }}">Lihat Detail</a>
                     </div>
                 </article>

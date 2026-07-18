@@ -10691,7 +10691,7 @@ body.public-site:not(.fi-body) .event-card-content .event-meta {
 
 body.public-site:not(.fi-body) .event-card-content h3 {
     min-height: 0;
-    margin: 0 0 11px;
+    margin: 0 0 16px;
     color: var(--public-text);
     font-size: clamp(21px, 2.2vw, 27px);
     line-height: 1.25;
@@ -10701,7 +10701,7 @@ body.public-site:not(.fi-body) .event-card-content .event-description-preview {
     display: -webkit-box;
     min-height: 0;
     overflow: hidden;
-    margin: 0 0 18px;
+    margin: 18px 0 18px;
     color: var(--public-muted);
     line-height: 1.65;
     white-space: normal;
@@ -10711,13 +10711,13 @@ body.public-site:not(.fi-body) .event-card-content .event-description-preview {
 
 body.public-site:not(.fi-body) .event-card-meta-list {
     display: grid;
-    gap: 9px;
+    gap: 10px;
     margin: 0;
 }
 
 body.public-site:not(.fi-body) .event-card-meta-list > div {
     display: grid;
-    grid-template-columns: 64px minmax(0, 1fr);
+    grid-template-columns: 70px minmax(0, 1fr);
     gap: 12px;
 }
 
@@ -10735,6 +10735,10 @@ body.public-site:not(.fi-body) .event-card-meta-list dt {
 body.public-site:not(.fi-body) .event-card-meta-list dd {
     color: var(--public-text);
     font-weight: 700;
+}
+
+body.public-site:not(.fi-body) .event-card-meta-list > div:last-child dd {
+    color: var(--public-secondary);
 }
 
 body.public-site:not(.fi-body) .event-card-content .event-footer {
@@ -10756,6 +10760,7 @@ body.public-site:not(.fi-body) .event-card-content .event-footer strong {
 }
 
 body.public-site:not(.fi-body) .event-card-content > .button {
+    margin-top: auto;
     align-self: stretch;
     justify-content: center;
     width: 100%;
