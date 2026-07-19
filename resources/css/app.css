@@ -12748,6 +12748,13 @@ body.public-site:not(.fi-body) .registration-detail-panel .compact-qr-checkin :w
     margin: 0;
 }
 
+body.public-site:not(.fi-body) .registration-detail-panel .compact-qr-checkin .eyebrow {
+    display: block;
+    width: 100%;
+    justify-content: initial;
+    text-align: center;
+}
+
 body.public-site:not(.fi-body) .registration-detail-panel .compact-qr-checkin img {
     width: min(100%, 260px);
     margin-inline: auto;
