@@ -12803,3 +12803,110 @@ body.public-site:not(.fi-body) .registration-detail-panel .participant-detail-gr
         gap: 16px;
     }
 }
+
+/* Event page final polish: compact hero and cleaner event card rhythm. */
+body.public-site:not(.fi-body) .hero {
+    min-height: clamp(220px, 22vw, 280px);
+    padding: clamp(28px, 4vw, 42px);
+}
+
+body.public-site:not(.fi-body) .hero h1 {
+    font-size: clamp(44px, 5vw, 62px);
+    line-height: 1;
+}
+
+body.public-site:not(.fi-body) .hero-copy > p {
+    margin-top: 18px;
+    font-size: clamp(16px, 1.6vw, 20px);
+    line-height: 1.45;
+}
+
+body.public-site:not(.fi-body) .hero + .event-catalog-section {
+    margin-top: clamp(30px, 3.5vw, 42px);
+}
+
+body.public-site:not(.fi-body) .event-catalog-section > .section-heading {
+    margin-bottom: clamp(16px, 1.8vw, 22px);
+}
+
+body.public-site:not(.fi-body) .event-grid.public-event-rail {
+    gap: clamp(20px, 2.6vw, 28px);
+}
+
+body.public-site:not(.fi-body) .event-card.public-event-card {
+    height: 100%;
+}
+
+body.public-site:not(.fi-body) .event-card-visual {
+    aspect-ratio: 16 / 9;
+}
+
+body.public-site:not(.fi-body) .event-card-visual .event-date {
+    bottom: 16px;
+    left: 16px;
+}
+
+body.public-site:not(.fi-body) .event-card-content {
+    padding: clamp(20px, 2.2vw, 24px);
+}
+
+body.public-site:not(.fi-body) .event-card-content h3 {
+    margin-bottom: 14px;
+    font-size: clamp(19px, 1.7vw, 23px);
+    line-height: 1.24;
+}
+
+body.public-site:not(.fi-body) .event-card-content .event-description-preview {
+    margin-bottom: 18px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+body.public-site:not(.fi-body) .event-card-meta-list {
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+body.public-site:not(.fi-body) .event-card-meta-list > div {
+    grid-template-columns: 66px minmax(0, 1fr);
+    gap: 12px;
+}
+
+body.public-site:not(.fi-body) .event-card-meta-list :where(dt, dd) {
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+body.public-site:not(.fi-body) .event-card-content > .button {
+    min-height: 44px;
+    padding-block: 11px;
+}
+
+body.public-site:not(.fi-body) .event-grid.public-event-rail.is-single .public-event-card {
+    grid-template-columns: minmax(260px, .9fr) minmax(0, 1.1fr);
+}
+
+body.public-site:not(.fi-body) .event-grid.public-event-rail.is-single .event-card-visual {
+    min-height: 300px;
+}
+
+@media (max-width: 768px) {
+    body.public-site:not(.fi-body) .hero {
+        min-height: 220px;
+        padding: 28px 20px;
+    }
+
+    body.public-site:not(.fi-body) .event-grid.public-event-rail.is-single .event-card-visual {
+        min-height: 0;
+    }
+}
+
+@media (max-width: 390px) {
+    body.public-site:not(.fi-body) .hero {
+        min-height: 200px;
+    }
+
+    body.public-site:not(.fi-body) .event-card-content {
+        padding: 18px;
+    }
+}
