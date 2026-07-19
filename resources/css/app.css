@@ -12690,3 +12690,116 @@ html[data-theme="dark"] body.public-site:not(.fi-body) .ticket-list-page .ticket
         font-size: 12px;
     }
 }
+
+/* Ticket detail polish: cleaner QR alignment, registration grid, and plain status text. */
+body.public-site:not(.fi-body) .registration-detail-panel {
+    padding: clamp(24px, 4vw, 32px);
+}
+
+body.public-site:not(.fi-body) .registration-detail-panel .registration-summary {
+    gap: 22px 44px;
+    margin-top: 20px;
+    padding: 20px 0;
+}
+
+body.public-site:not(.fi-body) .registration-detail-panel .registration-summary-event dd {
+    font-family: inherit;
+    font-weight: 720;
+}
+
+body.public-site:not(.fi-body) .registration-detail-panel .registration-summary .compact-status,
+html[data-theme="dark"] body.public-site:not(.fi-body) .registration-detail-panel .registration-summary .compact-status {
+    display: inline;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    padding: 0;
+    color: var(--public-success);
+    font-weight: 750;
+    line-height: 1.45;
+    box-shadow: none;
+}
+
+body.public-site:not(.fi-body) .registration-detail-panel .compact-qr-checkin {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    margin-top: 22px;
+    padding: clamp(22px, 4vw, 28px);
+    text-align: center;
+}
+
+body.public-site:not(.fi-body) .registration-detail-panel .compact-qr-checkin > div {
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+}
+
+body.public-site:not(.fi-body) .registration-detail-panel .compact-qr-checkin :where(.eyebrow, h2) {
+    margin: 0;
+}
+
+body.public-site:not(.fi-body) .registration-detail-panel .compact-qr-checkin img {
+    width: min(100%, 260px);
+    margin-inline: auto;
+}
+
+body.public-site:not(.fi-body) .registration-detail-panel .participant-detail-accordion {
+    margin-top: 22px;
+}
+
+body.public-site:not(.fi-body) .registration-detail-panel .participant-detail-accordion > button {
+    min-height: 58px;
+    padding: 16px 18px;
+}
+
+body.public-site:not(.fi-body) .registration-detail-panel .participant-detail-accordion [data-accordion-panel] {
+    padding: 18px;
+}
+
+body.public-site:not(.fi-body) .registration-detail-panel .participant-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px 38px;
+}
+
+body.public-site:not(.fi-body) .registration-detail-panel .participant-detail-grid > div {
+    display: grid;
+    align-content: start;
+    gap: 6px;
+}
+
+body.public-site:not(.fi-body) .registration-detail-panel .participant-detail-grid dt {
+    margin: 0;
+    color: var(--public-muted);
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 1.35;
+}
+
+body.public-site:not(.fi-body) .registration-detail-panel .participant-detail-grid dd {
+    margin: 0;
+    color: var(--public-text);
+    font-size: 15px;
+    font-weight: 650;
+    line-height: 1.45;
+}
+
+@media (max-width: 900px) {
+    body.public-site:not(.fi-body) .registration-detail-panel .participant-detail-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    body.public-site:not(.fi-body) .registration-detail-panel .registration-summary {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 18px;
+    }
+
+    body.public-site:not(.fi-body) .registration-detail-panel .participant-detail-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
+}

@@ -60,7 +60,6 @@
                     <dt>Status</dt>
                     <dd>
                         <span class="compact-status {{ $transactionStatusClass }}">
-                            <span aria-hidden="true">●</span>
                             {{ $registration->transactionStatusLabel() }}
                         </span>
                     </dd>
