@@ -9148,11 +9148,12 @@ body:not(.fi-body) .participant-detail-grid dd {
 
 .ticket-modal-info {
     width: 100%;
-    padding-inline: 42px;
+    padding-inline: 0;
 }
 
 .ticket-qr-modal .eyebrow {
     align-self: center;
+    width: 100%;
     margin: 0 0 18px;
     padding-inline: 0;
     color: #64748b;
@@ -9176,6 +9177,7 @@ body:not(.fi-body) .participant-detail-grid dd {
 }
 
 .ticket-modal-event {
+    width: 100%;
     margin: 0;
     color: #334155;
     font-family: inherit;
@@ -9333,7 +9335,7 @@ body:not(.fi-body) .participant-detail-grid dd {
     }
 
     .ticket-modal-info {
-        padding-inline: 34px;
+        padding-inline: 0;
     }
 }
 
@@ -9343,7 +9345,7 @@ body:not(.fi-body) .participant-detail-grid dd {
     }
 
     .ticket-modal-info {
-        padding-inline: 32px;
+        padding-inline: 0;
     }
 
     .ticket-modal-divider {
