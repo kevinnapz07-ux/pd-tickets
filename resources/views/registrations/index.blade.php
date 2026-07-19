@@ -88,7 +88,7 @@
                                 <div class="ticket-modal-divider" aria-hidden="true"></div>
                                 <div class="ticket-modal-qr-area">
                                     <img class="ticket-modal-qr" src="{{ $registration->qrCodeDataUri() }}" alt="QR Check-in {{ $registration->registration_code }}">
-                                    <p class="ticket-modal-note">Tunjukkan QR Code ini kepada panitia saat proses check-in.</p>
+                                    <p class="ticket-modal-note">Tunjukkan saat hadir</p>
                                     <button class="button ticket-modal-dismiss" type="button" data-ticket-modal-close>Tutup</button>
                                 </div>
                             </section>
