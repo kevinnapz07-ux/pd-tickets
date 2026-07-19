@@ -80,12 +80,17 @@
                         <div class="ticket-modal-backdrop" id="ticket-qr-modal-{{ $registration->id }}" data-ticket-modal aria-hidden="true">
                             <section class="ticket-modal ticket-qr-modal" role="dialog" aria-modal="true" aria-labelledby="ticket-qr-title-{{ $registration->id }}" tabindex="-1">
                                 <button class="ticket-modal-close" type="button" data-ticket-modal-close aria-label="Tutup modal">×</button>
-                                <p class="eyebrow">Tiket {{ $registration->registration_code }}</p>
-                                <h2 id="ticket-qr-title-{{ $registration->id }}">QR Check-in</h2>
-                                <p class="ticket-modal-event">{{ $registration->event->title }}</p>
-                                <img class="ticket-modal-qr" src="{{ $registration->qrCodeDataUri() }}" alt="QR Check-in {{ $registration->registration_code }}">
-                                <p class="ticket-modal-note">Tunjukkan QR Code ini kepada panitia saat proses check-in.</p>
-                                <button class="button ticket-modal-dismiss" type="button" data-ticket-modal-close>Tutup</button>
+                                <div class="ticket-modal-info">
+                                    <p class="eyebrow">Tiket {{ $registration->registration_code }}</p>
+                                    <p class="ticket-modal-event">{{ $registration->event->title }}</p>
+                                    <h2 id="ticket-qr-title-{{ $registration->id }}">QR Check-in</h2>
+                                </div>
+                                <div class="ticket-modal-divider" aria-hidden="true"></div>
+                                <div class="ticket-modal-qr-area">
+                                    <img class="ticket-modal-qr" src="{{ $registration->qrCodeDataUri() }}" alt="QR Check-in {{ $registration->registration_code }}">
+                                    <p class="ticket-modal-note">Tunjukkan QR Code ini kepada panitia saat proses check-in.</p>
+                                    <button class="button ticket-modal-dismiss" type="button" data-ticket-modal-close>Tutup</button>
+                                </div>
                             </section>
                         </div>
                     @elseif (isset($ticketsOnly) && $hasCheckedIn)

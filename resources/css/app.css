@@ -9133,8 +9133,27 @@ body:not(.fi-body) .participant-detail-grid dd {
     padding-inline: 44px;
 }
 
+.ticket-qr-modal {
+    width: min(100%, 460px);
+    padding: clamp(22px, 4vw, 28px);
+}
+
+.ticket-modal-info,
+.ticket-modal-qr-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.ticket-modal-info {
+    padding-inline: 36px;
+}
+
 .ticket-qr-modal .eyebrow {
-    margin-bottom: 12px;
+    align-self: flex-start;
+    margin: 0 0 14px;
+    padding-inline: 0;
     color: #64748b;
     font-size: 12px;
     font-weight: 700;
@@ -9146,17 +9165,27 @@ body:not(.fi-body) .participant-detail-grid dd {
 }
 
 .ticket-qr-modal h2 {
-    margin: 0 0 18px;
+    margin: 10px 0 0;
+    color: #475569;
+    font-size: 16px;
+    font-weight: 650;
 }
 
 .ticket-modal-event {
-    margin: 0 0 22px;
+    margin: 0;
     color: #334155;
     font-family: inherit;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 600;
     line-height: 1.45;
     overflow-wrap: anywhere;
+}
+
+.ticket-modal-divider {
+    width: 100%;
+    height: 1px;
+    margin: 24px 0;
+    background: #dbe3ef;
 }
 
 .ticket-modal-code {
@@ -9170,17 +9199,19 @@ body:not(.fi-body) .participant-detail-grid dd {
 
 .ticket-modal-qr {
     display: block;
-    width: min(100%, 230px);
+    width: 100%;
+    max-width: 270px;
     aspect-ratio: 1;
-    margin: 0 auto 20px;
+    margin: 0 auto 22px;
     border: 1px solid #dbe3ef;
     border-radius: 14px;
-    padding: 10px;
+    padding: 12px;
     background: #fff;
 }
 
 .ticket-modal-note {
-    margin: 0 auto 22px;
+    max-width: 320px;
+    margin: 0 auto 26px;
     color: #475569;
     line-height: 1.55;
 }
@@ -9247,6 +9278,10 @@ body:not(.fi-body) .participant-detail-grid dd {
     color: #f8fafc;
 }
 
+[data-theme="dark"] .ticket-modal-divider {
+    background: #3b4b63;
+}
+
 [data-theme="dark"] .ticket-modal :where(.ticket-modal-code, .ticket-modal-note) {
     color: #c0ccda;
 }
@@ -9289,6 +9324,24 @@ body:not(.fi-body) .participant-detail-grid dd {
 
     .ticket-modal-qr {
         width: min(100%, 220px);
+    }
+
+    .ticket-modal-info {
+        padding-inline: 34px;
+    }
+}
+
+@media (max-width: 390px) {
+    .ticket-qr-modal {
+        padding: 20px;
+    }
+
+    .ticket-modal-info {
+        padding-inline: 32px;
+    }
+
+    .ticket-modal-divider {
+        margin: 22px 0;
     }
 }
 
