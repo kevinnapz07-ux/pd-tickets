@@ -39,6 +39,15 @@
                 @php
                     $eventTitle = trim(strip_tags((string) $event->title));
                     $eventDescription = preg_replace('/^[\s\'",]+/u', '', trim(strip_tags((string) $event->description)));
+                    $compactPrice = 'Gratis';
+
+                    if ($event->price > 0) {
+                        if ($event->price >= 1000000) {
+                            $compactPrice = rtrim(rtrim(number_format($event->price / 1000000, 2, '.', ''), '0'), '.').'M';
+                        } else {
+                            $compactPrice = number_format($event->price / 1000, 0, '.', '').'K';
+                        }
+                    }
                 @endphp
                 <article class="event-card public-event-card" data-reveal>
                     <div class="event-card-visual" aria-hidden="true">
@@ -69,8 +78,8 @@
                                 <dd>{{ $event->paid_registrations_count }}/{{ $event->quota }} peserta</dd>
                             </div>
                             <div>
-                                <dt>Harga</dt>
-                                <dd>{{ $event->price > 0 ? 'Rp '.number_format($event->price, 0, ',', '.') : 'Gratis' }}</dd>
+                                <dt>HTM</dt>
+                                <dd>{{ $compactPrice }}</dd>
                             </div>
                         </dl>
                         <a class="button" href="{{ route('events.show', ['event' => $event->slug ?: $event->id]) }}">Lihat Detail</a>
