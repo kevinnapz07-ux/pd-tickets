@@ -4,13 +4,11 @@
     <section class="profile-hero about-hero">
         <div>
             <h1>About Us</h1>
-            <p>Mengenal lebih dekat Persekutuan Doa Universitas Gunadarma.</p>
         </div>
     </section>
 
     <section class="about-story about-shared-card">
         <div>
-            <p class="eyebrow">Tentang PDUG</p>
             <h2>Cerita Kami</h2>
         </div>
         <div class="about-story-copy">

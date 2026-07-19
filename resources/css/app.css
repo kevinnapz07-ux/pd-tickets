@@ -11585,6 +11585,19 @@ body.public-site:not(.fi-body) .about-shared-card:hover {
     box-shadow: var(--public-shadow-hover);
 }
 
+body.public-site:not(.fi-body) .about-hero {
+    min-height: clamp(220px, 24vw, 270px);
+    padding-block: clamp(44px, 7vw, 72px);
+}
+
+body.public-site:not(.fi-body) .about-hero h1 {
+    margin: 0;
+}
+
+body.public-site:not(.fi-body) .about-story h2 {
+    margin-top: 0;
+}
+
 html[data-theme="dark"] body.public-site:not(.fi-body) .about-identity {
     border: 0;
     background: transparent;
