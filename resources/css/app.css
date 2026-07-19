@@ -12918,3 +12918,10 @@ body.public-site:not(.fi-body) .event-grid.public-event-rail.is-single .event-ca
         padding: 18px;
     }
 }
+
+/* QR modal heading must not inherit left-aligned public section eyebrow rules. */
+body.public-site:not(.fi-body) .ticket-qr-modal .eyebrow {
+    display: block;
+    justify-content: initial;
+    text-align: center;
+}
