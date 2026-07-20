@@ -12,7 +12,12 @@
         <p class="homepage-welcome">Selamat datang kembali, <strong>{{ auth()->user()->name }}</strong></p>
     @endauth
 
-    <section class="hero">
+    <section
+        class="hero {{ $siteSetting?->hero_image ? 'has-background-image' : '' }}"
+        @if ($siteSetting?->hero_image)
+            style="background-image: url('{{ asset('storage/'.$siteSetting->hero_image) }}');"
+        @endif
+    >
         <div class="hero-copy">
             <h1>{{ $siteSetting?->hero_title ?? 'PDUG' }}</h1>
             <p>{{ $heroSubtitle }}</p>
@@ -122,6 +127,10 @@
 
                     <div
                         class="upcoming-content upcoming-simple-content">
+                            <p class="upcoming-registration-status">
+                                Pendaftaran Segera Dibuka
+                            </p>
+
                             <h3>{{ $upcomingEvent->title }}</h3>
 
                             <p class="event-description">

@@ -7,7 +7,13 @@
             </div>
         @endif
 
-        <form class="admin-form" method="POST" action="{{ route('admin.website.update') }}" data-website-settings-form>
+        <form
+            class="admin-form"
+            method="POST"
+            action="{{ route('admin.website.update') }}"
+            enctype="multipart/form-data"
+            data-website-settings-form
+        >
             @csrf
             @method('PATCH')
             <nav class="cms-tabs" role="tablist" aria-label="Bagian pengaturan website">
@@ -83,6 +89,33 @@
                     <small class="field-help">Ringkasan singkat mengenai event dan layanan website.</small>
                     <small class="character-counter" data-character-counter></small>
                 </label>
+                <label>Banner Halaman Utama
+                    <input
+                        type="file"
+                        name="hero_image"
+                        accept="image/jpeg,image/png,image/webp"
+                    >
+
+                    <small class="field-help">
+                        Gunakan gambar JPG, PNG, atau WebP. Rekomendasi ukuran 1600 × 700 piksel.
+                    </small>
+                </label>
+
+                @if ($setting->hero_image)
+                    <div class="cms-current-image">
+                        <p class="eyebrow">Banner Saat Ini</p>
+
+                        <img
+                            src="{{ asset('storage/'.$setting->hero_image) }}"
+                            alt="Banner halaman utama saat ini"
+                        >
+
+                        <label class="cms-remove-image">
+                            <input type="checkbox" name="remove_hero_image" value="1">
+                            Hapus banner dan gunakan tampilan bawaan
+                        </label>
+                    </div>
+                @endif
                 <aside class="cms-preview hero-preview" aria-label="Preview hero halaman utama">
                     <p class="eyebrow">Preview Hero</p><h3 data-preview-target="hero-title"></h3><p data-preview-target="hero-subtitle"></p>
                 </aside>
@@ -112,6 +145,37 @@
                     <input name="contact_address" value="{{ old('contact_address', $setting->contact_address) }}" maxlength="180" placeholder="Kampus Universitas Gunadarma" data-preview-source="contact-address" required>
                     <small class="field-help">Lokasi singkat yang ditampilkan pada informasi publik.</small>
                 </label>
+                <label>Banner About Us
+                    <input
+                        type="file"
+                        name="about_image"
+                        accept="image/jpeg,image/png,image/webp"
+                    >
+
+                    <small class="field-help">
+                        Gunakan gambar JPG, PNG, atau WebP. Maksimal 2 MB. Rekomendasi ukuran 1600 × 700 piksel.
+                    </small>
+                </label>
+
+                @if ($setting->about_image)
+                    <div class="cms-current-image">
+                        <p class="eyebrow">Banner About Saat Ini</p>
+
+                        <img
+                            src="{{ asset('storage/'.$setting->about_image) }}"
+                            alt="Banner About Us saat ini"
+                        >
+
+                        <label class="cms-remove-image">
+                            <input
+                                type="checkbox"
+                                name="remove_about_image"
+                                value="1"
+                            >
+                            Hapus banner About dan gunakan tampilan bawaan
+                        </label>
+                    </div>
+                @endif
                 <aside class="cms-preview contact-preview" aria-label="Preview kontak publik">
                     <p class="eyebrow">Preview Kontak</p>
                     <dl><div><dt>Email</dt><dd data-preview-target="contact-email"></dd></div><div><dt>WhatsApp</dt><dd data-preview-target="contact-phone"></dd></div><div><dt>Lokasi</dt><dd data-preview-target="contact-address"></dd></div></dl>

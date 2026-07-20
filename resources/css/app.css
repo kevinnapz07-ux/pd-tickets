@@ -2853,6 +2853,7 @@ svg {
         width: 100%;
         margin-top: 8px;
         box-shadow: none;
+        box-shadow: none;
     }
 
     [data-theme="dark"] .mobile-menu-toggle {
@@ -14799,5 +14800,157 @@ body.public-site:not(.fi-body)
         overflow: visible !important;
         white-space: pre-line !important;
         max-height: none !important;
+    }
+}
+
+/* Banner Home dan About */
+body.public-site:not(.fi-body) .hero,
+body.public-site:not(.fi-body) .profile-hero.about-hero {
+    position: relative;
+    overflow: hidden;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #12172a;
+}
+
+/* Gambar memenuhi seluruh kotak */
+body.public-site:not(.fi-body) .hero.has-background-image,
+body.public-site:not(.fi-body) .profile-hero.about-hero.has-banner {
+    min-height: 0;
+    aspect-ratio: 16 / 7;
+    background-size: cover;
+    background-position: center;
+}
+
+/* Overlay gelap untuk Home dan About */
+body.public-site:not(.fi-body) .hero.has-background-image::before,
+body.public-site:not(.fi-body) .profile-hero.about-hero.has-banner::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(8, 12, 28, 0.68);
+    pointer-events: none;
+}
+
+/* Teks tetap berada di atas overlay */
+body.public-site:not(.fi-body) .hero.has-background-image .hero-copy,
+body.public-site:not(.fi-body) .profile-hero.about-hero.has-banner > div {
+    position: relative;
+    z-index: 1;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    body.public-site:not(.fi-body) .hero.has-background-image,
+    body.public-site:not(.fi-body) .profile-hero.about-hero.has-banner {
+        aspect-ratio: 16 / 9;
+        background-size: cover;
+        background-position: center;
+    }
+
+    body.public-site:not(.fi-body) .hero .hero-copy h1 {
+        font-size: clamp(32px, 10vw, 48px);
+    }
+
+    body.public-site:not(.fi-body) .hero .hero-copy p {
+        font-size: 14px;
+    }
+
+    body.public-site:not(.fi-body) .hero .hero-copy h1 {
+        font-size: clamp(36px, 9vw, 40px);
+        line-height: 1;
+    }
+
+    body.public-site:not(.fi-body) .hero .hero-copy p {
+        font-size: 15px;
+        line-height: 1.35;
+        max-width: 260px;
+        text-align: center;
+    }
+
+    body.public-site:not(.fi-body) .hero .hero-copy {
+        padding: 0 16px;
+    }
+
+    @media (max-width: 768px) {
+        body.public-site:not(.fi-body) .hero .hero-copy h1 {
+            font-size: clamp(30px, 8vw, 36px);
+            line-height: 1;
+        }
+
+        body.public-site:not(.fi-body) .hero .hero-copy p {
+            font-size: 13px;
+            line-height: 1.2;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        body.public-site:not(.fi-body) .hero .hero-copy {
+            gap: 3px;
+            padding-inline: 10px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        body.public-site:not(.fi-body) .hero .hero-copy {
+            gap: 6px;
+            padding: 0 20px;
+        }
+
+        body.public-site:not(.fi-body) .hero .hero-copy h1,
+        body.public-site:not(.fi-body) .profile-hero.about-hero h1 {
+            font-size: clamp(28px, 8vw, 40px);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        body.public-site:not(.fi-body) .hero .hero-copy p {
+            font-size: 11px;
+            line-height: 1.2;
+            white-space: nowrap;
+            text-align: center;
+        }
+    }
+}
+
+body.public-site:not(.fi-body) .hero .hero-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+body.public-site:not(.fi-body) .hero .hero-copy h1,
+body.public-site:not(.fi-body) .hero .hero-copy p {
+    margin: 0;
+}
+
+/* HOME */
+body.public-site:not(.fi-body) .hero .hero-copy h1 {
+    font-size: clamp(36px, 5vw, 64px);
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+body.public-site:not(.fi-body) .hero .hero-copy p {
+    font-size: 18px;
+    line-height: 1.2;
+}
+
+/* ABOUT */
+body.public-site:not(.fi-body) .profile-hero.about-hero h1 {
+    font-size: clamp(36px, 5vw, 64px);
+    line-height: 1;
+}
+
+@media (max-width: 768px) {
+    body.public-site:not(.fi-body) .hero .hero-copy h1,
+    body.public-site:not(.fi-body) .profile-hero.about-hero h1 {
+        font-size: 36px;
+    }
+
+    body.public-site:not(.fi-body) .hero .hero-copy p {
+        font-size: 13px;
+        white-space: nowrap;
     }
 }

@@ -11,6 +11,8 @@ class SiteSetting extends Model
         'site_tagline',
         'hero_title',
         'hero_subtitle',
+        'hero_image',
+        'about_image',
         'contact_email',
         'contact_phone',
         'contact_address',

@@ -1,7 +1,12 @@
 @extends('layouts.app', ['title' => 'About Us'])
 
 @section('content')
-    <section class="profile-hero about-hero">
+    <section
+        class="profile-hero about-hero {{ $siteSetting?->about_image ? 'has-banner' : '' }}"
+        @if($siteSetting?->about_image)
+            style="background-image:url('{{ asset('storage/'.$siteSetting->about_image) }}')"
+        @endif
+    >
         <div>
             <h1>About Us</h1>
         </div>
