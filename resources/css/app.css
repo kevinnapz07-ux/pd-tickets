@@ -11564,6 +11564,17 @@ body.public-site:not(.fi-body) .brand small {
     white-space: nowrap;
 }
 
+body.public-site:not(.fi-body) .brand strong {
+    font-size: 15px;
+    line-height: 1.1;
+    font-weight: 700;
+}
+
+body.public-site:not(.fi-body) .brand small {
+    font-size: 10px;
+    line-height: 1.1;
+}
+
 body.public-site:not(.fi-body) .topbar-right,
 body.public-site:not(.fi-body) .main-nav,
 body.public-site:not(.fi-body) .header-actions {
@@ -12087,6 +12098,26 @@ body.public-site:not(.fi-body) .footer-bottom {
     }
 
     body.public-site:not(.fi-body)
+        .registration-card-actions
+        .ticket-detail-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 44px;
+        padding: 10px 16px;
+        box-sizing: border-box;
+    }
+
+    body.public-site:not(.fi-body) .registration-card-actions .button,
+    body.public-site:not(.fi-body)
+        .registration-card-actions
+        .ticket-detail-link {
+        min-height: 44px;
+        border-radius: 10px;
+    }
+
+    body.public-site:not(.fi-body)
         .registration-confirm-actions
         :where(.button, .link-button),
     body.public-site:not(.fi-body)
@@ -12120,7 +12151,7 @@ body.public-site:not(.fi-body) .homepage-welcome strong {
 
 body.public-site:not(.fi-body) .hero {
     min-height: clamp(230px, 26vw, 320px);
-    padding: clamp(30px, 5vw, 52px);
+    padding: 0;
 }
 
 body.public-site:not(.fi-body) .hero-copy {
@@ -14913,10 +14944,20 @@ body.public-site:not(.fi-body) .profile-hero.about-hero.has-banner > div {
     }
 }
 
+/* HERO TEXT - DESKTOP */
 body.public-site:not(.fi-body) .hero .hero-copy {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
+
+    width: 100%;
+    padding-inline: 16px;
+    text-align: center;
     gap: 6px;
 }
 
@@ -14925,11 +14966,9 @@ body.public-site:not(.fi-body) .hero .hero-copy p {
     margin: 0;
 }
 
-/* HOME */
 body.public-site:not(.fi-body) .hero .hero-copy h1 {
     font-size: clamp(36px, 5vw, 64px);
     line-height: 1;
-    margin-bottom: 8px;
 }
 
 body.public-site:not(.fi-body) .hero .hero-copy p {
@@ -14937,20 +14976,304 @@ body.public-site:not(.fi-body) .hero .hero-copy p {
     line-height: 1.2;
 }
 
-/* ABOUT */
+/* ABOUT TITLE - DESKTOP */
 body.public-site:not(.fi-body) .profile-hero.about-hero h1 {
     font-size: clamp(36px, 5vw, 64px);
     line-height: 1;
+    margin: 0;
+    text-align: center;
 }
 
+/* MOBILE */
 @media (max-width: 768px) {
+    body.public-site:not(.fi-body) .hero .hero-copy {
+        padding-inline: 10px;
+        gap: 3px;
+    }
+
     body.public-site:not(.fi-body) .hero .hero-copy h1,
     body.public-site:not(.fi-body) .profile-hero.about-hero h1 {
-        font-size: 36px;
+        font-size: clamp(30px, 8vw, 36px);
+        line-height: 1;
     }
 
     body.public-site:not(.fi-body) .hero .hero-copy p {
-        font-size: 13px;
+        font-size: clamp(11px, 3vw, 13px);
+        line-height: 1.2;
         white-space: nowrap;
+        text-align: center;
+    }
+}
+
+body.public-site:not(.fi-body) .hero {
+    position: relative;
+    overflow: hidden;
+}
+
+@media (max-width: 320px) {
+    body.public-site:not(.fi-body) .hero .hero-copy {
+        padding-inline: 6px;
+        gap: 2px;
+    }
+
+    body.public-site:not(.fi-body) .hero .hero-copy h1 {
+        font-size: 24px;
+        line-height: 1;
+    }
+
+    body.public-site:not(.fi-body) .hero .hero-copy p {
+        font-size: 8px;
+        line-height: 1.15;
+        white-space: normal;
+        max-width: 95%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 768px) {
+    body.public-site:not(.fi-body) main {
+        padding-inline: 4px;
+    }
+}
+
+body.public-site:not(.fi-body) {
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+body.public-site:not(.fi-body) {
+    font-size: 14px;
+}
+
+@media (max-width: 768px) {
+    body.public-site:not(.fi-body) {
+        font-size: 13px;
+    }
+
+    body.public-site:not(.fi-body) h1 {
+        font-size: clamp(28px, 8vw, 34px);
+    }
+
+    body.public-site:not(.fi-body) h2 {
+        font-size: clamp(24px, 7vw, 30px);
+    }
+
+    body.public-site:not(.fi-body) h3 {
+        font-size: 18px;
+    }
+
+    body.public-site:not(.fi-body) p,
+    body.public-site:not(.fi-body) dt,
+    body.public-site:not(.fi-body) dd {
+        font-size: 13px;
+    }
+
+    body.public-site:not(.fi-body) .button,
+    body.public-site:not(.fi-body) .link-button {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 640px) {
+    body.public-site:not(.fi-body) .registration-card-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        width: 100%;
+    }
+
+    body.public-site:not(.fi-body) .registration-card-actions > a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 100%;
+        min-height: 28px;
+        margin: 0;
+        padding: 4px 8px;
+
+        box-sizing: border-box;
+        border-radius: 8px;
+        line-height: 1;
+        text-align: center;
+    }
+
+    body.public-site:not(.fi-body)
+        .registration-card-actions
+        .ticket-detail-link {
+        align-self: stretch;
+        max-width: none;
+    }
+}
+
+@media (max-width: 640px) {
+    body.public-site:not(.fi-body) .registration-card-actions > a {
+        width: 100% !important;
+        min-height: 30px !important;
+        height: 30px !important;
+        padding: 4px 10px !important;
+        font-size: 12px !important;
+        line-height: 1 !important;
+        border-radius: 8px !important;
+        margin: 0 !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
+    }
+}
+
+@media (max-width: 640px) {
+    body.public-site:not(.fi-body) .registration-card-actions > a {
+        width: 100% !important;
+        min-height: 30px !important;
+        height: 30px !important;
+        padding: 4px 10px !important;
+        font-size: 10px !important;
+        line-height: 1 !important;
+        border-radius: 8px !important;
+        margin: 0 !important;
+
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
+    }
+}
+
+/* Rapikan halaman Laporan pada mobile */
+@media (max-width: 640px) {
+    .fi-body .report-page {
+        gap: 16px;
+    }
+
+    .fi-body .report-page .report-filter-card,
+    .fi-body .report-page .report-summary-card {
+        padding: 18px;
+        border-radius: 14px;
+    }
+
+    /* Semua filter menjadi satu kolom */
+    .fi-body .report-page .filter-bar,
+    .fi-body .report-page .report-filter-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+        width: 100%;
+    }
+
+    .fi-body .report-page .filter-bar label,
+    .fi-body .report-page .report-filter-grid label {
+        display: grid;
+        gap: 7px;
+        min-width: 0;
+        width: 100%;
+    }
+
+    .fi-body .report-page select,
+    .fi-body .report-page input {
+        width: 100%;
+        min-width: 0;
+        min-height: 42px;
+        padding-inline: 12px;
+        box-sizing: border-box;
+    }
+
+    /* Tombol filter */
+    .fi-body .report-page .filter-actions,
+    .fi-body .report-page .report-filter-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 9px;
+        width: 100%;
+    }
+
+    .fi-body .report-page .filter-actions > *,
+    .fi-body .report-page .report-filter-actions > * {
+        width: 100%;
+        min-height: 42px;
+        margin: 0;
+        box-sizing: border-box;
+        justify-content: center;
+    }
+
+    /* Ringkasan laporan menjadi satu kolom */
+    .fi-body .report-page .report-metadata,
+    .fi-body .report-page .report-summary-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .fi-body .report-page .report-metadata > div,
+    .fi-body .report-page .report-summary-grid > div {
+        min-width: 0;
+    }
+
+    .fi-body .report-page h1 {
+        font-size: 24px;
+        line-height: 1.15;
+    }
+
+    .fi-body .report-page h2 {
+        font-size: 18px;
+        line-height: 1.25;
+    }
+
+    .fi-body .report-page dd,
+    .fi-body .report-page select,
+    .fi-body .report-page button,
+    .fi-body .report-page a {
+        overflow-wrap: anywhere;
+    }
+}
+
+/* Desktop */
+body.public-site:not(.fi-body) .ticket-list-page .registration-card-heading h2 {
+    font-size: 25px;
+    line-height: 1.25;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+    body.public-site:not(.fi-body)
+        .ticket-list-page
+        .registration-card-heading
+        h2 {
+        font-size: 20px;
+        line-height: 1.25;
+    }
+}
+
+body.public-site:not(.fi-body) .topbar-shell {
+    min-height: 64px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+body.public-site:not(.fi-body) .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+body.public-site:not(.fi-body) .mobile-menu-toggle {
+    align-self: center;
+}
+
+@media (max-width: 768px) {
+    body.public-site:not(.fi-body) .topbar-shell {
+        width: calc(100% - 32px);
+        max-width: none;
+        min-height: 64px;
+        margin-inline: auto;
+        padding-inline: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 }
