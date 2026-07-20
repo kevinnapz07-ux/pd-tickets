@@ -5524,16 +5524,16 @@ main {
     }
 
     .upcoming-content .event-description {
-        margin: 12px 0 0;
+        margin: 10px 0 0;
         border-left: 3px solid #dbe3ef;
-        padding-left: 16px;
+        padding-left: 12px;
     }
 
     .event-description-preview {
         display: -webkit-box;
         overflow: hidden;
         -webkit-box-orient: vertical;
-        -webkit-line-clamp: 5;
+        -webkit-line-clamp: 4;
     }
 
     .detail-description {
@@ -7403,10 +7403,9 @@ main {
 
     .filter-bar {
         display: grid;
-        grid-template-columns: minmax(220px, 1fr) minmax(180px, 240px) minmax(
-                140px,
-                180px
-            ) auto auto;
+        grid-template-columns:
+            minmax(220px, 1fr) minmax(180px, 240px) minmax(140px, 180px)
+            auto auto;
         gap: 10px;
         align-items: center;
         margin-bottom: 18px;
@@ -7419,10 +7418,9 @@ main {
     }
 
     .report-filter-card {
-        grid-template-columns: minmax(220px, 1.4fr) minmax(180px, 1fr) minmax(
-                180px,
-                1fr
-            ) auto;
+        grid-template-columns:
+            minmax(220px, 1.4fr) minmax(180px, 1fr) minmax(180px, 1fr)
+            auto;
         align-items: end;
         padding: 18px;
         border: 1px solid #dbe3ee;
@@ -14543,4 +14541,263 @@ body.public-site:not(.fi-body) .ticket-qr-modal .eyebrow {
 #main-content:focus,
 #main-content:focus-visible {
     outline: none;
+}
+
+/* Tampilan ringkas Event Mendatang */
+body.public-site:not(.fi-body) .upcoming-card-simple {
+    display: grid;
+    grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
+    gap: 20px;
+    align-items: center;
+    padding: 20px;
+}
+
+body.public-site:not(.fi-body) .upcoming-card-simple .upcoming-poster {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 14px;
+}
+
+body.public-site:not(.fi-body) .upcoming-card-simple .upcoming-poster img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+body.public-site:not(.fi-body) .upcoming-simple-content {
+    min-width: 0;
+}
+
+body.public-site:not(.fi-body) .upcoming-simple-content h3 {
+    margin: 0 0 10px;
+    font-size: clamp(20px, 2vw, 28px);
+    line-height: 1.25;
+}
+
+body.public-site:not(.fi-body) .upcoming-simple-content .event-description {
+    margin: 0;
+    line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+    body.public-site:not(.fi-body) .upcoming-card-simple {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 16px;
+    }
+
+    @media (max-width: 768px) {
+        body.public-site:not(.fi-body) .upcoming-simple-content h3 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        body.public-site:not(.fi-body) .upcoming-card-simple .upcoming-poster {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            width: 100% !important;
+            height: auto !important;
+            position: static !important;
+            overflow: hidden;
+            border-radius: 14px;
+        }
+
+        body.public-site:not(.fi-body)
+            .upcoming-card-simple
+            .upcoming-poster
+            img {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            width: 100% !important;
+            height: auto !important;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+        }
+
+        body.public-site:not(.fi-body) .upcoming-simple-content {
+            display: block;
+            width: 100%;
+        }
+    }
+
+    body.public-site:not(.fi-body) .upcoming-simple-content h3 {
+        font-size: clamp(21px, 7vw, 28px);
+    }
+}
+
+/* Compact mobile card untuk Event Mendatang */
+@media (max-width: 768px) {
+    body.public-site:not(.fi-body) .upcoming-card-simple {
+        padding: 12px !important;
+        gap: 10px !important;
+        border-radius: 14px;
+    }
+
+    body.public-site:not(.fi-body) .upcoming-card-simple .upcoming-poster {
+        max-width: 100%;
+        border-radius: 10px;
+    }
+
+    body.public-site:not(.fi-body) .upcoming-card-simple .upcoming-poster img {
+        aspect-ratio: 16 / 7 !important;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+    body.public-site:not(.fi-body) .upcoming-simple-content h3 {
+        margin: 0 0 8px !important;
+        font-size: 22px !important;
+        line-height: 1.2 !important;
+    }
+
+    body.public-site:not(.fi-body) .upcoming-simple-content .event-description {
+        display: -webkit-box !important;
+        -webkit-box-orient: vertical !important;
+        -webkit-line-clamp: 6 !important;
+        overflow: hidden !important;
+        white-space: pre-line !important;
+        margin: 0 !important;
+        padding-left: 10px !important;
+        line-height: 1.55 !important;
+        font-size: 14px !important;
+    }
+}
+
+/* Baca selengkapnya khusus Event Mendatang */
+body.public-site:not(.fi-body)
+    .upcoming-card-simple
+    .upcoming-simple-content
+    .event-description {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+    white-space: pre-line;
+    margin: 0;
+    line-height: 1.6;
+}
+
+body.public-site:not(.fi-body)
+    .upcoming-card-simple
+    .upcoming-simple-content
+    .event-description.is-expanded {
+    display: block;
+    overflow: visible;
+    -webkit-line-clamp: unset;
+    white-space: pre-line;
+}
+
+body.public-site:not(.fi-body) .upcoming-card-simple .upcoming-read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+body.public-site:not(.fi-body) .upcoming-card-simple .upcoming-read-more-icon {
+    transition: transform 180ms ease;
+}
+
+body.public-site:not(.fi-body)
+    .upcoming-card-simple
+    .upcoming-read-more-icon.is-rotated {
+    transform: rotate(180deg);
+}
+
+@media (max-width: 768px) {
+    body.public-site:not(.fi-body)
+        .upcoming-card-simple
+        .upcoming-simple-content
+        .event-description {
+        -webkit-line-clamp: 4;
+        font-size: 14px;
+        line-height: 1.55;
+    }
+
+    body.public-site:not(.fi-body) .upcoming-card-simple .upcoming-read-more {
+        margin-top: 10px;
+        font-size: 13px;
+    }
+}
+
+body.public-site:not(.fi-body)
+    .upcoming-card-simple
+    .upcoming-simple-content
+    .event-description {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+    white-space: pre-line;
+}
+
+body.public-site:not(.fi-body)
+    .upcoming-card-simple
+    .upcoming-simple-content
+    .event-description.is-expanded {
+    display: block;
+    overflow: visible;
+    -webkit-line-clamp: unset;
+    white-space: pre-line;
+}
+
+body.public-site:not(.fi-body) .upcoming-card-simple .upcoming-read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+body.public-site:not(.fi-body) .upcoming-card-simple .upcoming-read-more-icon {
+    transition: transform 180ms ease;
+}
+
+body.public-site:not(.fi-body)
+    .upcoming-card-simple
+    .upcoming-read-more-icon.is-rotated {
+    transform: rotate(180deg);
+}
+
+/* Pastikan expand/collapse bekerja di mobile */
+@media (max-width: 768px) {
+    body.public-site:not(.fi-body)
+        .upcoming-card-simple
+        .upcoming-simple-content
+        .event-description {
+        display: -webkit-box !important;
+        -webkit-box-orient: vertical !important;
+        -webkit-line-clamp: 4 !important;
+        overflow: hidden !important;
+        white-space: pre-line !important;
+        max-height: none !important;
+    }
+
+    body.public-site:not(.fi-body)
+        .upcoming-card-simple
+        .upcoming-simple-content
+        .event-description.is-expanded {
+        display: block !important;
+        -webkit-box-orient: initial !important;
+        -webkit-line-clamp: unset !important;
+        overflow: visible !important;
+        white-space: pre-line !important;
+        max-height: none !important;
+    }
 }

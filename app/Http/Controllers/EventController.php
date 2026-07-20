@@ -34,7 +34,7 @@ class EventController extends Controller
             ->where('starts_at', '>=', now()->startOfDay())
             ->withCount(['registrations', 'paidRegistrations'])
             ->orderBy('starts_at')
-            ->limit(3)
+            ->limit(4)
             ->get();
 
         return view('events.index', compact('events', 'upcomingEvents', 'search'));

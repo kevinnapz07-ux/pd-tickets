@@ -92,40 +92,59 @@
     </section>
 
     @if ($upcomingEvents->isNotEmpty())
-        <section class="upcoming-section">
-            <div class="section-heading">
-                <div>
-                    <h2>Event Mendatang</h2>
-                </div>
+    <section class="upcoming-section">
+        <div class="section-heading">
+            <div>
+                <h2>Event Mendatang</h2>
             </div>
+        </div>
 
-            <div class="upcoming-list">
-                @foreach ($upcomingEvents as $upcomingEvent)
-                    <article class="upcoming-card" data-reveal>
-                        <div class="upcoming-poster">
-                            @if ($upcomingEvent->image_url)
-                                <img src="{{ $upcomingEvent->image_url }}" alt="Poster {{ $upcomingEvent->title }}" loading="lazy" decoding="async" data-image-fallback="{{ asset('images/event-placeholder.svg') }}">
-                            @else
-                                <img src="{{ asset('images/event-placeholder.svg') }}" alt="" loading="lazy">
-                            @endif
-                        </div>
-                        <div class="upcoming-date">
-                            <strong>{{ $upcomingEvent->starts_at->format('d') }}</strong>
-                            <span>{{ $upcomingEvent->starts_at->translatedFormat('M Y') }}</span>
-                        </div>
-                        <div class="upcoming-content">
-                            <p class="event-meta">{{ $upcomingEvent->location }} • {{ $upcomingEvent->starts_at->format('H:i') }} WIB</p>
+        <div class="upcoming-list">
+            @foreach ($upcomingEvents as $upcomingEvent)
+                <article class="upcoming-card upcoming-card-simple" data-reveal>
+                    <div class="upcoming-poster">
+                        @if ($upcomingEvent->image_url)
+                            <img
+                                src="{{ $upcomingEvent->image_url }}"
+                                alt="Poster {{ $upcomingEvent->title }}"
+                                loading="lazy"
+                                decoding="async"
+                                data-image-fallback="{{ asset('images/event-placeholder.svg') }}"
+                            >
+                        @else
+                            <img
+                                src="{{ asset('images/event-placeholder.svg') }}"
+                                alt=""
+                                loading="lazy"
+                            >
+                        @endif
+                    </div>
+
+                    <div
+                        class="upcoming-content upcoming-simple-content">
                             <h3>{{ $upcomingEvent->title }}</h3>
-                            <p class="event-description">{{ $upcomingEvent->description }}</p>
-                            <div class="event-footer">
-                                <span>Kuota {{ $upcomingEvent->quota }} kursi</span>
-                                <span>{{ $upcomingEvent->price > 0 ? 'Rp '.number_format($upcomingEvent->price, 0, ',', '.') : 'Gratis' }}</span>
-                            </div>
+
+                            <p class="event-description">
+                                {{ $upcomingEvent->description }}
+                            </p>
+
+                            <button
+                                type="button"
+                                class="upcoming-read-more"
+                                aria-expanded="false"
+                            >
+                                <span class="upcoming-read-more-label">
+                                    Baca selengkapnya
+                                </span>
+
+                                <span class="upcoming-read-more-icon" aria-hidden="true">
+                                    ↓
+                                </span>
+                            </button>
                         </div>
-                        <span class="status-pill">Pendaftaran Segera Dibuka</span>
-                    </article>
-                @endforeach
-            </div>
-        </section>
-    @endif
+                </article>
+            @endforeach
+        </div>
+    </section>
+@endif
 @endsection
